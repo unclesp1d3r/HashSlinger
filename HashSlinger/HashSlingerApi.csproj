@@ -26,8 +26,8 @@
 
   <ItemGroup>
     <Folder Include="Endpoints\ApiV1\" />
-    <Folder Include="Endpoints\HashtopolisApiV2\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Models\DTO\" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,8 @@
-using HashSlinger.Data;
 using Microsoft.EntityFrameworkCore;
 using HashSlinger;
-using HashSlinger.Endpoints.User;
+using HashSlingerApi.Data;
+using HashSlingerApi.Endpoints.HashtopolisApiV2;
+using HashSlingerApi.Endpoints.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,5 +26,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapUserEndpoints();
+
+app.MapHashtopolisEndpoints();
 
 app.Run();

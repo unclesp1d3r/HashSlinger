@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿namespace HashSlingerApi.Data;
 
-namespace HashSlinger.Data;
+using Microsoft.EntityFrameworkCore;
 
 public partial class HashSlingerContext : DbContext
 {
     public HashSlingerContext(DbContextOptions<HashSlingerContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
