@@ -1,6 +1,5 @@
-﻿namespace HashSlingerApi.Models;
+﻿namespace HashSlinger.Api.Models;
 
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 /// <summary>A file download event.</summary>
