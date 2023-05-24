@@ -30,4 +30,8 @@
     <Folder Include="Models\DTO\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HashSlinger.Shared\HashSlinger.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
