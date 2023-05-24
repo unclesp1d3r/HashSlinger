@@ -1,6 +1,5 @@
-﻿namespace HashSlingerApi.Models;
+﻿namespace HashSlinger.Api.Models;
 
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 /// <summary>Zaps are recovered hashes, but it's not a great name.</summary>

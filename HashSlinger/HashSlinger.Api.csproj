@@ -27,7 +27,10 @@
   <ItemGroup>
     <Folder Include="Endpoints\ApiV1\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Models\DTO\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HashSlinger.Shared\HashSlinger.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

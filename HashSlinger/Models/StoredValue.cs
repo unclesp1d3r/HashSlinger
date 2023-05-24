@@ -1,7 +1,6 @@
-﻿namespace HashSlingerApi.Models;
+﻿namespace HashSlinger.Api.Models;
 
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 /// <summary>An arbitrary key-value storage.
 /// Need to figure out what this is used for in the new system.</summary>

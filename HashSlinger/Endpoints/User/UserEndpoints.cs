@@ -1,6 +1,6 @@
-﻿namespace HashSlingerApi.Endpoints.User;
+﻿namespace HashSlinger.Api.Endpoints.User;
 
-using Data;
+using HashSlinger.Api.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 

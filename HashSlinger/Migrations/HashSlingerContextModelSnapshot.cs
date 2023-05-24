@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HashSlinger.Migrations
 {
-    using HashSlingerApi.Data;
+    using Api.Data;
 
     [DbContext(typeof(HashSlingerContext))]
     partial class HashSlingerContextModelSnapshot : ModelSnapshot

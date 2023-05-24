@@ -1,8 +1,7 @@
+using HashSlinger.Api.Data;
+using HashSlinger.Api.Endpoints.HashtopolisApiV2;
+using HashSlinger.Api.Endpoints.User;
 using Microsoft.EntityFrameworkCore;
-using HashSlinger;
-using HashSlingerApi.Data;
-using HashSlingerApi.Endpoints.HashtopolisApiV2;
-using HashSlingerApi.Endpoints.User;
 
 var builder = WebApplication.CreateBuilder(args);
 

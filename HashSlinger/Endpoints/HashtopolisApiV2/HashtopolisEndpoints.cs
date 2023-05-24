@@ -1,4 +1,4 @@
-﻿namespace HashSlingerApi.Endpoints.HashtopolisApiV2;
+﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2;
 
 /// <summary>
 /// Maps the endpoints for the Hashtopolis API.
