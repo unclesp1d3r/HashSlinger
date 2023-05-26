@@ -335,7 +335,7 @@ public record HashtopolisRequest : IHashtopolisMessage
     public IHashtopolisRequest? ToHashtopolisRequest()
     {
         if (Action == null) return null;
-        switch (Action.ToUpper())
+        switch (Action)
         {
             case "testConnection":
                 return new TestConnectionRequest(Action!);
