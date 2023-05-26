@@ -16,9 +16,9 @@ public record SendProgressRequest(
     [property: JsonPropertyName("state")] int? State,
     [property: JsonPropertyName("cracks")] IReadOnlyList<List<string>> Cracks,
     [property: JsonPropertyName("gpuTemp")]
-    IReadOnlyList<int?> GpuTemp,
+    IReadOnlyList<int>? GpuTemp,
     [property: JsonPropertyName("gpuUtil")]
-    IReadOnlyList<int?> GpuUtil
+    IReadOnlyList<int>? GpuUtil
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
