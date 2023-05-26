@@ -33,5 +33,7 @@ internal class HashtopolisApiIntegrationTests
         var actual = JsonSerializer.Deserialize<TestConnectionResponse>(actualJsonString);
 
         Assert.That(actual, Is.EqualTo(expected));
+
+        Assert.Pass();
     }
 }

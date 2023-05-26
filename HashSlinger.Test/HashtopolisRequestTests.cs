@@ -11,14 +11,16 @@ public class HashtopolisRequestTests
     [Test]
     public void TestConnectionRequestDeserializeTest()
     {
-        var jsonMessage = @"{
-                ""action"":""testConnection""
-                }";
+        var jsonMessage = """
+            {
+                "action":"testConnection"
+            }
+            """;
 
         var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
 
-        Assert.IsNotNull(hashtopolisRequest);
-        Assert.AreEqual("testConnection", hashtopolisRequest?.Action);
+        Assert.That(hashtopolisRequest, Is.Not.Null);
+        Assert.That(hashtopolisRequest?.Action, Is.EqualTo("testConnection"));
 
         Assert.Pass();
     }
@@ -26,18 +28,20 @@ public class HashtopolisRequestTests
     [Test]
     public void TestConnectionRequestConvertTest()
     {
-        var jsonMessage = @"{
-                ""action"":""testConnection""
-                }";
+        var jsonMessage = """
+            {
+                "action":"testConnection"
+            }
+            """;
 
         var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
 
-        Assert.IsNotNull(hashtopolisRequest);
+        Assert.That(hashtopolisRequest, Is.Not.Null);
 
         var testConnectionRequest = (TestConnectionRequest?)hashtopolisRequest?.ToHashtopolisRequest();
-        Assert.IsNotNull(testConnectionRequest);
-        Assert.IsInstanceOf(typeof(TestConnectionRequest), testConnectionRequest);
-        Assert.AreEqual("testConnection", testConnectionRequest?.Action);
+        Assert.That(testConnectionRequest, Is.Not.Null);
+        Assert.That(testConnectionRequest, Is.TypeOf<TestConnectionRequest>());
+        Assert.That(testConnectionRequest?.Action, Is.EqualTo("testConnection"));
 
         Assert.Pass();
     }
