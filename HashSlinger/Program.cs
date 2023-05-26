@@ -30,3 +30,7 @@ app.MapHashtopolisEndpoints();
 app.MapUserApiEndpoints();
 
 app.Run();
+
+/// <summary>The main program for the minimal API.</summary>
+/// <remarks>This is required for the testing project to work</remarks>
+public partial class Program { }
