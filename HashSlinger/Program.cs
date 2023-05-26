@@ -1,8 +1,9 @@
 using HashSlinger.Api.Data;
 using HashSlinger.Api.Endpoints.HashtopolisApiV2;
+using HashSlinger.Api.Endpoints.UserApiV1;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<HashSlingerContext>(options =>
     options.UseNpgsql(builder.Configuration["HashSlingerContext"]));
@@ -12,7 +13,7 @@ builder.Services.AddDbContext<HashSlingerContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -25,5 +26,7 @@ app.UseHttpsRedirection();
 
 
 app.MapHashtopolisEndpoints();
+
+app.MapUserApiEndpoints();
 
 app.Run();
