@@ -8,6 +8,29 @@ public class HashtopolisRequestTests
 {
     [SetUp] public void Setup() { }
 
+    /// <summary>
+    /// Tests that a bad request is still deserialized correctly
+    /// </summary>
+    /// <remarks>It should still deserialize, but all of the fields will be null.</remarks>
+    [Test]
+    public void BadRequestDeserializeTest()
+    {
+        var jsonMessage = """
+            {
+            "bad":"request"
+            }
+            """;
+
+        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
+        Assert.That(hashtopolisRequest, Is.Not.Null);
+
+        Assert.Pass();
+    }
+
+    /// <summary>
+    /// Tests that a valid testConnection request is deserialized correctly
+    /// </summary>
+    /// <returns></returns>
     [Test]
     public void TestConnectionRequestDeserializeTest()
     {
@@ -25,6 +48,28 @@ public class HashtopolisRequestTests
         Assert.Pass();
     }
 
+    /// <summary>
+    /// Tests to ensure that a bad request is not converted to a HashtopolisRequest
+    /// </summary>
+    [Test]
+    public void BadRequestConvertTest()
+    {
+        var jsonMessage = """
+            {
+                "action":"doesntWork"
+            }
+            """;
+
+        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
+        IHashtopolisRequest? testConnectionRequest = hashtopolisRequest?.ToHashtopolisRequest();
+        Assert.That(testConnectionRequest, Is.Null);
+        Assert.Pass();
+    }
+
+    /// <summary>
+    /// Tests that a valid testConnection request is converted to a TestConnectionRequest
+    /// </summary>
+    /// <returns></returns>
     [Test]
     public void TestConnectionRequestConvertTest()
     {

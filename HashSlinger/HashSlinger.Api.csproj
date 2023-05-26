@@ -6,10 +6,11 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>3dae5def-7116-45cd-8a1f-759eddf1b8b9</UserSecretsId>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,22 +19,23 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.6"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.6" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Endpoints\ClientApiV1\"/>
-        <Folder Include="Migrations\"/>
+        <Folder Include="Endpoints\ClientApiV1\" />
+        <Folder Include="Migrations\" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\HashSlinger.Shared\HashSlinger.Shared.csproj"/>
+        <ProjectReference Include="..\HashSlinger.Shared\HashSlinger.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\HashSlinger.Shared\HashSlinger.Shared.csproj"/>
+        <ProjectReference Include="..\HashSlinger.Shared\HashSlinger.Shared.csproj" />
     </ItemGroup>
 
 </Project>

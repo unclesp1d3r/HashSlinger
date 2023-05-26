@@ -42,13 +42,16 @@ public record HashtopolisRequest : IHashtopolisMessage
         null,
         null,
         null,
-        null) { }
+        null,
+        null)
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HashtopolisRequest"/> class.
     /// </summary>
     /// <param name="Action">The action.</param>
     public HashtopolisRequest(string Action) : this(Action,
+        null,
         null,
         null,
         null,
@@ -116,7 +119,8 @@ public record HashtopolisRequest : IHashtopolisMessage
         int? NumGpus,
         IReadOnlyList<string>? Errors,
         int? CheckId,
-        ulong? Keyspace
+        ulong? Keyspace,
+        string? Response
     )
     {
         this.Action = Action;
@@ -151,6 +155,7 @@ public record HashtopolisRequest : IHashtopolisMessage
         this.Errors = Errors;
         this.CheckId = CheckId;
         this.Keyspace = Keyspace;
+        this.Response = Response;
     }
 
     /// <summary>Gets the action.</summary>
@@ -312,6 +317,12 @@ public record HashtopolisRequest : IHashtopolisMessage
     /// <value>The keyspace.</value>
     [JsonPropertyName("keyspace")]
     public ulong? Keyspace { get; init; }
+
+    /// <summary>Gets the response.
+    /// This should only be set when the original request was an error.</summary>
+    /// <value>The response.</value>
+    [JsonPropertyName("response")]
+    public string? Response { get; init; }
 
     /// <summary>Attempts to convert to a more specific form of IHashtopolisRequest.</summary>
     /// <returns>Specific implementation of IHashtopolisRequest, or null if not possible.</returns>
@@ -496,7 +507,8 @@ public record HashtopolisRequest : IHashtopolisMessage
         out int? NumGpus,
         out IReadOnlyList<string>? Errors,
         out int? CheckId,
-        out ulong? Keyspace
+        out ulong? Keyspace,
+        out string? Response
     )
     {
         Action = this.Action;
@@ -531,5 +543,6 @@ public record HashtopolisRequest : IHashtopolisMessage
         Errors = this.Errors;
         CheckId = this.CheckId;
         Keyspace = this.Keyspace;
+        Response = this.Response;
     }
 }

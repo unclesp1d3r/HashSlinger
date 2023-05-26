@@ -19,7 +19,23 @@ internal class HashtopolisApiIntegrationTests
     }
 
     [Test]
-    public async Task TestConnectionTest()
+    public async Task BadRequestIntegrationTest()
+    {
+        var request = new HashtopolisRequest("badRequest");
+        string data = JsonSerializer.Serialize(request);
+        HashtopolisRequest expected = request with { Response = "ERROR" };
+
+        HttpResponseMessage response = await _client.PostAsync("/api/hashtopolis",
+            new StringContent(data, Encoding.UTF8, "application/json"));
+        string actualJsonString = await response.Content.ReadAsStringAsync();
+        var actual = JsonSerializer.Deserialize<HashtopolisRequest>(actualJsonString);
+        Assert.That(actual, Is.EqualTo(expected));
+
+        Assert.Pass();
+    }
+
+    [Test]
+    public async Task TestConnectionIntegrationTest()
     {
         var request = new HashtopolisRequest("testConnection");
         string data = JsonSerializer.Serialize(request);
