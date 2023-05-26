@@ -1,7 +1,6 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using HashtopolisApiV2;
 
 /// <summary>The client sends the calculated keyspace of a task.<br /></summary>
 public record SendKeyspaceRequest(

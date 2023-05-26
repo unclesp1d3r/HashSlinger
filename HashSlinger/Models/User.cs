@@ -33,9 +33,7 @@ public record User
     public byte[] PasswordSalt { get; set; } = null!;
 
     /// <summary>Returns true if ... is valid.</summary>
-    /// <value>
-    ///     <c>true</c> if this instance is valid; otherwise, <c>false</c>.
-    /// </value>
+    /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
     public bool IsValid { get; set; }
 
 

@@ -3,7 +3,9 @@
 using System.Text.Json.Serialization;
 
 /// <summary>
-/// This command is used to either download the 7z binary to extract Hashcat, Preprocessors, or to get information where to download the newest Hashcat/Cracker version and some additional informations about it.
+///     This command is used to either download the 7z binary to extract Hashcat, Preprocessors, or to get
+///     information where to download the newest Hashcat/Cracker version and some additional informations about
+///     it.
 /// </summary>
 public record DownloadBinaryRequest(
     [property: JsonPropertyName("action")] string Action,

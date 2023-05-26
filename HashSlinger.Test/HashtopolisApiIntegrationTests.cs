@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 internal class HashtopolisApiIntegrationTests
 {
-    private WebApplicationFactory<Program> _factory = null!;
     private HttpClient _client = null!;
+    private WebApplicationFactory<Program> _factory = null!;
 
     [SetUp]
     public void Setup()

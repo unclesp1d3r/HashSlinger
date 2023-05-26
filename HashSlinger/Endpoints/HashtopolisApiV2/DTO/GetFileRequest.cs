@@ -2,7 +2,10 @@
 
 using System.Text.Json.Serialization;
 
-/// <summary>If the client needs a file for running a task (Wordlist or Rule File) he needs to request the url for downloading it.</summary>
+/// <summary>
+///     If the client needs a file for running a task (Wordlist or Rule File) he needs to request the url for
+///     downloading it.
+/// </summary>
 public record GetFileRequest(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("token")] string Token,

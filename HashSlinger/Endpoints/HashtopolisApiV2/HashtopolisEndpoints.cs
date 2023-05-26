@@ -3,8 +3,8 @@
 /// <summary>
 ///     Maps the endpoints for the Hashtopolis API.
 ///     <remarks>
-///         This is just an adapter for the Hashtopolis Communication Protocol V2 and does not implement every feature
-///         of Hashtopolis.
+///         This is just an adapter for the Hashtopolis Communication Protocol V2 and does not implement every
+///         feature of Hashtopolis.
 ///     </remarks>
 /// </summary>
 public static class HashtopolisEndpoints
