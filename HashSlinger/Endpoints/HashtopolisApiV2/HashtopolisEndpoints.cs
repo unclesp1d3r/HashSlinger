@@ -16,19 +16,19 @@ public static class HashtopolisEndpoints
         RouteGroupBuilder group = routes.MapGroup("/api/Hashtopolis");
 
         group.MapPost("/",
-                (HashtopolisRequest request) =>
-                {
-                    IHashtopolisRequest? message = request.ToHashtopolisRequest();
-                    if (message is null) return Results.BadRequest("Something went horribly wrong.");
+                 (HashtopolisRequest request) =>
+                 {
+                     IHashtopolisRequest? message = request.ToHashtopolisRequest();
+                     if (message is null) return Results.BadRequest("Something went horribly wrong.");
 
-                    // The result would never be null, because the spec says that a bad request should just
-                    // return a 200 with an error message.
-                    IHashtopolisMessage result = message.ProcessRequest();
-                    return Results.Ok(result);
-                })
-            .Accepts<HashtopolisRequest>("application/json")
-            .Produces<IHashtopolisMessage>()
-            .Produces(400)
-            .Produces(401);
+                     // The result would never be null, because the spec says that a bad request should just
+                     // return a 200 with an error message.
+                     IHashtopolisMessage result = message.ProcessRequest();
+                     return Results.Ok(result);
+                 })
+             .Accepts<HashtopolisRequest>("application/json")
+             .Produces<IHashtopolisMessage>()
+             .Produces(400)
+             .Produces(401);
     }
 }

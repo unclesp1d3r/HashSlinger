@@ -26,7 +26,6 @@ internal class HashtopolisApiIntegrationTests
 
         var expected = new TestConnectionResponse("testConnection", "SUCCESS");
 
-
         HttpResponseMessage response = await _client.PostAsync("/api/hashtopolis",
             new StringContent(data, Encoding.UTF8, "application/json"));
         string actualJsonString = await response.Content.ReadAsStringAsync();

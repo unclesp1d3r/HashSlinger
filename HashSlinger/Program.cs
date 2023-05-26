@@ -24,7 +24,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
 app.MapHashtopolisEndpoints();
 
 app.MapUserApiEndpoints();
