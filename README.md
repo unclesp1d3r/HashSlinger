@@ -61,30 +61,47 @@ Hash Slinger is built using a diverse stack of modern technologies, each chosen 
 
 By leveraging a microservices architecture with Docker, we can independently scale and manage each component of Hash Slinger. This approach leads to more efficient resource usage, as well as more reliable and maintainable systems.
 
-
 ## Roadmap
 
-- [ ] Initial release
-    - [ ] Registering Hashtopolis agents
-    - [ ] Automated setup of Hashtopolis agents
-        - [ ] Downloading cracker binaries
-        - [ ] Uploading cracker binaries
-    - [ ] Importing and exporting crack lists
-        - [ ] Uploading potfiles
-        - [ ] Downloading potfiles
-    - [ ] Creation of basic dictionary tasks
-        - [ ] Uploading wordlists
-        - [ ] Uploading hashlists
-    - [ ] Downloading basic dictionary tasks
-        - [ ] Downloading wordlists
-        - [ ] Downloading custom files
-        - [ ] Downloading hashlist
-    - [ ] Rule-based tasks
-        - [ ] Uploading rulesets
-        - [ ] Uploading hashlists
-    - [ ] Creation of mask tasks
-        - [ ] Uploading masks
-        - [ ] Uploading hashlists
+**Phase 1: Initial Infrastructure and Setup**
+- [ ] Milestone 1: Create infrastructure for registering Hashtopolis agents.
+- [ ] Milestone 2: Design and implement the automated setup of Hashtopolis agents, including downloading and uploading cracker binaries.
+
+**Phase 2: Potfiles and Dictionary Tasks**
+- [ ] Milestone 3: Develop the functionality for importing and exporting crack lists, including uploading and downloading potfiles.
+- [ ] Milestone 4: Implement the creation and downloading of basic dictionary tasks, such as uploading and downloading wordlists and hashlists.
+
+**Phase 3: Rule-Based Tasks and Mask Tasks**
+- [ ] Milestone 5: Design and implement the creation of rule-based tasks, including the uploading of rulesets and hashlists.
+- [ ] Milestone 6: Implement the creation of mask tasks, including the uploading of masks and hashlists.
+
+**Phase 4: Containerization**
+- [ ] Milestone 7: Develop Docker configurations for each component of Hash Slinger.
+- [ ] Milestone 8: Test Docker deployment and document the process.
+
+**Phase 5: User Interface and Experience Development**
+- [ ] Milestone 9: Design and implement the initial user interface.
+- [ ] Milestone 10: Conduct usability testing and incorporate user feedback to improve the interface and user experience.
+
+**Phase 6: Advanced Features and Integrations**
+- [ ] Milestone 11: Develop advanced features such as the ability to assign systems to different projects, allowing prioritized job cracking based on project requirements.
+- [ ] Milestone 12: Implement and ensure compatibility with the Hashtopolis Communication Protocol v2.
+
+**Phase 7: Security and Performance**
+- [ ] Milestone 13: Implement security measures and conduct security audits.
+- [ ] Milestone 14: Performance benchmarking, testing, and optimization.
+
+**Phase 8: Documentation and Support**
+- [ ] Milestone 15: Complete essential documentation (user guides, API documentation, etc.).
+- [ ] Milestone 16: Establish a basic user support system.
+
+**Phase 9: Iterative Testing and Refinement**
+- [ ] Milestone 17: Iterative design, development, testing, and review cycles to improve functionality, usability, and performance.
+
+**Phase 10: Release Preparation and Distribution**
+- [ ] Milestone 18: Conduct final comprehensive testing to ensure Hash Slinger functions as intended and performs optimally under the target use cases.
+- [ ] Milestone 19: Prepare and distribute the initial public release.
+
 
 ## Contributing
 
