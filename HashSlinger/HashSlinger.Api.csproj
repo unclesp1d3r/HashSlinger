@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
       <PrivateAssets>all</PrivateAssets>
@@ -25,8 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Endpoints\ApiV1\" />
-    <Folder Include="Endpoints\User\" />
+    <Folder Include="Endpoints\ClientApiV1\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

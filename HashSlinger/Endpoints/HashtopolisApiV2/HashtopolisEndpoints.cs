@@ -1,14 +1,11 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2;
 
-using System;
-using System.Security.Cryptography;
-using HashSlinger.Api.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Models;
-
 /// <summary>
-/// Maps the endpoints for the Hashtopolis API.
+///     Maps the endpoints for the Hashtopolis API.
+///     <remarks>
+///         This is just an adapter for the Hashtopolis Communication Protocol V2 and does not implement every feature
+///         of Hashtopolis.
+///     </remarks>
 /// </summary>
 public static class HashtopolisEndpoints
 {
@@ -16,10 +13,22 @@ public static class HashtopolisEndpoints
     /// <param name="routes">The routes.</param>
     public static void MapHashtopolisEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/Hashtopolis");
+        RouteGroupBuilder group = routes.MapGroup("/api/Hashtopolis");
 
-        group.MapGet("/", () => "TODO!")
-            .WithOpenApi();
-        group.MapPost("/", (HashtopolisRequest request) => { Console.WriteLine(request); });
+        group.MapPost("/",
+                (HashtopolisRequest request) =>
+                {
+                    IHashtopolisRequest? message = request.ToHashtopolisRequest();
+                    if (message is null) return Results.BadRequest("Something went horribly wrong.");
+
+                    // The result would never be null, because the spec says that a bad request should just
+                    // return a 200 with an error message.
+                    IHashtopolisMessage result = message.ProcessRequest();
+                    return Results.Ok(result);
+                })
+            .Accepts<HashtopolisRequest>("application/json")
+            .Produces<IHashtopolisMessage>()
+            .Produces(400)
+            .Produces(401);
     }
 }

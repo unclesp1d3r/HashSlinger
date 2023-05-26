@@ -21,8 +21,7 @@ public static class Authentication
     /// </returns>
     public static bool VerifyPassword(string password, string hash, byte[] salt)
     {
-        byte[] hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations,
-            HashAlgorithm, KeySize);
+        byte[] hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, HashAlgorithm, KeySize);
         return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
     }
 
@@ -32,8 +31,7 @@ public static class Authentication
     public static (string, byte[]) HashPassword(string password)
     {
         byte[] salt = RandomNumberGenerator.GetBytes(KeySize);
-        byte[] hash = Rfc2898DeriveBytes.Pbkdf2(
-            Encoding.UTF8.GetBytes(password),
+        byte[] hash = Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password),
             salt,
             Iterations,
             HashAlgorithm,
