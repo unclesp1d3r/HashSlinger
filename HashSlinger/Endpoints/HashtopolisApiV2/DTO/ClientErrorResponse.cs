@@ -2,6 +2,7 @@
 
 using System.Text.Json.Serialization;
 
+/// <inheritdoc />
 public record ClientErrorResponse(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("response")]

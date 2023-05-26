@@ -2,10 +2,10 @@
 
 using System.Text.Json.Serialization;
 
+/// <inheritdoc />
 public record TestConnectionRequest
     ([property: JsonPropertyName("action")] string Action) : IHashtopolisRequest
 {
-    /// <inheritdoc />
     public IHashtopolisMessage ProcessRequest()
     {
         return new TestConnectionResponse("testConnection", "SUCCESS");
