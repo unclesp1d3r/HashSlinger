@@ -1,7 +1,5 @@
 ﻿namespace HashSlinger.Api.Models;
 
-using System.ComponentModel.DataAnnotations.Schema;
-
 /// <summary>
 ///   <para>A join object for mapping Agents to Access Groups</para>
 /// </summary>

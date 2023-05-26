@@ -1,7 +1,6 @@
 ﻿namespace HashSlinger.Api.Models;
 
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 /// <summary>Represents an Access Group, typically associated with a project or operation.</summary>
 public record AccessGroup
@@ -17,7 +16,8 @@ public record AccessGroup
 
     /// <summary>Gets or sets the access group agents.</summary>
     /// <value>The access group agents.</value>
-    public virtual ICollection<AccessGroupAgent> AccessGroupAgents { get; set; } = new List<AccessGroupAgent>();
+    public virtual ICollection<AccessGroupAgent> AccessGroupAgents { get; set; }
+        = new List<AccessGroupAgent>();
 
     /// <summary>Gets or sets the access group users.</summary>
     /// <value>The access group users.</value>

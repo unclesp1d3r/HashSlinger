@@ -1,7 +1,6 @@
 ﻿namespace HashSlinger.Api.Models;
 
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 /// <summary>A mapping table for cracker binaries to their types.</summary>
 /// <remarks>Not sure this makes sense much longer.</remarks>
