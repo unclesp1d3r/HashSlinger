@@ -44,8 +44,7 @@ public record HashtopolisRequest : IHashtopolisMessage
         null,
         null,
         null,
-        null)
-    { }
+        null) { }
 
     /// <summary>Initializes a new instance of the <see cref="HashtopolisRequest" /> class.</summary>
     /// <param name="Action">The action.</param>
@@ -82,7 +81,7 @@ public record HashtopolisRequest : IHashtopolisMessage
         null,
         null,
         null) =>
-        this.Action = Action!;
+        this.Action = Action;
 
     /// <summary>
     ///     A big, ugly DTO object to be able to deserialize the initial request from a Hashtopolis client into the
