@@ -5,7 +5,15 @@ using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
 
 public class HashtopolisRequestTests
+
+
 {
+    private const string TestConnectionJsonMessage = """
+            {
+                "action":"testConnection"
+            }
+            """;
+
     [SetUp] public void Setup() { }
 
     /// <summary>Tests that a bad request is still deserialized correctly</summary>
@@ -13,7 +21,7 @@ public class HashtopolisRequestTests
     [Test]
     public void BadRequestDeserializeTest()
     {
-        var jsonMessage = """
+        const string jsonMessage = """
             {
             "bad":"request"
             }
@@ -30,13 +38,7 @@ public class HashtopolisRequestTests
     [Test]
     public void TestConnectionRequestDeserializeTest()
     {
-        var jsonMessage = """
-            {
-                "action":"testConnection"
-            }
-            """;
-
-        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
+        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(TestConnectionJsonMessage);
 
         Assert.That(hashtopolisRequest, Is.Not.Null);
         Assert.That(hashtopolisRequest?.Action, Is.EqualTo("testConnection"));
@@ -65,13 +67,7 @@ public class HashtopolisRequestTests
     [Test]
     public void TestConnectionRequestConvertTest()
     {
-        var jsonMessage = """
-            {
-                "action":"testConnection"
-            }
-            """;
-
-        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
+        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(TestConnectionJsonMessage);
 
         Assert.That(hashtopolisRequest, Is.Not.Null);
 
