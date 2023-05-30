@@ -5,6 +5,8 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/unclesp1d3r/HashSlinger?style=social)
 ![GitHub last commit](https://img.shields.io/github/last-commit/unclesp1d3r/HashSlinger)
 ![Maintenance](https://img.shields.io/maintenance/yes/2023)
+[![LoC](https://tokei.rs/b1/github/unclesp1d3r/HashSlinger?category=code)](https://github.com/unclesp1d3r/HashSlinger)
+
 
 Hash Slinger is a purpose-built wrapper for Hashcat, designed specifically to facilitate distributed hash cracking in high-speed, secure, and centralized network environments. By leveraging the power of multiple machines, Hash Slinger adeptly manages large quantities of hashes, aiming to optimize your hash cracking operations.
 
@@ -101,6 +103,26 @@ By leveraging a microservices architecture with Docker, we can independently sca
 **Phase 10: Release Preparation and Distribution**
 - [ ] Milestone 18: Conduct final comprehensive testing to ensure Hash Slinger functions as intended and performs optimally under the target use cases.
 - [ ] Milestone 19: Prepare and distribute the initial public release.
+
+## Hashtopolis API Implementation
+- [X] TestConnection
+- [ ] Register
+- [ ] UpdateInformation
+- [ ] Login
+- [ ] CheckClientVersion
+- [ ] DownloadBinary
+- [ ] ClientError
+- [ ] GetFile
+- [ ] GetHashlist
+- [ ] GetTask
+- [ ] GetChunk
+- [ ] SendKeyspace
+- [	] SendBenchmark
+- [ ] SendProgress
+- [ ] GetFileStatus
+- [ ] GetHealthCheck
+- [ ] SendHealthCheck
+- [ ] Deregister
 
 
 ## Contributing
