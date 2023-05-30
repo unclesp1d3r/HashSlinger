@@ -1,6 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
+using DAL;
 
 /// <summary>When the client executed a health check it should send back the results.</summary>
 public record SendHealthCheckRequest(
@@ -19,6 +20,12 @@ public record SendHealthCheckRequest(
 {
     /// <inheritdoc />
     public IHashtopolisMessage ProcessRequest()
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public Task<IHashtopolisMessage> ProcessRequestAsync(IHashSlingerRepository repository)
     {
         throw new NotImplementedException();
     }

@@ -1,6 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
+using DAL;
 
 /// <summary>
 ///     This command is used to either download the 7z binary to extract Hashcat, Preprocessors, or to get
@@ -19,6 +20,12 @@ public record DownloadBinaryRequest(
 {
     /// <inheritdoc />
     public IHashtopolisMessage ProcessRequest()
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public Task<IHashtopolisMessage> ProcessRequestAsync(IHashSlingerRepository repository)
     {
         throw new NotImplementedException();
     }

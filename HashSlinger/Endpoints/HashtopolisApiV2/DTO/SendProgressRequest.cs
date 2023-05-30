@@ -1,6 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
+using DAL;
 
 /// <summary>Reports the progress of the current chunk, in the given reporting interval.</summary>
 public record SendProgressRequest(
@@ -23,6 +24,12 @@ public record SendProgressRequest(
 {
     /// <inheritdoc />
     public IHashtopolisMessage ProcessRequest()
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public Task<IHashtopolisMessage> ProcessRequestAsync(IHashSlingerRepository repository)
     {
         throw new NotImplementedException();
     }

@@ -1,3 +1,4 @@
+using HashSlinger.Api.DAL;
 using HashSlinger.Api.Data;
 using HashSlinger.Api.Endpoints.HashtopolisApiV2;
 using HashSlinger.Api.Endpoints.UserApiV1;
@@ -7,9 +8,9 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<HashSlingerContext>(options =>
     options.UseNpgsql(builder.Configuration["HashSlingerContext"]));
+builder.Services.AddSingleton<IHashSlingerRepository>(options => new HashSlingerRepository());
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

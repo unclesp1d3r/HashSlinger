@@ -1,6 +1,8 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
+using DAL;
+using Models;
 
 /// <summary>Sent by the client when registering a new client to the server</summary>
 public record RegisterRequest(
@@ -10,9 +12,21 @@ public record RegisterRequest(
     [property: JsonPropertyName("name")] string Name
 ) : IHashtopolisRequest
 {
+    private IHashSlingerRepository _repository = new HashSlingerRepository();
+
+
     /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
+    public async Task<IHashtopolisMessage> ProcessRequestAsync(IHashSlingerRepository repository)
     {
-        throw new NotImplementedException();
+        RegistrationVoucher voucher
+            = await repository.GetRegistrationVoucherAsync(Voucher).ConfigureAwait(true);
+
+        if (voucher == null) return new RegisterResponse(Action, "ERROR", "Voucher not found");
+
+        if (voucher.Expiration < DateTime.Now)
+            return new RegisterResponse(Action, "ERROR", "Voucher expired");
+        if (voucher.Voucher == Voucher)
+            return new RegisterResponse(Action, "SUCCESS", voucher.GetRandomToken());
+        return null!;
     }
 }

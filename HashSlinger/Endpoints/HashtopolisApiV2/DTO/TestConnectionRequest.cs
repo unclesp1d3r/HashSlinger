@@ -1,12 +1,10 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
-
-using System.Text.Json.Serialization;
-
 /// <inheritdoc />
 public record TestConnectionRequest
     ([property: JsonPropertyName("action")] string Action) : IHashtopolisRequest
 {
-    public IHashtopolisMessage ProcessRequest()
+    /// <inheritdoc />
+    public async Task<IHashtopolisMessage> ProcessRequestAsync(IHashSlingerRepository repository)
     {
         return new TestConnectionResponse("testConnection", "SUCCESS");
     }
