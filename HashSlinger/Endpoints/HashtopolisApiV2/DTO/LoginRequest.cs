@@ -1,6 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
+using Data;
 
 /// <summary>Sent by the client to login and get the timeout setting.</summary>
 public record LoginRequest(
@@ -10,6 +11,12 @@ public record LoginRequest(
     [property: JsonPropertyName("token")] string Token
 ) : IHashtopolisRequest
 {
+    /// <inheritdoc />
+    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db, ILogger logger)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <inheritdoc />
     public IHashtopolisMessage ProcessRequest()
     {

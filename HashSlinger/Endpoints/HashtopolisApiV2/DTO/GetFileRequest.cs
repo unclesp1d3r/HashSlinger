@@ -1,8 +1,12 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
+using Data;
 
-/// <summary>If the client needs a file for running a task (Wordlist or Rule File) he needs to request the url for downloading it.</summary>
+/// <summary>
+///     If the client needs a file for running a task (Wordlist or Rule File) he needs to request the url for
+///     downloading it.
+/// </summary>
 public record GetFileRequest(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("token")] string Token,
@@ -10,6 +14,12 @@ public record GetFileRequest(
     [property: JsonPropertyName("file")] string File
 ) : IHashtopolisRequest
 {
+    /// <inheritdoc />
+    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db, ILogger logger)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <inheritdoc />
     public IHashtopolisMessage ProcessRequest()
     {

@@ -3,9 +3,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-/// <summary>
-///  General utility methods related to authentication.
-/// </summary>
+/// <summary>General utility methods related to authentication.</summary>
 public static class Authentication
 {
     private const int KeySize = 64;
@@ -16,9 +14,7 @@ public static class Authentication
     /// <param name="password">The password.</param>
     /// <param name="hash">The hash.</param>
     /// <param name="salt">The salt.</param>
-    /// <returns>
-    ///   True if the password matches the hash and salt; else false.
-    /// </returns>
+    /// <returns>True if the password matches the hash and salt; else false.</returns>
     public static bool VerifyPassword(string password, string hash, byte[] salt)
     {
         byte[] hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, HashAlgorithm, KeySize);

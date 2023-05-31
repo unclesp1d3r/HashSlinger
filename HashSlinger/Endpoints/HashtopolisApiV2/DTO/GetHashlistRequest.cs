@@ -1,6 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
+using Data;
 
 /// <summary>The client can download a Hashlist/Superhashlist</summary>
 public record GetHashlistRequest(
@@ -10,6 +11,12 @@ public record GetHashlistRequest(
     int HashlistId
 ) : IHashtopolisRequest
 {
+    /// <inheritdoc />
+    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db, ILogger logger)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <inheritdoc />
     public IHashtopolisMessage ProcessRequest()
     {
