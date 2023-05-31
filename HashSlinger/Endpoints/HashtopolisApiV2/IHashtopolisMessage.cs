@@ -11,5 +11,8 @@ public interface IHashtopolisRequest : IHashtopolisMessage
 {
     /// <summary>Processes the request.</summary>
     /// <returns>The associated response object.</returns>
-    public Task<IHashtopolisMessage> ProcessRequestAsync([FromServices] HashSlingerContext db);
+    public Task<IHashtopolisMessage> ProcessRequestAsync(
+        [FromServices] HashSlingerContext db,
+        ILogger logger
+    );
 }

@@ -44,7 +44,8 @@ public record HashtopolisRequest : IHashtopolisMessage
         null,
         null,
         null,
-        null) { }
+        null)
+    { }
 
     /// <summary>Initializes a new instance of the <see cref="HashtopolisRequest" /> class.</summary>
     /// <param name="Action">The action.</param>

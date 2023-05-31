@@ -39,4 +39,23 @@ public static class Repository
         db.RegistrationVouchers.Remove(voucher);
         return db.SaveChangesAsync();
     }
+
+    /// <summary>Gets the agent asynchronous.</summary>
+    /// <param name="db">The database.</param>
+    /// <param name="agentId">The agent identifier.</param>
+    public static Task<Agent?> GetAgentAsync(HashSlingerContext db, int agentId)
+    {
+        return db.Agents.FirstOrDefaultAsync(a => a.Id == agentId);
+    }
+
+    /// <summary>Updates the agent.</summary>
+    /// <param name="db">The database.</param>
+    /// <param name="agent">The agent.</param>
+    /// <returns>The number of records updated. Should be 1.</returns>
+    public static async Task<int> UpdateAgentAsync(HashSlingerContext db, Agent agent)
+    {
+        db.Agents.Update(agent);
+        int result = await db.SaveChangesAsync().ConfigureAwait(true);
+        return result;
+    }
 }

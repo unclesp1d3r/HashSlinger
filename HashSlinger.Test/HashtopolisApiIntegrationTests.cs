@@ -7,7 +7,7 @@ using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
 using Api.Models;
 using Microsoft.Extensions.DependencyInjection;
-using Task = Task;
+using Task = System.Threading.Tasks.Task;
 
 internal class HashtopolisApiIntegrationTests
 {

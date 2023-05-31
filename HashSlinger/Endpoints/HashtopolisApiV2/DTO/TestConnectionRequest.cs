@@ -8,8 +8,9 @@ public record TestConnectionRequest
     ([property: JsonPropertyName("action")] string Action) : IHashtopolisRequest
 {
     /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db)
+    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db, ILogger logger)
     {
+        logger.LogDebug("TestConnectionRequest received");
         return Task.FromResult<IHashtopolisMessage>(new TestConnectionResponse("testConnection", "SUCCESS"));
     }
 }
