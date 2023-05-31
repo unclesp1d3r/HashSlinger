@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HashSlinger.Api.Migrations
 {
     [DbContext(typeof(HashSlingerContext))]
-    [Migration("20230531202026_InitialSetup")]
+    [Migration("20230531212910_InitialSetup")]
     partial class InitialSetup
     {
         /// <inheritdoc />
@@ -935,14 +935,6 @@ namespace HashSlinger.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RegistrationVouchers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Expiration = new DateTime(2024, 5, 31, 20, 20, 26, 373, DateTimeKind.Utc).AddTicks(5183),
-                            Voucher = "test123456"
-                        });
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Session", b =>

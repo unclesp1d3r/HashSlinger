@@ -2,19 +2,30 @@
 
 using System.Text;
 using System.Text.Json;
+using Api.Data;
 using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
+using Api.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Task = Task;
 
 internal class HashtopolisApiIntegrationTests
 {
     private HttpClient _client = null!;
     private MyWebApplicationFactory _factory = null!;
 
+
     [SetUp]
     public void Setup()
     {
         _factory = new MyWebApplicationFactory();
         _client = _factory.CreateClient();
+
+        using IServiceScope scope = _factory.Services.CreateScope();
+        IServiceProvider scopedServices = scope.ServiceProvider;
+        var db = scopedServices.GetRequiredService<HashSlingerContext>();
+        db.Database.EnsureCreated();
+        Utilities.ReinitializeDbForTests(db);
     }
 
     [Test]
@@ -79,5 +90,25 @@ internal class HashtopolisApiIntegrationTests
         Assert.That(actual!.Response, Is.EqualTo("SUCCESS"));
 
         Assert.Pass();
+    }
+}
+
+internal static class Utilities
+{
+    public static void InitializeDbForTests(HashSlingerContext db)
+    {
+        //db.Messages.AddRange(GetSeedingMessages());
+        db.RegistrationVouchers.Add(new RegistrationVoucher()
+        {
+            Voucher = "test123456",
+            Expiration = DateTime.Now.AddDays(1)
+        });
+        db.SaveChanges();
+    }
+
+    public static void ReinitializeDbForTests(HashSlingerContext db)
+    {
+        db.RegistrationVouchers.RemoveRange(db.RegistrationVouchers);
+        InitializeDbForTests(db);
     }
 }

@@ -1,28 +1,46 @@
 ﻿namespace HashSlinger.Test;
 
+using System.Data.Common;
 using Api.Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 internal class MyWebApplicationFactory : WebApplicationFactory<Program>
 {
-    /// <inheritdoc />
-    protected override IHost CreateHost(IHostBuilder builder)
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        var root = new InMemoryDatabaseRoot();
         builder.ConfigureServices(services =>
         {
-            services.AddScoped(sp => services.AddDbContext<HashSlingerContext>(options =>
-                options.UseInMemoryDatabase("HashSlingerContext", root)
-                    .EnableSensitiveDataLogging()
-                    .EnableDetailedErrors()
-                    .UseApplicationServiceProvider(sp)));
+            ServiceDescriptor? dbContextDescriptor = services.SingleOrDefault(d =>
+                d.ServiceType == typeof(DbContextOptions<HashSlingerContext>));
+
+            services.Remove(dbContextDescriptor);
+
+            ServiceDescriptor? dbConnectionDescriptor
+                = services.SingleOrDefault(d => d.ServiceType == typeof(DbConnection));
+
+            services.Remove(dbConnectionDescriptor);
+
+            // Create open SqliteConnection so EF won't automatically close it.
+            services.AddSingleton<DbConnection>(container =>
+            {
+                var connection = new SqliteConnection("DataSource=:memory:");
+                connection.Open();
+
+                return connection;
+            });
+
+            services.AddDbContext<HashSlingerContext>((container, options) =>
+            {
+                var connection = container.GetRequiredService<DbConnection>();
+                options.UseSqlite(connection);
+            });
         });
 
-
-        return base.CreateHost(builder);
+        builder.UseEnvironment("Development");
     }
 }

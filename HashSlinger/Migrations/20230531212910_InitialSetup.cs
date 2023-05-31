@@ -887,11 +887,6 @@ namespace HashSlinger.Api.Migrations
                         principalColumn: "Id");
                 });
 
-            migrationBuilder.InsertData(
-                table: "RegistrationVouchers",
-                columns: new[] { "Id", "Expiration", "Voucher" },
-                values: new object[] { 1, new DateTime(2024, 5, 31, 20, 20, 26, 373, DateTimeKind.Utc).AddTicks(5183), "test123456" });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AccessGroupAgent_AccessGroupId",
                 table: "AccessGroupAgent",
