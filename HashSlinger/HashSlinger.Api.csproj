@@ -27,7 +27,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="DAL\" />
         <Folder Include="Endpoints\ClientApiV1\" />
     </ItemGroup>
 
