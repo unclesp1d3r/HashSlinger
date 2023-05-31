@@ -1,8 +1,10 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using DAL;
+using HashSlinger.Api.Data;
+using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.Enums;
 
 /// <summary>Sent by the client when registering a new client to the server</summary>
 public record RegisterRequest(
@@ -12,21 +14,38 @@ public record RegisterRequest(
     [property: JsonPropertyName("name")] string Name
 ) : IHashtopolisRequest
 {
-    private IHashSlingerRepository _repository = new HashSlingerRepository();
 
 
     /// <inheritdoc />
-    public async Task<IHashtopolisMessage> ProcessRequestAsync(IHashSlingerRepository repository)
+    public async Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db)
     {
-        RegistrationVoucher voucher
-            = await repository.GetRegistrationVoucherAsync(Voucher).ConfigureAwait(true);
+        RegistrationVoucher? voucher =
+            await db.RegistrationVouchers
+                       .FirstOrDefaultAsync(v => v.Voucher == Voucher)
+                       .ConfigureAwait(true);
+
 
         if (voucher == null) return new RegisterResponse(Action, "ERROR", "Voucher not found");
 
         if (voucher.Expiration < DateTime.Now)
             return new RegisterResponse(Action, "ERROR", "Voucher expired");
+
         if (voucher.Voucher == Voucher)
+        {
+            var newAgent = new Agent
+            {
+                Name = Name,
+                LastAction = AgentActions.Register,
+                Token = voucher.GetRandomToken(),
+            };
+
+            //bool success = await repository.AddAgentAsync(newAgent).ConfigureAwait(true);
+            var result = await db.Agents.AddAsync(newAgent).ConfigureAwait(true);
+            await db.SaveChangesAsync().ConfigureAwait(true);
+
             return new RegisterResponse(Action, "SUCCESS", voucher.GetRandomToken());
+        }
+
         return null!;
     }
 }

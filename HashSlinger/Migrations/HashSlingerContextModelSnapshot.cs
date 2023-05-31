@@ -37,7 +37,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccessGroup");
+                    b.ToTable("AccessGroups");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AccessGroupAgent", b =>
@@ -120,10 +120,8 @@ namespace HashSlinger.Api.Migrations
                     b.Property<bool>("IsTrusted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("LastAct")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<int>("LastAction")
+                        .HasColumnType("integer");
 
                     b.Property<string>("LastIp")
                         .IsRequired()
@@ -158,7 +156,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Agent");
+                    b.ToTable("Agents");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AgentError", b =>
@@ -939,7 +937,7 @@ namespace HashSlinger.Api.Migrations
                         new
                         {
                             Id = 1,
-                            Expiration = new DateTime(2024, 5, 30, 0, 4, 49, 982, DateTimeKind.Utc).AddTicks(4800),
+                            Expiration = new DateTime(2024, 5, 31, 20, 20, 26, 373, DateTimeKind.Utc).AddTicks(5183),
                             Voucher = "test123456"
                         });
                 });

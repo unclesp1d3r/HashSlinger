@@ -1,7 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using DAL;
+using HashSlinger.Api.Data;
 
 /// <summary>
 ///     This is used by the client to check if there is an update available for the client script. Type specifies
@@ -16,7 +16,7 @@ public record CheckClientVersionRequest(
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(IHashSlingerRepository repository)
+    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db)
     {
         throw new NotImplementedException();
     }

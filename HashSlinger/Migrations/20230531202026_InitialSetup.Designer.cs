@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HashSlinger.Api.Migrations
 {
     [DbContext(typeof(HashSlingerContext))]
-    [Migration("20230529224154_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230531202026_InitialSetup")]
+    partial class InitialSetup
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,7 +40,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccessGroup");
+                    b.ToTable("AccessGroups");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AccessGroupAgent", b =>
@@ -123,10 +123,8 @@ namespace HashSlinger.Api.Migrations
                     b.Property<bool>("IsTrusted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("LastAct")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<int>("LastAction")
+                        .HasColumnType("integer");
 
                     b.Property<string>("LastIp")
                         .IsRequired()
@@ -161,7 +159,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Agent");
+                    b.ToTable("Agents");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AgentError", b =>
@@ -916,6 +914,35 @@ namespace HashSlinger.Api.Migrations
                     b.HasIndex("CrackerBinaryTypeId");
 
                     b.ToTable("Pretask");
+                });
+
+            modelBuilder.Entity("HashSlinger.Api.Models.RegistrationVoucher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Expiration")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Voucher")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RegistrationVouchers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Expiration = new DateTime(2024, 5, 31, 20, 20, 26, 373, DateTimeKind.Utc).AddTicks(5183),
+                            Voucher = "test123456"
+                        });
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Session", b =>

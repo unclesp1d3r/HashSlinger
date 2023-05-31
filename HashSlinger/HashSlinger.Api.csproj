@@ -26,8 +26,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="DAL\" />
         <Folder Include="Endpoints\ClientApiV1\" />
-        <Folder Include="Migrations\" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,4 +1,8 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2;
+
+using Data;
+using Microsoft.AspNetCore.Mvc;
+
 /// <summary>
 ///     Maps the endpoints for the Hashtopolis API.
 ///     <remarks>
@@ -17,11 +21,9 @@ public static class HashtopolisEndpoints
         group.MapPost("/",
                 async (
                     HashtopolisRequest request,
-                    [FromServices] IHashSlingerRepository repository,
                     [FromServices] HashSlingerContext db
                 ) =>
                 {
-                    repository.Context = db;
                     IHashtopolisRequest? message = request.ToHashtopolisRequest();
                     if (message is null)
                     {
@@ -31,7 +33,7 @@ public static class HashtopolisEndpoints
 
                     // The result would never be null, because the spec says that a bad request should just
                     // return a 200 with an error message.
-                    IHashtopolisMessage result = await message.ProcessRequestAsync(repository);
+                    IHashtopolisMessage result = await message.ProcessRequestAsync(db).ConfigureAwait(true);
                     return Results.Ok(result);
                 })
             .Accepts<HashtopolisRequest>("application/json")
