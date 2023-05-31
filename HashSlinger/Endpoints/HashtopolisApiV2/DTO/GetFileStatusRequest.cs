@@ -1,7 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using HashSlinger.Api.Data;
+using Data;
 
 /// <summary>
 ///     The client can request a list of deleted filenames from the server to be able to clean up unused
@@ -13,13 +13,13 @@ public record GetFileStatusRequest(
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
+    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db)
     {
         throw new NotImplementedException();
     }
 
     /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db)
+    public IHashtopolisMessage ProcessRequest()
     {
         throw new NotImplementedException();
     }

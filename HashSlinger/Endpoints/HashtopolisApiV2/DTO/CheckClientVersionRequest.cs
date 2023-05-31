@@ -1,7 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using HashSlinger.Api.Data;
+using Data;
 
 /// <summary>
 ///     This is used by the client to check if there is an update available for the client script. Type specifies

@@ -1,7 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using HashSlinger.Api.Data;
+using Data;
 
 /// <summary>The client sends the calculated keyspace of a task.<br /></summary>
 public record SendKeyspaceRequest(
@@ -13,13 +13,13 @@ public record SendKeyspaceRequest(
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
+    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db)
     {
         throw new NotImplementedException();
     }
 
     /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db)
+    public IHashtopolisMessage ProcessRequest()
     {
         throw new NotImplementedException();
     }

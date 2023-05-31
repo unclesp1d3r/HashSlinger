@@ -1,7 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using HashSlinger.Api.Data;
+using Data;
 
 /// <summary>When the client got notified that the server wants to do a health check, it should request the data.</summary>
 public record GetHealthCheckRequest(
@@ -10,13 +10,13 @@ public record GetHealthCheckRequest(
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
+    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db)
     {
         throw new NotImplementedException();
     }
 
     /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db)
+    public IHashtopolisMessage ProcessRequest()
     {
         throw new NotImplementedException();
     }

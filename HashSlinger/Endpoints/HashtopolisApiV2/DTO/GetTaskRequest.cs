@@ -1,7 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using HashSlinger.Api.Data;
+using Data;
 
 /// <summary>The client requests the current task it should work on.</summary>
 public record GetTaskRequest(
@@ -10,13 +10,13 @@ public record GetTaskRequest(
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
+    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db)
     {
         throw new NotImplementedException();
     }
 
     /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db)
+    public IHashtopolisMessage ProcessRequest()
     {
         throw new NotImplementedException();
     }

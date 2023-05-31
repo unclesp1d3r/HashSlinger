@@ -7,8 +7,6 @@ using Data;
 public record TestConnectionRequest
     ([property: JsonPropertyName("action")] string Action) : IHashtopolisRequest
 {
-
-
     /// <inheritdoc />
     public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db)
     {

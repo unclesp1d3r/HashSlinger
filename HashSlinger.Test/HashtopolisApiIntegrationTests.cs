@@ -98,7 +98,7 @@ internal static class Utilities
     public static void InitializeDbForTests(HashSlingerContext db)
     {
         //db.Messages.AddRange(GetSeedingMessages());
-        db.RegistrationVouchers.Add(new RegistrationVoucher()
+        db.RegistrationVouchers.Add(new RegistrationVoucher
         {
             Voucher = "test123456",
             Expiration = DateTime.Now.AddDays(1)

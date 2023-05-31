@@ -19,10 +19,7 @@ public static class HashtopolisEndpoints
         RouteGroupBuilder group = routes.MapGroup("/api/Hashtopolis");
 
         group.MapPost("/",
-                async (
-                    HashtopolisRequest request,
-                    [FromServices] HashSlingerContext db
-                ) =>
+                async (HashtopolisRequest request, [FromServices] HashSlingerContext db) =>
                 {
                     IHashtopolisRequest? message = request.ToHashtopolisRequest();
                     if (message is null)

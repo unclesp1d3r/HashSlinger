@@ -43,7 +43,7 @@ public partial class HashSlingerContext : DbContext
                     v => JsonSerializer.Deserialize<List<string>>(v, JsonSerializerOptions.Default)!,
                     new ValueComparer<ICollection<string>>((c1, c2) => c1!.SequenceEqual(c2!),
                         c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                        c => (ICollection<string>)c.ToList()));
+                        c => c.ToList()));
         });
 
         modelBuilder.Entity<AccessGroupAgent>(entity =>
