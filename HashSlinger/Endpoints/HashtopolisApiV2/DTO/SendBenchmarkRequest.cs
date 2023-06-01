@@ -1,7 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using Data;
+using DAL;
 
 /// <summary>The client sends the tested benchmark of a task.</summary>
 /// <remarks>
@@ -19,13 +19,7 @@ public record SendBenchmarkRequest(
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db, ILogger logger)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
+    public Task<IHashtopolisMessage> ProcessRequestAsync(Repository repository)
     {
         throw new NotImplementedException();
     }

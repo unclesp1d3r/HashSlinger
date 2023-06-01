@@ -96,7 +96,7 @@ public record HashtopolisRequest : IHashtopolisMessage
         string? Token,
         string? Uid,
         int? Os,
-        IReadOnlyList<string>? Devices,
+        ICollection<string>? Devices,
         string? ClientSignature,
         string? Version,
         int? PreprocessorId,
@@ -112,14 +112,14 @@ public record HashtopolisRequest : IHashtopolisMessage
         string? RelativeProgress,
         int? Speed,
         int? State,
-        IReadOnlyList<List<string>?>? Cracks,
-        IReadOnlyList<int>? GpuTemp,
-        IReadOnlyList<int>? GpuUtil,
+        ICollection<ICollection<string>?>? Cracks,
+        ICollection<int>? GpuTemp,
+        ICollection<int>? GpuUtil,
         int? NumCracked,
         int? Start,
         int? End,
         int? NumGpus,
-        IReadOnlyList<string>? Errors,
+        ICollection<string>? Errors,
         int? CheckId,
         ulong? Keyspace,
         string? Response
@@ -131,7 +131,7 @@ public record HashtopolisRequest : IHashtopolisMessage
         this.Token = Token;
         this.Uid = Uid;
         this.Os = Os;
-        this.Devices = Devices;
+        this.Devices = Devices!;
         this.ClientSignature = ClientSignature;
         this.Version = Version;
         this.PreprocessorId = PreprocessorId;
@@ -193,7 +193,7 @@ public record HashtopolisRequest : IHashtopolisMessage
     /// <summary>Gets the devices.</summary>
     /// <value>The devices.</value>
     [JsonPropertyName("devices")]
-    public IReadOnlyList<string>? Devices { get; init; }
+    public ICollection<string> Devices { get; init; } = null!;
 
     /// <summary>Gets the client signature.</summary>
     /// <value>The client signature.</value>
@@ -273,17 +273,17 @@ public record HashtopolisRequest : IHashtopolisMessage
     /// <summary>Gets the cracks.</summary>
     /// <value>The cracks.</value>
     [JsonPropertyName("cracks")]
-    public IReadOnlyList<List<string>?>? Cracks { get; init; }
+    public ICollection<ICollection<string>?>? Cracks { get; init; }
 
     /// <summary>Gets the gpu temporary.</summary>
     /// <value>The gpu temporary.</value>
     [JsonPropertyName("gpuTemp")]
-    public IReadOnlyList<int>? GpuTemp { get; init; }
+    public ICollection<int>? GpuTemp { get; init; }
 
     /// <summary>Gets the gpu utility.</summary>
     /// <value>The gpu utility.</value>
     [JsonPropertyName("gpuUtil")]
-    public IReadOnlyList<int>? GpuUtil { get; init; }
+    public ICollection<int>? GpuUtil { get; init; }
 
     /// <summary>Gets the number cracked.</summary>
     /// <value>The number cracked.</value>
@@ -308,7 +308,7 @@ public record HashtopolisRequest : IHashtopolisMessage
     /// <summary>Gets the errors.</summary>
     /// <value>The errors.</value>
     [JsonPropertyName("errors")]
-    public IReadOnlyList<string>? Errors { get; init; }
+    public ICollection<string>? Errors { get; init; }
 
     /// <summary>Gets the check identifier.</summary>
     /// <value>The check identifier.</value>

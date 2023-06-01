@@ -1,16 +1,17 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using Data;
+using DAL;
+using Serilog;
 
 /// <inheritdoc />
 public record TestConnectionRequest
     ([property: JsonPropertyName("action")] string Action) : IHashtopolisRequest
 {
     /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db, ILogger logger)
+    public Task<IHashtopolisMessage> ProcessRequestAsync(Repository repository)
     {
-        logger.LogDebug("TestConnectionRequest received");
+        Log.Debug("TestConnectionRequest received");
         return Task.FromResult<IHashtopolisMessage>(new TestConnectionResponse("testConnection", "SUCCESS"));
     }
 }

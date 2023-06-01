@@ -1,3 +1,4 @@
+using HashSlinger.Api.DAL;
 using HashSlinger.Api.Data;
 using HashSlinger.Api.Endpoints.HashtopolisApiV2;
 using HashSlinger.Api.Endpoints.UserApiV1;
@@ -10,6 +11,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<HashSlingerContext>(options =>
     options.UseNpgsql(builder.Configuration["HashSlingerContext"]));
+builder.Services.AddSingleton<Repository>(new Repository());
 
 builder.Host.UseSerilog();
 
@@ -25,6 +27,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
