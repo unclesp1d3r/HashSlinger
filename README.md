@@ -107,7 +107,7 @@ By leveraging a microservices architecture with Docker, we can independently sca
 ## Hashtopolis API Implementation
 - [X] TestConnection
 - [X] Register
-- [ ] UpdateInformation
+- [X] UpdateInformation
 - [ ] Login
 - [ ] CheckClientVersion
 - [ ] DownloadBinary
