@@ -9,9 +9,9 @@ using Serilog;
 public class Repository
 {
     /// <summary>The database context</summary>
-    internal HashSlingerContext DbContext;
+    internal HashSlingerContext DbContext = null!;
 
-    /// <summary>Gets the registration voucher asynchronous.</summary>
+    /// <summary>Gets the registration voucher asynchronously.</summary>
     /// <param name="voucher">The voucher.</param>
     /// <returns>The RegistrationVoucher, or null.</returns>
     public Task<RegistrationVoucher?> GetRegistrationVoucherAsync(string voucher)
@@ -20,7 +20,7 @@ public class Repository
         return DbContext.RegistrationVouchers.FirstOrDefaultAsync(v => v.Voucher == voucher);
     }
 
-    /// <summary>Creates the agent asynchronous.</summary>
+    /// <summary>Creates the agent asynchronously.</summary>
     /// <param name="newAgent">The new agent.</param>
     /// <returns>The number of agents created. Should be 1.</returns>
     public async Task<int> CreateAgentAsync(Agent newAgent)
@@ -31,7 +31,7 @@ public class Repository
         return result;
     }
 
-    /// <summary>Deletes the registration voucher asynchronous.</summary>
+    /// <summary>Deletes the registration voucher asynchronously.</summary>
     /// <param name="voucher">The voucher.</param>
     /// <returns>The number of records deleted. Should be 1.<br /></returns>
     public Task<int> DeleteRegistrationVoucherAsync(RegistrationVoucher voucher)
@@ -41,8 +41,7 @@ public class Repository
         return DbContext.SaveChangesAsync();
     }
 
-    /// <summary>Gets the agent asynchronous.</summary>
-    /// <param name="db">The database.</param>
+    /// <summary>Gets the agent asynchronously.</summary>
     /// <param name="agentId">The agent identifier.</param>
     public Task<Agent?> GetAgentAsync(int agentId)
     {

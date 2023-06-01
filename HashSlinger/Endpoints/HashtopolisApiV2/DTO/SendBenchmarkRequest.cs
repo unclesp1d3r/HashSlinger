@@ -23,10 +23,4 @@ public record SendBenchmarkRequest(
     {
         throw new NotImplementedException();
     }
-
-    /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
-    {
-        throw new NotImplementedException();
-    }
 }

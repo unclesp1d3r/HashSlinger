@@ -14,10 +14,4 @@ public record DeregisterRequest(
     {
         throw new NotImplementedException();
     }
-
-    /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
-    {
-        throw new NotImplementedException();
-    }
 }

@@ -6,8 +6,9 @@ using Api.Data;
 using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
 using Api.Models;
+using Api.Models.Enums;
 using Microsoft.Extensions.DependencyInjection;
-using Task = System.Threading.Tasks.Task;
+using Task = Task;
 
 internal class HashtopolisApiIntegrationTests
 {
@@ -91,6 +92,34 @@ internal class HashtopolisApiIntegrationTests
 
         Assert.Pass();
     }
+
+    [Test]
+    public async Task UpdateInformationIntegrationTest()
+    {
+        const string testVoucher = "test123456";
+
+        var request = new UpdateInformationRequest("updateInformation",
+            testVoucher,
+            "Test Client",
+            (int)AgentOperatingSystems.Windows,
+            new List<string> { "nvidia" });
+        string data = JsonSerializer.Serialize(request);
+
+
+        HttpResponseMessage response = await _client.PostAsync("/api/hashtopolis",
+            new StringContent(data, Encoding.UTF8, "application/json"));
+
+        response.EnsureSuccessStatusCode();
+
+        string actualJsonString = await response.Content.ReadAsStringAsync();
+
+        var actual = JsonSerializer.Deserialize<UpdateInformationResponse>(actualJsonString);
+        Assert.That(actual, Is.Not.Null);
+
+        Assert.That(actual!.Response, Is.EqualTo("SUCCESS"));
+
+        Assert.Pass();
+    }
 }
 
 internal static class Utilities
@@ -102,6 +131,11 @@ internal static class Utilities
         {
             Voucher = "test123456",
             Expiration = DateTime.Now.AddDays(1)
+        });
+        db.Agents.Add(new Agent
+        {
+            Name = "Test Client",
+            Token = "test123456"
         });
         db.SaveChanges();
     }

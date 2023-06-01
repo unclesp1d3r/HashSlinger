@@ -13,19 +13,13 @@ public record SendHealthCheckRequest(
     [property: JsonPropertyName("end")] int? End,
     [property: JsonPropertyName("numGpus")]
     int? NumGpus,
-    [property: JsonPropertyName("errors")] IReadOnlyList<string> Errors,
+    [property: JsonPropertyName("errors")] ICollection<string> Errors,
     [property: JsonPropertyName("checkId")]
     int? CheckId
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
     public Task<IHashtopolisMessage> ProcessRequestAsync(Repository repository)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
     {
         throw new NotImplementedException();
     }

@@ -16,10 +16,4 @@ public record LoginRequest(
     {
         throw new NotImplementedException();
     }
-
-    /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
-    {
-        throw new NotImplementedException();
-    }
 }

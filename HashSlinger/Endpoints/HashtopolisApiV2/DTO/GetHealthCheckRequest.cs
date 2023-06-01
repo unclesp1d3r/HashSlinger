@@ -14,10 +14,4 @@ public record GetHealthCheckRequest(
     {
         throw new NotImplementedException();
     }
-
-    /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
-    {
-        throw new NotImplementedException();
-    }
 }

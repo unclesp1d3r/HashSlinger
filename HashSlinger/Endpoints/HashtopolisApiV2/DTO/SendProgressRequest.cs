@@ -15,21 +15,15 @@ public record SendProgressRequest(
     string RelativeProgress,
     [property: JsonPropertyName("speed")] int? Speed,
     [property: JsonPropertyName("state")] int? State,
-    [property: JsonPropertyName("cracks")] IReadOnlyList<List<string>> Cracks,
+    [property: JsonPropertyName("cracks")] ICollection<ICollection<string>> Cracks,
     [property: JsonPropertyName("gpuTemp")]
-    IReadOnlyList<int>? GpuTemp,
+    ICollection<int>? GpuTemp,
     [property: JsonPropertyName("gpuUtil")]
-    IReadOnlyList<int>? GpuUtil
+    ICollection<int>? GpuUtil
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
     public Task<IHashtopolisMessage> ProcessRequestAsync(Repository repository)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
     {
         throw new NotImplementedException();
     }

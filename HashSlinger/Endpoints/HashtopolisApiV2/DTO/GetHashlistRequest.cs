@@ -16,10 +16,4 @@ public record GetHashlistRequest(
     {
         throw new NotImplementedException();
     }
-
-    /// <inheritdoc />
-    public IHashtopolisMessage ProcessRequest()
-    {
-        throw new NotImplementedException();
-    }
 }
