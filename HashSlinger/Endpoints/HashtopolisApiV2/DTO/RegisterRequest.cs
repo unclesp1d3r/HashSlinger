@@ -2,9 +2,9 @@
 
 using System.Text.Json.Serialization;
 using DAL;
-using Data;
 using Models;
 using Models.Enums;
+using Serilog;
 
 /// <summary>Sent by the client when registering a new client to the server</summary>
 public record RegisterRequest(
@@ -15,27 +15,26 @@ public record RegisterRequest(
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
-    public async Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db, ILogger logger)
+    public async Task<IHashtopolisMessage> ProcessRequestAsync(Repository repository)
     {
         RegistrationVoucher? voucher
-            = await Repository.GetRegistrationVoucherAsync(db, Voucher).ConfigureAwait(true);
-
+            = await repository.GetRegistrationVoucherAsync(Voucher).ConfigureAwait(true);
 
         if (voucher == null)
         {
-            logger.LogInformation("Voucher not found");
+            Log.Information("Voucher not found");
             return new RegisterResponse(Action, "ERROR", "Voucher not found");
         }
 
         if (voucher.Expiration < DateTime.Now)
         {
-            logger.LogInformation("Voucher expired");
+            Log.Information("Voucher expired");
             return new RegisterResponse(Action, "ERROR", "Voucher expired");
         }
 
         if (voucher.Voucher != Voucher)
         {
-            logger.LogError("Voucher does not match");
+            Log.Error("Voucher does not match");
             return new RegisterResponse(Action, "ERROR", "Internal error.");
         }
 
@@ -46,16 +45,16 @@ public record RegisterRequest(
             Token = voucher.GetRandomToken()
         };
 
-        int result = await Repository.CreateAgentAsync(db, newAgent).ConfigureAwait(true);
+        int result = await repository.CreateAgentAsync(newAgent).ConfigureAwait(true);
 
         if (result == 0)
         {
-            logger.LogError("Failed to create agent");
+            Log.Error("Failed to create agent");
             return new RegisterResponse(Action, "ERROR", "Failed to create agent");
         }
 
-        await Repository.DeleteRegistrationVoucherAsync(db, voucher).ConfigureAwait(true);
-        logger.LogDebug("Created agent {AgentName} with token {AgentToken}", newAgent.Name, newAgent.Token);
+        await repository.DeleteRegistrationVoucherAsync(voucher).ConfigureAwait(true);
+        Log.Debug("Created agent {AgentName} with token {AgentToken}", newAgent.Name, newAgent.Token);
         return new RegisterResponse(Action, "SUCCESS", newAgent.Token);
     }
 }

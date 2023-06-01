@@ -1,7 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using Data;
+using DAL;
 
 /// <summary>Sent by the client to send information about the client operating system and the available hardware.</summary>
 public record UpdateInformationRequest(
@@ -14,7 +14,7 @@ public record UpdateInformationRequest(
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db, ILogger logger)
+    public async Task<IHashtopolisMessage> ProcessRequestAsync(Repository repository)
     {
         throw new NotImplementedException();
     }

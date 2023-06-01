@@ -1,7 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using Data;
+using DAL;
 
 /// <summary>The client requests the current task it should work on</summary>
 public record GetChunkRequest(
@@ -11,7 +11,7 @@ public record GetChunkRequest(
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(HashSlingerContext db, ILogger logger)
+    public Task<IHashtopolisMessage> ProcessRequestAsync(Repository repository)
     {
         throw new NotImplementedException();
     }
