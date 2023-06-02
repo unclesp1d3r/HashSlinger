@@ -9,5 +9,7 @@ public record ClientCheckVersionResponse(
     string Response,
     [property: JsonPropertyName("version")]
     string Version,
-    [property: JsonPropertyName("url")] string? Url
+    [property: JsonPropertyName("url")] string? Url,
+    [property: JsonPropertyName("message")]
+    string? Message = null
 ) : IHashtopolisMessage;

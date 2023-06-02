@@ -376,7 +376,7 @@ public record HashtopolisRequest : IHashtopolisMessage
                     : null;
 
             case "getTask":
-                return Token != null ? new GetTaskRequest(Action!, Token) : null;
+                return Token != null ? new GetTaskRequest(Action!, Token, null) : null;
             case "getChunk":
                 return Token != null && TaskId != null ? new GetChunkRequest(Action!, Token, TaskId) : null;
 

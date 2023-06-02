@@ -6,5 +6,7 @@ using System.Text.Json.Serialization;
 public record SendHealthCheckResponse(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("response")]
-    string Response
+    string Response,
+    [property: JsonPropertyName("message")]
+    string? Message = null
 ) : IHashtopolisMessage;

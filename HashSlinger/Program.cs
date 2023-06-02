@@ -7,11 +7,13 @@ using Serilog;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<HashSlingerContext>(options =>
     options.UseNpgsql(builder.Configuration["HashSlingerContext"]));
 builder.Services.AddSingleton<Repository>(new Repository());
+
 
 builder.Host.UseSerilog();
 

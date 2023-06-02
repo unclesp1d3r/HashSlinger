@@ -16,5 +16,7 @@ public record DownloadBinaryResponse(
     [property: JsonPropertyName("skipCommand")]
     string? SkipCommand,
     [property: JsonPropertyName("limitCommand")]
-    string? LimitCommand
+    string? LimitCommand,
+    [property: JsonPropertyName("message")]
+    string? Message = null
 ) : IHashtopolisMessage;

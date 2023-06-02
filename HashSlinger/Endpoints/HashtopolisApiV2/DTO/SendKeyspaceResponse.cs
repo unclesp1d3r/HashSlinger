@@ -8,5 +8,7 @@ public record SendKeyspaceResponse(
     [property: JsonPropertyName("response")]
     string Response,
     [property: JsonPropertyName("keyspace")]
-    string Keyspace
+    string Keyspace,
+    [property: JsonPropertyName("message")]
+    string? Message = null
 );

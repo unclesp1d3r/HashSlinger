@@ -11,5 +11,7 @@ public record GetFileResponse(
     string Extension,
     [property: JsonPropertyName("url")] string Url,
     [property: JsonPropertyName("filesize")]
-    int? FileSize
+    int? FileSize,
+    [property: JsonPropertyName("message")]
+    string? Message = null
 ) : IHashtopolisMessage;

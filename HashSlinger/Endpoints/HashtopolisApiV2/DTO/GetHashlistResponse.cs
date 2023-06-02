@@ -7,5 +7,7 @@ public record GetHashlistResponse(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("response")]
     string Response,
-    [property: JsonPropertyName("url")] string Url
+    [property: JsonPropertyName("url")] string Url,
+    [property: JsonPropertyName("message")]
+    string? Message = null
 ) : IHashtopolisMessage;
