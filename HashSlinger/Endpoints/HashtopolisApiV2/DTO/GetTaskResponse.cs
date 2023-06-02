@@ -40,5 +40,7 @@ public record GetTaskResponse(
     string? BrainPass,
     [property: JsonPropertyName("brainFeatures")]
     int? BrainFeatures,
-    [property: JsonPropertyName("reason")] string? Reason
+    [property: JsonPropertyName("reason")] string? Reason,
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    string? Message = null
 ) : IHashtopolisMessage;

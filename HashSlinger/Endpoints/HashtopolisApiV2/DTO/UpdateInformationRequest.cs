@@ -23,7 +23,10 @@ public record UpdateInformationRequest(
         if (agent == null)
         {
             Log.Information("Agent not found");
-            return new UpdateInformationResponse(Action, "ERROR", "Agent not found");
+            return new UpdateInformationResponse(Action,
+                HashtopolisConstants.ErrorResponse,
+                Token,
+                "Agent not found.");
         }
 
         AgentOperatingSystems os = OperatingSystem is not null
@@ -34,14 +37,16 @@ public record UpdateInformationRequest(
 
         agent.OperatingSystem = os;
         agent.LastAction = AgentActions.UpdateClientInformation;
-        agent.LastTime = DateTime.Now;
+        agent.LastSeenTime = DateTime.UtcNow;
         agent.Devices = Devices;
         if (string.IsNullOrWhiteSpace(agent.Uid)) agent.CpuOnly = !agent.CheckForGpuDevices();
+
         agent.Uid = Uid;
 
 
         int result = await repository.UpdateAgentAsync(agent).ConfigureAwait(true);
         if (result != 1) Log.Error("Failed to update agent");
-        return new UpdateInformationResponse(Action, "SUCCESS", Token);
+
+        return new UpdateInformationResponse(Action, HashtopolisConstants.SuccessResponse, Token);
     }
 }

@@ -14,5 +14,7 @@ public record GetHealthCheckResponse(
     [property: JsonPropertyName("checkId")]
     int? CheckId,
     [property: JsonPropertyName("hashlistAlias")]
-    string? HashlistAlias
+    string? HashlistAlias,
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    string? Message = null
 ) : IHashtopolisMessage;

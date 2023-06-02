@@ -23,25 +23,35 @@ public record RegisterRequest(
         if (voucher == null)
         {
             Log.Information("Voucher not found");
-            return new RegisterResponse(Action, "ERROR", "Voucher not found");
+            return new RegisterResponse(Action,
+                HashtopolisConstants.ErrorResponse,
+                string.Empty,
+                "Voucher not found.");
         }
 
         if (voucher.Expiration < DateTime.Now)
         {
             Log.Information("Voucher expired");
-            return new RegisterResponse(Action, "ERROR", "Voucher expired");
+            return new RegisterResponse(Action,
+                HashtopolisConstants.ErrorResponse,
+                string.Empty,
+                "Voucher expired.");
         }
 
         if (voucher.Voucher != Voucher)
         {
             Log.Error("Voucher does not match");
-            return new RegisterResponse(Action, "ERROR", "Internal error.");
+            return new RegisterResponse(Action,
+                HashtopolisConstants.ErrorResponse,
+                string.Empty,
+                "Voucher does not match.");
         }
 
         var newAgent = new Agent
         {
             Name = Name,
             LastAction = AgentActions.Register,
+            LastSeenTime = DateTime.UtcNow,
             Token = voucher.GetRandomToken()
         };
 
@@ -50,11 +60,11 @@ public record RegisterRequest(
         if (result == 0)
         {
             Log.Error("Failed to create agent");
-            return new RegisterResponse(Action, "ERROR", "Failed to create agent");
+            return new RegisterResponse(Action, "ERROR", string.Empty, "Failed to create agent");
         }
 
         await repository.DeleteRegistrationVoucherAsync(voucher).ConfigureAwait(true);
         Log.Debug("Created agent {AgentName} with token {AgentToken}", newAgent.Name, newAgent.Token);
-        return new RegisterResponse(Action, "SUCCESS", newAgent.Token);
+        return new RegisterResponse(Action, HashtopolisConstants.SuccessResponse, newAgent.Token);
     }
 }

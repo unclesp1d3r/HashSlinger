@@ -18,7 +18,7 @@ public static class HashtopolisEndpoints
     /// <param name="routes">The routes.</param>
     public static void MapHashtopolisEndpoints(this IEndpointRouteBuilder routes)
     {
-        RouteGroupBuilder group = routes.MapGroup("/api/Hashtopolis");
+        RouteGroupBuilder group = routes.MapGroup(HashtopolisConstants.EndPointPrefix);
 
         group.MapPost("/",
                 async (
