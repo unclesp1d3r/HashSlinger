@@ -50,7 +50,7 @@ public class HashtopolisRequestTests
     [Test]
     public void BadRequestConvertTest()
     {
-        var jsonMessage = """
+        const string jsonMessage = """
             {
                 "action":"doesntWork"
             }

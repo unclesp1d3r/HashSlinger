@@ -40,11 +40,13 @@ public record UpdateInformationRequest(
         agent.LastSeenTime = DateTime.UtcNow;
         agent.Devices = Devices;
         if (string.IsNullOrWhiteSpace(agent.Uid)) agent.CpuOnly = !agent.CheckForGpuDevices();
+
         agent.Uid = Uid;
 
 
         int result = await repository.UpdateAgentAsync(agent).ConfigureAwait(true);
         if (result != 1) Log.Error("Failed to update agent");
+
         return new UpdateInformationResponse(Action, HashtopolisConstants.SuccessResponse, Token);
     }
 }

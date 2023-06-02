@@ -146,15 +146,9 @@ public record Agent
 
     public virtual ICollection<Zap> Zaps { get; set; } = new List<Zap>();
 
-    /// <summary>
-    /// Checks for gpu devices.
-    /// </summary>
-    /// <returns>
-    /// True if the device list contains a possible GPU device; otherwise, false.
-    /// </returns>
-    /// <remarks>
-    /// I'm not a fan of this test, but I don't have anything better, so I just use what Hashtopolis does.
-    /// </remarks>
+    /// <summary>Checks for gpu devices.</summary>
+    /// <returns>True if the device list contains a possible GPU device; otherwise, false.</returns>
+    /// <remarks>I'm not a fan of this test, but I don't have anything better, so I just use what Hashtopolis does.</remarks>
     public bool CheckForGpuDevices()
     {
         foreach (string? device in Devices)

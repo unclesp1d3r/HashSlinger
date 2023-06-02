@@ -8,6 +8,6 @@ public record RegisterResponse(
     [property: JsonPropertyName("response")]
     string Response,
     [property: JsonPropertyName("token")] string Token,
-    [property: JsonPropertyName("message")]
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 ) : IHashtopolisMessage;

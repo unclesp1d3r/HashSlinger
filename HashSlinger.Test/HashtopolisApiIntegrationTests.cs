@@ -8,7 +8,7 @@ using Api.Endpoints.HashtopolisApiV2.DTO;
 using Api.Models;
 using Api.Models.Enums;
 using Microsoft.Extensions.DependencyInjection;
-using Task = Task;
+using Task = System.Threading.Tasks.Task;
 
 internal class HashtopolisApiIntegrationTests
 {
@@ -36,7 +36,7 @@ internal class HashtopolisApiIntegrationTests
         string data = JsonSerializer.Serialize(request);
         HashtopolisRequest expected = request with { Response = HashtopolisConstants.ErrorResponse };
 
-        HttpResponseMessage response = await _client.PostAsync("/api/hashtopolis",
+        HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
             new StringContent(data, Encoding.UTF8, "application/json"));
 
 
@@ -53,10 +53,9 @@ internal class HashtopolisApiIntegrationTests
         var request = new TestConnectionRequest("testConnection");
         string data = JsonSerializer.Serialize(request);
 
-        var expected
-            = new TestConnectionResponse("testConnection", HashtopolisConstants.SuccessResponse, null);
+        var expected = new TestConnectionResponse("testConnection", HashtopolisConstants.SuccessResponse);
 
-        HttpResponseMessage response = await _client.PostAsync("/api/hashtopolis",
+        HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
             new StringContent(data, Encoding.UTF8, "application/json"));
 
         response.EnsureSuccessStatusCode();
@@ -77,7 +76,7 @@ internal class HashtopolisApiIntegrationTests
         string data = JsonSerializer.Serialize(request);
 
 
-        HttpResponseMessage response = await _client.PostAsync("/api/hashtopolis",
+        HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
             new StringContent(data, Encoding.UTF8, "application/json"));
 
         response.EnsureSuccessStatusCode();
@@ -103,7 +102,7 @@ internal class HashtopolisApiIntegrationTests
         string data = JsonSerializer.Serialize(request);
 
 
-        HttpResponseMessage response = await _client.PostAsync("/api/hashtopolis",
+        HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
             new StringContent(data, Encoding.UTF8, "application/json"));
 
         response.EnsureSuccessStatusCode();
@@ -126,13 +125,12 @@ internal class HashtopolisApiIntegrationTests
         string data = JsonSerializer.Serialize(request);
 
 
-        HttpResponseMessage response = await _client.PostAsync("/api/hashtopolis",
+        HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
             new StringContent(data, Encoding.UTF8, "application/json"));
 
         response.EnsureSuccessStatusCode();
 
         string actualJsonString = await response.Content.ReadAsStringAsync();
-
         var actual = JsonSerializer.Deserialize<LoginResponse>(actualJsonString);
         Assert.That(actual, Is.Not.Null);
 
@@ -151,14 +149,9 @@ internal static class Utilities
     {
         db.RegistrationVouchers.Add(new RegistrationVoucher
         {
-            Voucher = TestVoucher,
-            Expiration = DateTime.Now.AddDays(1)
+            Voucher = TestVoucher, Expiration = DateTime.Now.AddDays(1)
         });
-        db.Agents.Add(new Agent
-        {
-            Name = "Test Client",
-            Token = TestToken
-        });
+        db.Agents.Add(new Agent { Name = "Test Client", Token = TestToken });
         db.SaveChanges();
     }
 
@@ -166,6 +159,6 @@ internal static class Utilities
     {
         db.RegistrationVouchers.RemoveRange(db.RegistrationVouchers);
         db.Agents.RemoveRange(db.Agents);
-        InitializeDbForTests(db);
+        Utilities.InitializeDbForTests(db);
     }
 }

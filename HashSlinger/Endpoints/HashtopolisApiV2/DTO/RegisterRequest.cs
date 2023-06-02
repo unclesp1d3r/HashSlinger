@@ -65,6 +65,6 @@ public record RegisterRequest(
 
         await repository.DeleteRegistrationVoucherAsync(voucher).ConfigureAwait(true);
         Log.Debug("Created agent {AgentName} with token {AgentToken}", newAgent.Name, newAgent.Token);
-        return new RegisterResponse(Action, HashtopolisConstants.SuccessResponse, newAgent.Token, null);
+        return new RegisterResponse(Action, HashtopolisConstants.SuccessResponse, newAgent.Token);
     }
 }

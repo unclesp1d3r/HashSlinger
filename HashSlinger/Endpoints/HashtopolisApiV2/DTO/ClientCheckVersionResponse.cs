@@ -10,6 +10,6 @@ public record ClientCheckVersionResponse(
     [property: JsonPropertyName("version")]
     string Version,
     [property: JsonPropertyName("url")] string? Url,
-    [property: JsonPropertyName("message")]
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 ) : IHashtopolisMessage;

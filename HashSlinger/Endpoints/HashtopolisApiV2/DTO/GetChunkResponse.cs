@@ -12,6 +12,6 @@ public record GetChunkResponse(
     int? ChunkId,
     [property: JsonPropertyName("skip")] int? Skip,
     [property: JsonPropertyName("length")] int? Length,
-    [property: JsonPropertyName("message")]
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 ) : IHashtopolisMessage;

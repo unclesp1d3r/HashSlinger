@@ -17,12 +17,12 @@ internal class MyWebApplicationFactory : WebApplicationFactory<Program>
             ServiceDescriptor? dbContextDescriptor = services.SingleOrDefault(d =>
                 d.ServiceType == typeof(DbContextOptions<HashSlingerContext>));
 
-            services.Remove(dbContextDescriptor);
+            services.Remove(dbContextDescriptor!);
 
             ServiceDescriptor? dbConnectionDescriptor
                 = services.SingleOrDefault(d => d.ServiceType == typeof(DbConnection));
 
-            services.Remove(dbConnectionDescriptor);
+            services.Remove(dbConnectionDescriptor!);
 
             // Create open SqliteConnection so EF won't automatically close it.
             services.AddSingleton<DbConnection>(container =>

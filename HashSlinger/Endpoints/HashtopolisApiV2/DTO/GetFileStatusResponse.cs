@@ -9,6 +9,6 @@ public record GetFileStatusResponse(
     string Response,
     [property: JsonPropertyName("filenames")]
     IReadOnlyList<string> FileNames,
-    [property: JsonPropertyName("message")]
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 );

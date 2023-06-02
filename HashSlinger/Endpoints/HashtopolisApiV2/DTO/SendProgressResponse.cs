@@ -12,6 +12,6 @@ public record SendProgressResponse(
     [property: JsonPropertyName("skipped")]
     int? Skipped,
     [property: JsonPropertyName("zap")] IReadOnlyList<string>? Zap,
-    [property: JsonPropertyName("message")]
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 ) : IHashtopolisMessage;

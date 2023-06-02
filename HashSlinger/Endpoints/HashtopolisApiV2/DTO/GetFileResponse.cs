@@ -12,6 +12,6 @@ public record GetFileResponse(
     [property: JsonPropertyName("url")] string Url,
     [property: JsonPropertyName("filesize")]
     int? FileSize,
-    [property: JsonPropertyName("message")]
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 ) : IHashtopolisMessage;

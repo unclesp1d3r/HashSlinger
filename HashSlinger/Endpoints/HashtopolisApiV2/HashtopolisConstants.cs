@@ -8,4 +8,7 @@ public class HashtopolisConstants
 
     /// <summary>The error response</summary>
     public const string ErrorResponse = "ERROR";
+
+    /// <summary>The URL prefix for the Hashtopolis API endpoint.</summary>
+    public const string EndPointPrefix = "/api/Hashtopolis";
 }

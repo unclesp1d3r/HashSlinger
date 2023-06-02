@@ -17,6 +17,6 @@ public record DownloadBinaryResponse(
     string? SkipCommand,
     [property: JsonPropertyName("limitCommand")]
     string? LimitCommand,
-    [property: JsonPropertyName("message")]
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 ) : IHashtopolisMessage;

@@ -8,6 +8,6 @@ public record GetHashlistResponse(
     [property: JsonPropertyName("response")]
     string Response,
     [property: JsonPropertyName("url")] string Url,
-    [property: JsonPropertyName("message")]
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 ) : IHashtopolisMessage;

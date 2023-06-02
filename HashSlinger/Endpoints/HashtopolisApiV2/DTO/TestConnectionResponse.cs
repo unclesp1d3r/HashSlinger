@@ -7,6 +7,6 @@ public record TestConnectionResponse(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("response")]
     string Response,
-    [property: JsonPropertyName("message")]
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 ) : IHashtopolisMessage;
