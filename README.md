@@ -108,7 +108,7 @@ By leveraging a microservices architecture with Docker, we can independently sca
 - [X] TestConnection
 - [X] Register
 - [X] UpdateInformation
-- [ ] Login
+- [X] Login
 - [ ] CheckClientVersion
 - [ ] DownloadBinary
 - [ ] ClientError
