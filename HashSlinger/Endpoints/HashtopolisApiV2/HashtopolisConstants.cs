@@ -1,7 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2;
 
 /// <summary>String constants relevant to the Hashtopolis API</summary>
-public class HashtopolisConstants
+public static class HashtopolisConstants
 {
     /// <summary>The success response</summary>
     public const string SuccessResponse = "SUCCESS";

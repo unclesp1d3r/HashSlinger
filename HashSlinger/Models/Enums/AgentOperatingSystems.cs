@@ -13,5 +13,5 @@ public enum AgentOperatingSystems
     Windows = 1,
 
     /// <summary>Apple macOS Operating System or Darwin</summary>
-    macOS = 2
+    MacOS = 2
 }

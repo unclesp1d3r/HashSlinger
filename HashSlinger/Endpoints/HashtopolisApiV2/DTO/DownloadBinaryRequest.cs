@@ -5,7 +5,7 @@ using DAL;
 
 /// <summary>
 ///     This command is used to either download the 7z binary to extract Hashcat, Preprocessors, or to get
-///     information where to download the newest Hashcat/Cracker version and some additional informations about
+///     information where to download the newest Hashcat/Cracker version and some additional information about
 ///     it.
 /// </summary>
 public record DownloadBinaryRequest(

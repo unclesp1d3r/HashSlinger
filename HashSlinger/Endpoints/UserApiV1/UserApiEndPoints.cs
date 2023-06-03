@@ -1,7 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.UserApiV1;
 
 using DAL;
-using HashSlinger.Api.Data;
+using Data;
 using Microsoft.AspNetCore.Mvc;
 
 /// <summary>Contains the version 1 API for user interface functionality.</summary>
