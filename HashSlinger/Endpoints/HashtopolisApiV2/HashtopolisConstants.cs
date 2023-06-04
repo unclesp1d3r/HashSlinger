@@ -11,4 +11,7 @@ public static class HashtopolisConstants
 
     /// <summary>The URL prefix for the Hashtopolis API endpoint.</summary>
     public const string EndPointPrefix = "/api/Hashtopolis";
+
+    public const string ClientVersionCheckCurrent = "OK";
+    public const string ClientVersionCheckUpdateAvailable = "NEW";
 }

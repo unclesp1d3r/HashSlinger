@@ -32,11 +32,22 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+;
+
 app.UseHttpsRedirection();
 
 app.MapHashtopolisEndpoints();
 
-app.MapUserApiEndpoints();
+
+app.MapAgentEndpoints();
+
+app.MapUserEndpoints();
 
 app.Run();
 

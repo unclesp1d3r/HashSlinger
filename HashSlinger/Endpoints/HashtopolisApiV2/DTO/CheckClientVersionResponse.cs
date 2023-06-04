@@ -3,7 +3,7 @@
 using System.Text.Json.Serialization;
 
 /// <summary>The server response to the clientCheckVersion action.</summary>
-public record ClientCheckVersionResponse(
+public record CheckClientVersionResponse(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("response")]
     string Response,

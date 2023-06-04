@@ -33,6 +33,10 @@ public partial class HashSlingerContext : DbContext
     /// <value>The agents.</value>
     public DbSet<Agent> Agents { get; set; } = null!;
 
+    /// <summary>Gets or sets the agent binaries.</summary>
+    /// <value>The agent binaries.</value>
+    public DbSet<AgentBinary> AgentBinaries { get; set; } = null!;
+
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
