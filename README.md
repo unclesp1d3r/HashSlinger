@@ -66,7 +66,7 @@ By leveraging a microservices architecture with Docker, we can independently sca
 ## Roadmap
 
 **Phase 1: Initial Infrastructure and Setup**
-- [ ] Milestone 1: Create infrastructure for registering Hashtopolis agents.
+- [X] Milestone 1: Create infrastructure for registering Hashtopolis agents.
 - [ ] Milestone 2: Design and implement the automated setup of Hashtopolis agents, including downloading and uploading cracker binaries.
 
 **Phase 2: Potfiles and Dictionary Tasks**
@@ -109,7 +109,7 @@ By leveraging a microservices architecture with Docker, we can independently sca
 - [X] Register
 - [X] UpdateInformation
 - [X] Login
-- [ ] CheckClientVersion
+- [X] CheckClientVersion
 - [ ] DownloadBinary
 - [ ] ClientError
 - [ ] GetFile
