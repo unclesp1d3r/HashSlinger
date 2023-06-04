@@ -11,7 +11,7 @@ using Utilities;
 /// <summary>Contains the version 1 API for user interface functionality.</summary>
 public static class UserApiEndPoints
 {
-    private static readonly string ApiPrefix = "/api/v1";
+    private const string ApiPrefix = "/api/v1";
 
 
     /// <summary>Maps the agent endpoints.</summary>
@@ -136,7 +136,7 @@ public static class UserApiEndPoints
                     var u = user.Adapt<User>();
                     if (user.Password != null) u.SetPasswordHash(user.Password);
                     db.Users.Add(u);
-                    int affected = await db.SaveChangesAsync().ConfigureAwait(true);
+                    await db.SaveChangesAsync().ConfigureAwait(true);
                     return TypedResults.Created($"{ApiPrefix}/User/{user.Id}", user);
                 })
             .WithName("CreateUser")
