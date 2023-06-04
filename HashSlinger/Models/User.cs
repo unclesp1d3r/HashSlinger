@@ -1,6 +1,7 @@
 ﻿namespace HashSlinger.Api.Models;
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Utilities;
 
 /// <summary>
@@ -25,11 +26,12 @@ public record User
 
     /// <summary>Gets or sets the password hash.</summary>
     /// <value>The password hash.</value>
-    [StringLength(256)]
+    [StringLength(256), JsonIgnore]
     public string PasswordHash { get; set; } = null!;
 
     /// <summary>Gets or sets the password salt.</summary>
     /// <value>The password salt.</value>
+    [JsonIgnore]
     public byte[] PasswordSalt { get; set; } = null!;
 
     /// <summary>Returns true if ... is valid.</summary>

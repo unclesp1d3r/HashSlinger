@@ -3,6 +3,7 @@
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using SemanticVersioning;
 using Serilog;
 
 /// <summary>Represents the data storage provider for business objects</summary>
@@ -43,7 +44,7 @@ public class Repository
 
     /// <summary>Gets the agent asynchronously.</summary>
     /// <param name="agentId">The agent identifier.</param>
-    public Task<Agent?> GetAgentAsync(int agentId)
+    public Task<Agent?> GetAgentByIdAsync(int agentId)
     {
         Log.Debug("Getting agent {agentId}", agentId);
         return DbContext.Agents.FirstOrDefaultAsync(a => a.Id == agentId);
@@ -67,5 +68,49 @@ public class Repository
     {
         Log.Debug("Getting agent by token {token}", token);
         return DbContext.Agents.FirstOrDefaultAsync(a => a.Token == token);
+    }
+
+    /// <summary>Gets the agent binary asynchronously.</summary>
+    /// <param name="type">The type.</param>
+    /// <param name="currentVersion">The current version used by the client.</param>
+    /// <returns>The most recent agent binary for the requested type.</returns>
+    /// <remarks>
+    ///     <para>This is a stupid way to do this, so I'll need to clean this up. </para>
+    ///     <para>
+    ///         I plan to use the semantic versioning because I want to be able to restrict the version on a
+    ///         per-agent basis.
+    ///     </para>
+    /// </remarks>
+    public async Task<AgentBinary?> GetAgentBinaryAsync(string type, string currentVersion)
+    {
+        Log.Debug("Getting client binary for type {type}", type);
+        var satisfyingRange = new Range($">={currentVersion}");
+        List<AgentBinary> getBinaries = await DbContext.AgentBinaries.Where(b => b.Type == type)
+            .ToListAsync()
+            .ConfigureAwait(true);
+
+        if (getBinaries.Count == 0)
+        {
+            Log.Warning("No binaries found for type {type}", type);
+            return null;
+        }
+
+        IEnumerable<Version> validVersions = getBinaries.Select(b => new Version(b.Version))
+            .Where(v => satisfyingRange.IsSatisfied(v));
+        Version? latestVersion = satisfyingRange.MaxSatisfying(validVersions);
+
+        AgentBinary? clientBinary = getBinaries.FirstOrDefault(b => b.Version == latestVersion?.ToString());
+        Log.Debug("The latest version for {type} is {version}", type, clientBinary!.Version);
+        return clientBinary;
+    }
+
+    /// <summary>Gets the default user.</summary>
+    /// <returns>
+    ///     <br />
+    /// </returns>
+    public Task<User?> GetDefaultUser()
+    {
+        Log.Debug("Getting default user");
+        return DbContext.Users.FirstOrDefaultAsync();
     }
 }

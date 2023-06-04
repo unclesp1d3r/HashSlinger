@@ -2,7 +2,11 @@
 
 using System.Text.Json.Serialization;
 
-/// <inheritdoc />
+/// <summary>Send a response to a request for a file status.</summary>
+/// <param name="Action"></param>
+/// <param name="Response"></param>
+/// <param name="FileNames"></param>
+/// <param name="Message"></param>
 public record GetFileStatusResponse(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("response")]

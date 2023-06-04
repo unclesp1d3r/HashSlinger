@@ -28,11 +28,11 @@ public static class HashtopolisEndpoints
                 ) =>
                 {
                     repository.DbContext = dbContext; // This is a terrible hack, but it works.
-                    Log.Debug("New request: {@request}");
+                    Log.Debug("New request: {@request}", request);
                     IHashtopolisRequest? message = request.ToHashtopolisRequest();
                     if (message is null)
                     {
-                        HashtopolisRequest? badRequest = request with { Response = "ERROR" };
+                        HashtopolisRequest badRequest = request with { Response = "ERROR" };
                         Log.Error("Bad API request: {@badRequest}", badRequest);
                         return Results.BadRequest(badRequest);
                     }

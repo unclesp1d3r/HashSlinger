@@ -4,14 +4,20 @@ using HashSlinger.Api.Endpoints.HashtopolisApiV2;
 using HashSlinger.Api.Endpoints.UserApiV1;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Serilog.Events;
 
-Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+Log.Logger = new LoggerConfiguration().WriteTo.Console(LogEventLevel.Information)
+    .MinimumLevel.Debug()
+    .WriteTo.File("Log/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<HashSlingerContext>(options =>
-    options.UseNpgsql(builder.Configuration["HashSlingerContext"]));
+    options.UseNpgsql(builder.Configuration["HashSlingerContext"])
+        .EnableSensitiveDataLogging()
+        .EnableDetailedErrors());
 builder.Services.AddSingleton(new Repository());
 
 
@@ -32,11 +38,22 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+;
+
 app.UseHttpsRedirection();
 
 app.MapHashtopolisEndpoints();
 
-app.MapUserApiEndpoints();
+
+app.MapAgentEndpoints();
+
+app.MapUserEndpoints();
 
 app.Run();
 

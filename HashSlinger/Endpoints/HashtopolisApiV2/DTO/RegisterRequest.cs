@@ -47,12 +47,15 @@ public record RegisterRequest(
                 "Voucher does not match.");
         }
 
+        User? user = await repository.GetDefaultUser();
+
         var newAgent = new Agent
         {
             Name = Name,
             LastAction = AgentActions.Register,
             LastSeenTime = DateTime.UtcNow,
-            Token = voucher.GetRandomToken()
+            Token = voucher.GetRandomToken(),
+            User = user
         };
 
         int result = await repository.CreateAgentAsync(newAgent).ConfigureAwait(true);

@@ -2,7 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-/// <inheritdoc />
+/// <summary>Response to a send keyspace request.</summary>
 public record SendKeyspaceResponse(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("response")]

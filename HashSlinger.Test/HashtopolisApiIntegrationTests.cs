@@ -35,14 +35,16 @@ internal class HashtopolisApiIntegrationTests
         var request = new HashtopolisRequest("badRequest");
         string data = JsonSerializer.Serialize(request);
         HashtopolisRequest expected = request with { Response = HashtopolisConstants.ErrorResponse };
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
+                requestContent);
 
-        HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
-            new StringContent(data, Encoding.UTF8, "application/json"));
+            string actualJsonString = await response.Content.ReadAsStringAsync();
 
-
-        string actualJsonString = await response.Content.ReadAsStringAsync();
-        var actual = JsonSerializer.Deserialize<HashtopolisRequest>(actualJsonString);
-        Assert.That(actual, Is.EqualTo(expected));
+            var actual = JsonSerializer.Deserialize<HashtopolisRequest>(actualJsonString);
+            Assert.That(actual, Is.EqualTo(expected));
+        }
 
         Assert.Pass();
     }
@@ -55,16 +57,19 @@ internal class HashtopolisApiIntegrationTests
 
         var expected = new TestConnectionResponse("testConnection", HashtopolisConstants.SuccessResponse);
 
-        HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
-            new StringContent(data, Encoding.UTF8, "application/json"));
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
+                requestContent);
 
-        response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();
 
-        string actualJsonString = await response.Content.ReadAsStringAsync();
+            string actualJsonString = await response.Content.ReadAsStringAsync();
 
-        var actual = JsonSerializer.Deserialize<TestConnectionResponse>(actualJsonString);
+            var actual = JsonSerializer.Deserialize<TestConnectionResponse>(actualJsonString);
 
-        Assert.That(actual, Is.EqualTo(expected));
+            Assert.That(actual, Is.EqualTo(expected));
+        }
 
         Assert.Pass();
     }
@@ -75,18 +80,20 @@ internal class HashtopolisApiIntegrationTests
         var request = new RegisterRequest("register", Utilities.TestVoucher, "Test Client");
         string data = JsonSerializer.Serialize(request);
 
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
+                requestContent);
 
-        HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
-            new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
 
-        response.EnsureSuccessStatusCode();
+            string actualJsonString = await response.Content.ReadAsStringAsync();
 
-        string actualJsonString = await response.Content.ReadAsStringAsync();
+            var actual = JsonSerializer.Deserialize<RegisterResponse>(actualJsonString);
+            Assert.That(actual, Is.Not.Null);
 
-        var actual = JsonSerializer.Deserialize<RegisterResponse>(actualJsonString);
-        Assert.That(actual, Is.Not.Null);
-
-        Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+        }
 
         Assert.Pass();
     }
@@ -101,18 +108,20 @@ internal class HashtopolisApiIntegrationTests
             new List<string> { "nvidia" });
         string data = JsonSerializer.Serialize(request);
 
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
+                requestContent);
 
-        HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
-            new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
 
-        response.EnsureSuccessStatusCode();
+            string actualJsonString = await response.Content.ReadAsStringAsync();
 
-        string actualJsonString = await response.Content.ReadAsStringAsync();
+            var actual = JsonSerializer.Deserialize<UpdateInformationResponse>(actualJsonString);
+            Assert.That(actual, Is.Not.Null);
 
-        var actual = JsonSerializer.Deserialize<UpdateInformationResponse>(actualJsonString);
-        Assert.That(actual, Is.Not.Null);
-
-        Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+        }
 
         Assert.Pass();
     }
@@ -124,17 +133,69 @@ internal class HashtopolisApiIntegrationTests
         var request = new LoginRequest("login", "test-client-1.0", Utilities.TestToken);
         string data = JsonSerializer.Serialize(request);
 
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
+                requestContent);
 
-        HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
-            new StringContent(data, Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
 
-        response.EnsureSuccessStatusCode();
+            string actualJsonString = await response.Content.ReadAsStringAsync();
 
-        string actualJsonString = await response.Content.ReadAsStringAsync();
-        var actual = JsonSerializer.Deserialize<LoginResponse>(actualJsonString);
-        Assert.That(actual, Is.Not.Null);
+            var actual = JsonSerializer.Deserialize<LoginResponse>(actualJsonString);
+            Assert.That(actual, Is.Not.Null);
 
-        Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+        }
+
+        Assert.Pass();
+    }
+
+    [Test]
+    public async Task CheckClientVersionCurentIntegrationTest()
+    {
+        var request
+            = new CheckClientVersionRequest("checkClientVersion", "1.0.1", "python", Utilities.TestToken);
+        string data = JsonSerializer.Serialize(request);
+
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
+                requestContent);
+
+            response.EnsureSuccessStatusCode();
+
+            string actualJsonString = await response.Content.ReadAsStringAsync();
+
+            var actual = JsonSerializer.Deserialize<CheckClientVersionResponse>(actualJsonString);
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+            Assert.That(actual!.Version, Is.EqualTo("OK"));
+        }
+
+        Assert.Pass();
+    }
+
+    public async Task CheckClientVersionNewIntegrationTest()
+    {
+        var request
+            = new CheckClientVersionRequest("checkClientVersion", "1.0.0", "python", Utilities.TestToken);
+        string data = JsonSerializer.Serialize(request);
+
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
+                requestContent);
+
+            response.EnsureSuccessStatusCode();
+
+            string actualJsonString = await response.Content.ReadAsStringAsync();
+
+            var actual = JsonSerializer.Deserialize<CheckClientVersionResponse>(actualJsonString);
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+            Assert.That(actual!.Version, Is.EqualTo("NEW"));
+        }
 
         Assert.Pass();
     }
@@ -145,13 +206,21 @@ internal static class Utilities
     public const string TestVoucher = "test123456";
     public const string TestToken = "testToken";
 
-    public static void InitializeDbForTests(HashSlingerContext db)
+    private static void InitializeDbForTests(HashSlingerContext db)
     {
         db.RegistrationVouchers.Add(new RegistrationVoucher
         {
             Voucher = TestVoucher, Expiration = DateTime.Now.AddDays(1)
         });
         db.Agents.Add(new Agent { Name = "Test Client", Token = TestToken });
+        db.AgentBinaries.Add(new AgentBinary
+        {
+            Version = "1.0.1", DownloadUrl = "http://example.com",
+            FileName = "test.zip", OperatingSystems = AgentOperatingSystems.Windows.ToString(),
+            Type = "python",
+            UpdateAvailable = string.Empty,
+            UpdateTrack = "release"
+        });
         db.SaveChanges();
     }
 
