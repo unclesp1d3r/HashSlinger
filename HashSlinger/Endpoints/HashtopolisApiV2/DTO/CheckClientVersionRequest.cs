@@ -21,6 +21,7 @@ public record CheckClientVersionRequest(
     /// <inheritdoc />
     public async Task<IHashtopolisMessage> ProcessRequestAsync(Repository repository)
     {
+        Log.Debug("Processing request {request}", this);
         Agent? agent = await repository.GetAgentByTokenAsync(Token).ConfigureAwait(false);
         if (agent == null)
         {
@@ -48,20 +49,24 @@ public record CheckClientVersionRequest(
                 "No client binary found for type " + Type);
         }
 
-        if (clientBinary.Version == Version)
+        if (clientBinary.Version != Version)
         {
-            Log.Information("Client is up to date");
+            Log.Information("Client update available: {version} -> {newVersion}",
+                Version,
+                clientBinary.Version);
+
             return new CheckClientVersionResponse(Action,
                 HashtopolisConstants.SuccessResponse,
-                HashtopolisConstants.ClientVersionCheckCurrent,
-                null,
+                HashtopolisConstants.ClientVersionCheckUpdateAvailable,
+                clientBinary.DownloadUrl,
                 Token);
         }
 
+        Log.Information("Client is up to date");
         return new CheckClientVersionResponse(Action,
             HashtopolisConstants.SuccessResponse,
-            HashtopolisConstants.ClientVersionCheckUpdateAvailable,
-            clientBinary.DownloadUrl,
+            HashtopolisConstants.ClientVersionCheckCurrent,
+            null,
             Token);
     }
 }

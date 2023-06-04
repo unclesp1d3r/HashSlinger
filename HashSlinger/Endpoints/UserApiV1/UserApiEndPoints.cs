@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-
-namespace HashSlinger.Api.Endpoints.UserApiV1;
+﻿namespace HashSlinger.Api.Endpoints.UserApiV1;
 
 using Data;
 using Mapster;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using Shared.DTO;
 using Utilities;
@@ -15,11 +14,13 @@ public static class UserApiEndPoints
     private static readonly string ApiPrefix = "/api/v1";
 
 
+    /// <summary>Maps the agent endpoints.</summary>
+    /// <param name="routes">The routes.</param>
     public static void MapAgentEndpoints(this IEndpointRouteBuilder routes)
     {
         RouteGroupBuilder? group = routes.MapGroup($"{ApiPrefix}/Agent").WithTags(nameof(Agent));
 
-        group.MapGet("/", async (HashSlingerContext db) => { return await db.Agents.ToListAsync(); })
+        group.MapGet("/", (HashSlingerContext db) => db.Agents.ToListAsync())
             .WithName("GetAllAgents")
             .WithOpenApi();
 
@@ -54,7 +55,8 @@ public static class UserApiEndPoints
                             .SetProperty(m => m.LastIp, agent.LastIp)
                             .SetProperty(m => m.UserId, agent.UserId)
                             .SetProperty(m => m.CpuOnly, agent.CpuOnly)
-                            .SetProperty(m => m.ClientSignature, agent.ClientSignature));
+                            .SetProperty(m => m.ClientSignature, agent.ClientSignature))
+                        .ConfigureAwait(true);
 
                     return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
                 })
@@ -65,7 +67,7 @@ public static class UserApiEndPoints
                 async (Agent agent, HashSlingerContext db) =>
                 {
                     db.Agents.Add(agent);
-                    await db.SaveChangesAsync();
+                    await db.SaveChangesAsync().ConfigureAwait(true);
                     return TypedResults.Created($"{ApiPrefix}/Agent/{agent.Id}", agent);
                 })
             .WithName("CreateAgent")
@@ -74,7 +76,9 @@ public static class UserApiEndPoints
         group.MapDelete("/{id}",
                 async Task<Results<Ok, NotFound>> (int id, HashSlingerContext db) =>
                 {
-                    int affected = await db.Agents.Where(model => model.Id == id).ExecuteDeleteAsync();
+                    int affected = await db.Agents.Where(model => model.Id == id)
+                        .ExecuteDeleteAsync()
+                        .ConfigureAwait(true);
 
                     return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
                 })
@@ -82,9 +86,7 @@ public static class UserApiEndPoints
             .WithOpenApi();
     }
 
-    /// <summary>
-    /// Maps the user endpoints.
-    /// </summary>
+    /// <summary>Maps the user endpoints.</summary>
     /// <param name="routes">The routes.</param>
     public static void MapUserEndpoints(this IEndpointRouteBuilder routes)
     {
@@ -120,7 +122,8 @@ public static class UserApiEndPoints
                             .SetProperty(m => m.PasswordSalt, user.PasswordSalt)
                             .SetProperty(m => m.IsValid, user.IsValid)
                             .SetProperty(m => m.LastLoginDate, user.LastLoginDate)
-                            .SetProperty(m => m.RegisteredSince, user.RegisteredSince));
+                            .SetProperty(m => m.RegisteredSince, user.RegisteredSince))
+                        .ConfigureAwait(true);
 
                     return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
                 })
@@ -142,7 +145,9 @@ public static class UserApiEndPoints
         group.MapDelete("/{id}",
                 async Task<Results<Ok, NotFound>> (int id, HashSlingerContext db) =>
                 {
-                    int affected = await db.Users.Where(model => model.Id == id).ExecuteDeleteAsync();
+                    int affected = await db.Users.Where(model => model.Id == id)
+                        .ExecuteDeleteAsync()
+                        .ConfigureAwait(true);
 
                     return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
                 })

@@ -75,8 +75,11 @@ public class Repository
     /// <param name="currentVersion">The current version used by the client.</param>
     /// <returns>The most recent agent binary for the requested type.</returns>
     /// <remarks>
-    ///   <para>This is a stupid way to do this, so I'll need to clean this up. </para>
-    ///   <para>I plan to use the semantic versioning because I want to be able to restrict the version on a per-agent basis.</para>
+    ///     <para>This is a stupid way to do this, so I'll need to clean this up. </para>
+    ///     <para>
+    ///         I plan to use the semantic versioning because I want to be able to restrict the version on a
+    ///         per-agent basis.
+    ///     </para>
     /// </remarks>
     public async Task<AgentBinary?> GetAgentBinaryAsync(string type, string currentVersion)
     {
@@ -85,6 +88,12 @@ public class Repository
         List<AgentBinary> getBinaries = await DbContext.AgentBinaries.Where(b => b.Type == type)
             .ToListAsync()
             .ConfigureAwait(true);
+
+        if (getBinaries.Count == 0)
+        {
+            Log.Warning("No binaries found for type {type}", type);
+            return null;
+        }
 
         IEnumerable<Version> validVersions = getBinaries.Select(b => new Version(b.Version))
             .Where(v => satisfyingRange.IsSatisfied(v));
@@ -97,7 +106,7 @@ public class Repository
 
     /// <summary>Gets the default user.</summary>
     /// <returns>
-    ///   <br />
+    ///     <br />
     /// </returns>
     public Task<User?> GetDefaultUser()
     {

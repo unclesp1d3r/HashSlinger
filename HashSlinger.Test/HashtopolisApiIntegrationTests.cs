@@ -150,6 +150,55 @@ internal class HashtopolisApiIntegrationTests
 
         Assert.Pass();
     }
+
+    [Test]
+    public async Task CheckClientVersionCurentIntegrationTest()
+    {
+        var request
+            = new CheckClientVersionRequest("checkClientVersion", "1.0.1", "python", Utilities.TestToken);
+        string data = JsonSerializer.Serialize(request);
+
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
+                requestContent);
+
+            response.EnsureSuccessStatusCode();
+
+            string actualJsonString = await response.Content.ReadAsStringAsync();
+
+            var actual = JsonSerializer.Deserialize<CheckClientVersionResponse>(actualJsonString);
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+            Assert.That(actual!.Version, Is.EqualTo("OK"));
+        }
+
+        Assert.Pass();
+    }
+
+    public async Task CheckClientVersionNewIntegrationTest()
+    {
+        var request
+            = new CheckClientVersionRequest("checkClientVersion", "1.0.0", "python", Utilities.TestToken);
+        string data = JsonSerializer.Serialize(request);
+
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix,
+                requestContent);
+
+            response.EnsureSuccessStatusCode();
+
+            string actualJsonString = await response.Content.ReadAsStringAsync();
+
+            var actual = JsonSerializer.Deserialize<CheckClientVersionResponse>(actualJsonString);
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+            Assert.That(actual!.Version, Is.EqualTo("NEW"));
+        }
+
+        Assert.Pass();
+    }
 }
 
 internal static class Utilities
@@ -164,6 +213,14 @@ internal static class Utilities
             Voucher = TestVoucher, Expiration = DateTime.Now.AddDays(1)
         });
         db.Agents.Add(new Agent { Name = "Test Client", Token = TestToken });
+        db.AgentBinaries.Add(new AgentBinary
+        {
+            Version = "1.0.1", DownloadUrl = "http://example.com",
+            FileName = "test.zip", OperatingSystems = AgentOperatingSystems.Windows.ToString(),
+            Type = "python",
+            UpdateAvailable = string.Empty,
+            UpdateTrack = "release"
+        });
         db.SaveChanges();
     }
 
@@ -171,6 +228,6 @@ internal static class Utilities
     {
         db.RegistrationVouchers.RemoveRange(db.RegistrationVouchers);
         db.Agents.RemoveRange(db.Agents);
-        InitializeDbForTests(db);
+        Utilities.InitializeDbForTests(db);
     }
 }

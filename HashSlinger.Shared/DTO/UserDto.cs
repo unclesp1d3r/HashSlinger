@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace HashSlinger.Shared.DTO;
 
-namespace HashSlinger.Shared.DTO;
-
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 public record UserDto
