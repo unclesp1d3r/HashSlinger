@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -23,6 +24,25 @@ namespace HashSlinger.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AccessGroups", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AgentBinaries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Type = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Version = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    OperatingSystems = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    FileName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    UpdateTrack = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    DownloadUrl = table.Column<string>(type: "text", nullable: false),
+                    UpdateAvailable = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AgentBinaries", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -159,7 +179,7 @@ namespace HashSlinger.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Pretask",
+                name: "PreconfiguredTask",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -179,9 +199,9 @@ namespace HashSlinger.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Pretask", x => x.Id);
+                    table.PrimaryKey("PK_PreconfiguredTask", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Pretask_CrackerBinaryType_CrackerBinaryTypeId",
+                        name: "FK_PreconfiguredTask_CrackerBinaryType_CrackerBinaryTypeId",
                         column: x => x.CrackerBinaryTypeId,
                         principalTable: "CrackerBinaryType",
                         principalColumn: "Id");
@@ -227,24 +247,24 @@ namespace HashSlinger.Api.Migrations
                 name: "AccessGroupUser",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AccessGroupId = table.Column<int>(type: "integer", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: false)
+                    AccessGroupsId = table.Column<int>(type: "integer", nullable: false),
+                    UsersId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccessGroupUser", x => x.Id);
+                    table.PrimaryKey("PK_AccessGroupUser", x => new { x.AccessGroupsId, x.UsersId });
                     table.ForeignKey(
-                        name: "FK_AccessGroupUser_AccessGroups_AccessGroupId",
-                        column: x => x.AccessGroupId,
+                        name: "FK_AccessGroupUser_AccessGroups_AccessGroupsId",
+                        column: x => x.AccessGroupsId,
                         principalTable: "AccessGroups",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AccessGroupUser_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_AccessGroupUser_Users_UsersId",
+                        column: x => x.UsersId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -256,14 +276,14 @@ namespace HashSlinger.Api.Migrations
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Uid = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     OperatingSystem = table.Column<int>(type: "integer", nullable: false),
-                    Devices = table.Column<string>(type: "text", nullable: false),
+                    Devices = table.Column<List<string>>(type: "text[]", nullable: true),
                     CommandParameters = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     IgnoreErrors = table.Column<bool>(type: "boolean", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     IsTrusted = table.Column<bool>(type: "boolean", nullable: false),
                     Token = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     LastAction = table.Column<int>(type: "integer", nullable: false),
-                    LastTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastSeenTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastIp = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: true),
                     CpuOnly = table.Column<bool>(type: "boolean", nullable: false),
@@ -398,27 +418,27 @@ namespace HashSlinger.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FilePretask",
+                name: "FilePreconfiguredTask",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FileId = table.Column<int>(type: "integer", nullable: false),
-                    PretaskId = table.Column<int>(type: "integer", nullable: false)
+                    FilesId = table.Column<int>(type: "integer", nullable: false),
+                    PreconfiguredTasksId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FilePretask", x => x.Id);
+                    table.PrimaryKey("PK_FilePreconfiguredTask", x => new { x.FilesId, x.PreconfiguredTasksId });
                     table.ForeignKey(
-                        name: "FK_FilePretask_File_FileId",
-                        column: x => x.FileId,
+                        name: "FK_FilePreconfiguredTask_File_FilesId",
+                        column: x => x.FilesId,
                         principalTable: "File",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FilePretask_Pretask_PretaskId",
-                        column: x => x.PretaskId,
-                        principalTable: "Pretask",
-                        principalColumn: "Id");
+                        name: "FK_FilePreconfiguredTask_PreconfiguredTask_PreconfiguredTasksId",
+                        column: x => x.PreconfiguredTasksId,
+                        principalTable: "PreconfiguredTask",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -428,44 +448,21 @@ namespace HashSlinger.Api.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     SupertaskId = table.Column<int>(type: "integer", nullable: false),
-                    PretaskId = table.Column<int>(type: "integer", nullable: false)
+                    PretaskId = table.Column<int>(type: "integer", nullable: false),
+                    PreconfiguredTaskId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SupertaskPretask", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SupertaskPretask_Pretask_PretaskId",
-                        column: x => x.PretaskId,
-                        principalTable: "Pretask",
+                        name: "FK_SupertaskPretask_PreconfiguredTask_PreconfiguredTaskId",
+                        column: x => x.PreconfiguredTaskId,
+                        principalTable: "PreconfiguredTask",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_SupertaskPretask_Supertask_SupertaskId",
                         column: x => x.SupertaskId,
                         principalTable: "Supertask",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HashlistHashlist",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ParentHashlistId = table.Column<int>(type: "integer", nullable: false),
-                    HashlistId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HashlistHashlist", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_HashlistHashlist_Hashlist_HashlistId",
-                        column: x => x.HashlistId,
-                        principalTable: "Hashlist",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_HashlistHashlist_Hashlist_ParentHashlistId",
-                        column: x => x.ParentHashlistId,
-                        principalTable: "Hashlist",
                         principalColumn: "Id");
                 });
 
@@ -502,24 +499,24 @@ namespace HashSlinger.Api.Migrations
                 name: "AccessGroupAgent",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AccessGroupId = table.Column<int>(type: "integer", nullable: false),
-                    AgentId = table.Column<int>(type: "integer", nullable: false)
+                    AccessGroupsId = table.Column<int>(type: "integer", nullable: false),
+                    AgentsId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccessGroupAgent", x => x.Id);
+                    table.PrimaryKey("PK_AccessGroupAgent", x => new { x.AccessGroupsId, x.AgentsId });
                     table.ForeignKey(
-                        name: "FK_AccessGroupAgent_AccessGroups_AccessGroupId",
-                        column: x => x.AccessGroupId,
+                        name: "FK_AccessGroupAgent_AccessGroups_AccessGroupsId",
+                        column: x => x.AccessGroupsId,
                         principalTable: "AccessGroups",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AccessGroupAgent_Agents_AgentId",
-                        column: x => x.AgentId,
+                        name: "FK_AccessGroupAgent_Agents_AgentsId",
+                        column: x => x.AgentsId,
                         principalTable: "Agents",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -561,7 +558,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_Zap_Agents_AgentId",
                         column: x => x.AgentId,
                         principalTable: "Agents",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Zap_Hashlist_HashlistId",
                         column: x => x.HashlistId,
@@ -650,30 +648,6 @@ namespace HashSlinger.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AgentZap",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AgentId = table.Column<int>(type: "integer", nullable: false),
-                    LastZapId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AgentZap", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AgentZap_Agents_AgentId",
-                        column: x => x.AgentId,
-                        principalTable: "Agents",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_AgentZap_Zap_LastZapId",
-                        column: x => x.LastZapId,
-                        principalTable: "Zap",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AgentError",
                 columns: table => new
                 {
@@ -692,7 +666,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_AgentError_Agents_AgentId",
                         column: x => x.AgentId,
                         principalTable: "Agents",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AgentError_Task_TaskId",
                         column: x => x.TaskId,
@@ -750,7 +725,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_Chunk_Agents_AgentId",
                         column: x => x.AgentId,
                         principalTable: "Agents",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Chunk_Task_TaskId",
                         column: x => x.TaskId,
@@ -888,24 +864,14 @@ namespace HashSlinger.Api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccessGroupAgent_AccessGroupId",
+                name: "IX_AccessGroupAgent_AgentsId",
                 table: "AccessGroupAgent",
-                column: "AccessGroupId");
+                column: "AgentsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccessGroupAgent_AgentId",
-                table: "AccessGroupAgent",
-                column: "AgentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AccessGroupUser_AccessGroupId",
+                name: "IX_AccessGroupUser_UsersId",
                 table: "AccessGroupUser",
-                column: "AccessGroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AccessGroupUser_UserId",
-                table: "AccessGroupUser",
-                column: "UserId");
+                column: "UsersId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AgentError_AgentId",
@@ -926,16 +892,6 @@ namespace HashSlinger.Api.Migrations
                 name: "IX_AgentStat_AgentId",
                 table: "AgentStat",
                 column: "AgentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AgentZap_AgentId",
-                table: "AgentZap",
-                column: "AgentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AgentZap_LastZapId",
-                table: "AgentZap",
-                column: "LastZapId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ApiKey_ApiGroupId",
@@ -983,14 +939,9 @@ namespace HashSlinger.Api.Migrations
                 column: "FileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FilePretask_FileId",
-                table: "FilePretask",
-                column: "FileId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FilePretask_PretaskId",
-                table: "FilePretask",
-                column: "PretaskId");
+                name: "IX_FilePreconfiguredTask_PreconfiguredTasksId",
+                table: "FilePreconfiguredTask",
+                column: "PreconfiguredTasksId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FileTask_FileId",
@@ -1033,16 +984,6 @@ namespace HashSlinger.Api.Migrations
                 column: "HashTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HashlistHashlist_HashlistId",
-                table: "HashlistHashlist",
-                column: "HashlistId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_HashlistHashlist_ParentHashlistId",
-                table: "HashlistHashlist",
-                column: "ParentHashlistId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_HealthCheck_CrackerBinaryId",
                 table: "HealthCheck",
                 column: "CrackerBinaryId");
@@ -1063,8 +1004,8 @@ namespace HashSlinger.Api.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pretask_CrackerBinaryTypeId",
-                table: "Pretask",
+                name: "IX_PreconfiguredTask_CrackerBinaryTypeId",
+                table: "PreconfiguredTask",
                 column: "CrackerBinaryTypeId");
 
             migrationBuilder.CreateIndex(
@@ -1083,9 +1024,9 @@ namespace HashSlinger.Api.Migrations
                 column: "TaskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SupertaskPretask_PretaskId",
+                name: "IX_SupertaskPretask_PreconfiguredTaskId",
                 table: "SupertaskPretask",
-                column: "PretaskId");
+                column: "PreconfiguredTaskId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SupertaskPretask_SupertaskId",
@@ -1143,13 +1084,13 @@ namespace HashSlinger.Api.Migrations
                 name: "AccessGroupUser");
 
             migrationBuilder.DropTable(
+                name: "AgentBinaries");
+
+            migrationBuilder.DropTable(
                 name: "AgentError");
 
             migrationBuilder.DropTable(
                 name: "AgentStat");
-
-            migrationBuilder.DropTable(
-                name: "AgentZap");
 
             migrationBuilder.DropTable(
                 name: "ApiKey");
@@ -1161,7 +1102,7 @@ namespace HashSlinger.Api.Migrations
                 name: "FileDownload");
 
             migrationBuilder.DropTable(
-                name: "FilePretask");
+                name: "FilePreconfiguredTask");
 
             migrationBuilder.DropTable(
                 name: "FileTask");
@@ -1171,9 +1112,6 @@ namespace HashSlinger.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "HashBinary");
-
-            migrationBuilder.DropTable(
-                name: "HashlistHashlist");
 
             migrationBuilder.DropTable(
                 name: "HealthCheckAgent");
@@ -1212,7 +1150,7 @@ namespace HashSlinger.Api.Migrations
                 name: "HealthCheck");
 
             migrationBuilder.DropTable(
-                name: "Pretask");
+                name: "PreconfiguredTask");
 
             migrationBuilder.DropTable(
                 name: "Supertask");

@@ -50,7 +50,7 @@ public record User
 
     /// <summary>Gets or sets the access group users.</summary>
     /// <value>The access group users.</value>
-    public virtual ICollection<AccessGroupUser> AccessGroupUsers { get; set; } = new List<AccessGroupUser>();
+    public virtual ICollection<AccessGroup> AccessGroups { get; set; } = new List<AccessGroup>();
 
     /// <summary>Gets or sets the agents.</summary>
     /// <value>The agents.</value>

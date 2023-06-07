@@ -1,8 +1,6 @@
 ﻿namespace HashSlinger.Api.Data;
 
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Models;
 
 /// <summary>A DbContext instance representing a session with the database.</summary>
@@ -42,54 +40,29 @@ public partial class HashSlingerContext : DbContext
     {
         modelBuilder.Entity<Agent>(entity =>
         {
-            entity.Property(e => e.Devices)
-                .HasConversion(v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
-                    v => JsonSerializer.Deserialize<List<string>>(v, JsonSerializerOptions.Default)!,
-                    new ValueComparer<ICollection<string>>((c1, c2) => c1!.SequenceEqual(c2!),
-                        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                        c => c.ToList()));
+            entity.HasMany(e => e.Zaps).WithOne(e => e.Agent).OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.Stats).WithOne(e => e.Agent).OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.Chunks).WithOne(e => e.Agent).OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.AccessGroups).WithMany(e => e.Agents);
+            entity.HasMany(e => e.Assignments).WithOne(e => e.Agent).OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.Errors).WithOne(e => e.Agent).OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<AccessGroupAgent>(entity =>
+        modelBuilder.Entity<User>(entity =>
         {
-            entity.HasOne(d => d.AccessGroup)
-                .WithMany(p => p.AccessGroupAgents)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
-            entity.HasOne(d => d.Agent)
-                .WithMany(p => p.AccessGroupAgents)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasMany(e => e.Agents).WithOne(e => e.User).OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasMany(e => e.AccessGroups).WithMany(e => e.Users);
+            entity.HasMany(e => e.ApiKeys).WithOne(e => e.User).OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.NotificationSettings).WithOne(e => e.User).OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.Sessions).WithOne(e => e.User).OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<AccessGroupUser>(entity =>
-        {
-            entity.HasOne(d => d.AccessGroup)
-                .WithMany(p => p.AccessGroupUsers)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
-            entity.HasOne(d => d.User)
-                .WithMany(p => p.AccessGroupUsers)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-        });
-
-        modelBuilder.Entity<AgentError>(entity =>
-        {
-            entity.HasOne(d => d.Agent)
-                .WithMany(p => p.AgentErrors)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-        });
 
         modelBuilder.Entity<AgentStat>(entity =>
         {
-            entity.HasOne(d => d.Agent)
-                .WithMany(p => p.AgentStats)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.Agent).WithMany(p => p.Stats).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        modelBuilder.Entity<AgentZap>(entity =>
-        {
-            entity.HasOne(d => d.Agent).WithMany(p => p.AgentZaps).OnDelete(DeleteBehavior.ClientSetNull);
-        });
 
         modelBuilder.Entity<ApiKey>(entity =>
         {
@@ -121,9 +94,8 @@ public partial class HashSlingerContext : DbContext
 
         modelBuilder.Entity<File>(entity =>
         {
-            entity.HasOne(d => d.AccessGroup)
-                .WithMany(p => p.Files)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.AccessGroup).WithMany(p => p.Files).OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasMany(e => e.PreconfiguredTasks).WithMany(e => e.Files);
         });
 
         modelBuilder.Entity<FileDownload>(entity =>
@@ -133,14 +105,6 @@ public partial class HashSlingerContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        modelBuilder.Entity<FilePretask>(entity =>
-        {
-            entity.HasOne(d => d.File).WithMany(p => p.FilePretasks).OnDelete(DeleteBehavior.ClientSetNull);
-
-            entity.HasOne(d => d.Pretask)
-                .WithMany(p => p.FilePretasks)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-        });
 
         modelBuilder.Entity<FileTask>(entity =>
         {
@@ -174,16 +138,6 @@ public partial class HashSlingerContext : DbContext
             entity.HasOne(d => d.HashType).WithMany(p => p.Hashlists).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        modelBuilder.Entity<HashlistHashlist>(entity =>
-        {
-            entity.HasOne(d => d.Hashlist)
-                .WithMany(p => p.HashlistHashlistHashlists)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
-            entity.HasOne(d => d.ParentHashlist)
-                .WithMany(p => p.HashlistHashlistParentHashlists)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-        });
 
         modelBuilder.Entity<HealthCheck>(entity =>
         {
@@ -210,7 +164,7 @@ public partial class HashSlingerContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        modelBuilder.Entity<Pretask>(entity =>
+        modelBuilder.Entity<PreconfiguredTask>(entity =>
         {
             entity.HasOne(d => d.CrackerBinaryType)
                 .WithMany(p => p.Pretasks)
@@ -232,7 +186,7 @@ public partial class HashSlingerContext : DbContext
 
         modelBuilder.Entity<SupertaskPretask>(entity =>
         {
-            entity.HasOne(d => d.Pretask)
+            entity.HasOne(d => d.PreconfiguredTask)
                 .WithMany(p => p.SupertaskPretasks)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 

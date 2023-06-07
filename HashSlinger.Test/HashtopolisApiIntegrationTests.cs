@@ -7,9 +7,11 @@ using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
 using Api.Models;
 using Api.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Task = System.Threading.Tasks.Task;
+using Task = Task;
 
+[TestFixture]
 internal class HashtopolisApiIntegrationTests
 {
     private HttpClient _client = null!;
@@ -27,6 +29,18 @@ internal class HashtopolisApiIntegrationTests
         var db = scopedServices.GetRequiredService<HashSlingerContext>();
         db.Database.EnsureCreated();
         Utilities.ReinitializeDbForTests(db);
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        using IServiceScope scope = _factory.Services.CreateScope();
+        IServiceProvider scopedServices = scope.ServiceProvider;
+        var db = scopedServices.GetRequiredService<HashSlingerContext>();
+        db.Database.EnsureDeleted();
+
+        _client.Dispose();
+        _factory.Dispose();
     }
 
     [Test]
@@ -152,7 +166,7 @@ internal class HashtopolisApiIntegrationTests
     }
 
     [Test]
-    public async Task CheckClientVersionCurentIntegrationTest()
+    public async Task CheckClientVersionCurrentIntegrationTest()
     {
         var request
             = new CheckClientVersionRequest("checkClientVersion", "1.0.1", "python", Utilities.TestToken);
@@ -176,6 +190,7 @@ internal class HashtopolisApiIntegrationTests
         Assert.Pass();
     }
 
+    [Test]
     public async Task CheckClientVersionNewIntegrationTest()
     {
         var request
@@ -210,7 +225,7 @@ internal static class Utilities
     {
         db.RegistrationVouchers.Add(new RegistrationVoucher
         {
-            Voucher = TestVoucher, Expiration = DateTime.Now.AddDays(1)
+            Voucher = TestVoucher, Expiration = DateTime.UtcNow.AddDays(1)
         });
         db.Agents.Add(new Agent { Name = "Test Client", Token = TestToken });
         db.AgentBinaries.Add(new AgentBinary
@@ -226,8 +241,9 @@ internal static class Utilities
 
     public static void ReinitializeDbForTests(HashSlingerContext db)
     {
-        db.RegistrationVouchers.RemoveRange(db.RegistrationVouchers);
-        db.Agents.RemoveRange(db.Agents);
+        db.RegistrationVouchers.ExecuteDelete();
+        db.Agents.ExecuteDelete();
+        db.AgentBinaries.ExecuteDelete();
         Utilities.InitializeDbForTests(db);
     }
 }

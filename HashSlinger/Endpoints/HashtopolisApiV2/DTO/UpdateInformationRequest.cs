@@ -38,7 +38,7 @@ public record UpdateInformationRequest(
         agent.OperatingSystem = os;
         agent.LastAction = AgentActions.UpdateClientInformation;
         agent.LastSeenTime = DateTime.UtcNow;
-        agent.Devices = Devices;
+        agent.Devices = Devices.ToList();
         if (string.IsNullOrWhiteSpace(agent.Uid)) agent.CpuOnly = !agent.CheckForGpuDevices();
 
         agent.Uid = Uid;

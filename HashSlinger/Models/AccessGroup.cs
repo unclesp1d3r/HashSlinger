@@ -16,12 +16,11 @@ public record AccessGroup
 
     /// <summary>Gets or sets the access group agents.</summary>
     /// <value>The access group agents.</value>
-    public virtual ICollection<AccessGroupAgent> AccessGroupAgents { get; set; }
-        = new List<AccessGroupAgent>();
+    public virtual ICollection<Agent> Agents { get; set; } = new List<Agent>();
 
     /// <summary>Gets or sets the access group users.</summary>
     /// <value>The access group users.</value>
-    public virtual ICollection<AccessGroupUser> AccessGroupUsers { get; set; } = new List<AccessGroupUser>();
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 
     /// <summary>Gets or sets the files.</summary>
     /// <value>The files.</value>
