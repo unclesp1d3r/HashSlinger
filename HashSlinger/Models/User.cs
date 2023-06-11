@@ -11,6 +11,8 @@ using Utilities;
 /// </summary>
 public record User
 {
+
+
     /// <summary>Gets or sets the identifier.</summary>
     /// <value>The identifier.</value>
     public int Id { get; set; }
@@ -35,6 +37,7 @@ public record User
     [JsonIgnore, AdaptIgnore]
     public byte[] PasswordSalt { get; set; } = null!;
 
+
     /// <summary>Returns true if ... is valid.</summary>
     /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
     public bool IsValid { get; set; }
@@ -55,6 +58,7 @@ public record User
 
     /// <summary>Gets or sets the agents.</summary>
     /// <value>The agents.</value>
+    [JsonIgnore, AdaptIgnore]
     public virtual ICollection<Agent> Agents { get; set; } = new List<Agent>();
 
     /// <summary>Gets or sets the API keys.</summary>

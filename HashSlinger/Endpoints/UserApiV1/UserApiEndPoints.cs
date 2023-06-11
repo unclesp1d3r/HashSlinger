@@ -24,11 +24,12 @@ public static class UserApiEndPoints
             .WithOpenApi();
 
         group.MapGet("/{id}",
-                async Task<Results<Ok<Agent>, NotFound>> (int id, HashSlingerContext db) =>
+                async Task<Results<Ok<AgentDto>, NotFound>> (int id, HashSlingerContext db) =>
                 {
                     return await db.Agents.AsNoTracking()
-                        .FirstOrDefaultAsync(model => model.Id == id)
-                        .ConfigureAwait(true) is Agent model
+                        .ProjectToType<AgentDto>()
+                        .FirstOrDefaultAsync(a => a.Id == id)
+                        .ConfigureAwait(true) is AgentDto model
                         ? TypedResults.Ok(model)
                         : TypedResults.NotFound();
                 })
@@ -36,22 +37,19 @@ public static class UserApiEndPoints
             .WithOpenApi();
 
         group.MapPut("/{id}",
-                async Task<Results<Ok, NotFound>> (int id, Agent agent, HashSlingerContext db) =>
+                async Task<Results<Ok, NotFound>> (int id, AgentDto agent, HashSlingerContext db) =>
                 {
                     int affected = await db.Agents.Where(model => model.Id == id)
                         .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.Id, agent.Id)
                             .SetProperty(m => m.Name, agent.Name)
                             .SetProperty(m => m.Uid, agent.Uid)
-                            .SetProperty(m => m.OperatingSystem, agent.OperatingSystem)
                             .SetProperty(m => m.Devices, agent.Devices)
                             .SetProperty(m => m.CommandParameters, agent.CommandParameters)
                             .SetProperty(m => m.IgnoreErrors, agent.IgnoreErrors)
                             .SetProperty(m => m.IsActive, agent.IsActive)
                             .SetProperty(m => m.IsTrusted, agent.IsTrusted)
                             .SetProperty(m => m.Token, agent.Token)
-                            .SetProperty(m => m.LastAction, agent.LastAction)
                             .SetProperty(m => m.LastSeenTime, agent.LastSeenTime)
-                            .SetProperty(m => m.LastIp, agent.LastIp)
                             .SetProperty(m => m.UserId, agent.UserId)
                             .SetProperty(m => m.CpuOnly, agent.CpuOnly)
                             .SetProperty(m => m.ClientSignature, agent.ClientSignature))
@@ -63,9 +61,9 @@ public static class UserApiEndPoints
             .WithOpenApi();
 
         group.MapPost("/",
-                async (Agent agent, HashSlingerContext db) =>
+                async (AgentDto agent, HashSlingerContext db) =>
                 {
-                    db.Agents.Add(agent);
+                    db.Agents.Add(agent.Adapt<Agent>());
                     await db.SaveChangesAsync().ConfigureAwait(true);
                     return TypedResults.Created($"{ApiPrefix}/Agent/{agent.Id}", agent);
                 })

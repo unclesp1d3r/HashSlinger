@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HashSlinger.Api.Generated;
 
@@ -12,6 +13,7 @@ namespace HashSlinger.Api.Generated
         public int FileType { get; set; }
         public int AccessGroupId { get; set; }
         public long? LineCount { get; set; }
+        public Guid? FileGuid { get; set; }
         public AccessGroupDto AccessGroup { get; set; }
         public ICollection<FileDownloadDto> FileDownloads { get; set; }
         public ICollection<PreconfiguredTaskDto> PreconfiguredTasks { get; set; }

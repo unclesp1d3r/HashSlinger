@@ -1,10 +1,18 @@
+using System.Text.Json.Serialization;
 using HashSlinger.Api.DAL;
 using HashSlinger.Api.Data;
 using HashSlinger.Api.Endpoints.HashtopolisApiV2;
 using HashSlinger.Api.Endpoints.UserApiV1;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
+
+TypeAdapterConfig.GlobalSettings.Default
+    .IgnoreAttribute(typeof(JsonIgnoreAttribute));
+TypeAdapterConfig.GlobalSettings.EnableJsonMapping();
+TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);
+TypeAdapterConfig.GlobalSettings.Default.MaxDepth(2);
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console(LogEventLevel.Information)
     .MinimumLevel.Debug()

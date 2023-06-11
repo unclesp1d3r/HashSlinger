@@ -13,7 +13,6 @@ namespace HashSlinger.Api.Generated
         public DateTime LastLoginDate { get; set; }
         public DateTime RegisteredSince { get; set; }
         public ICollection<AccessGroupDto> AccessGroups { get; set; }
-        public ICollection<AgentDto> Agents { get; set; }
         public ICollection<ApiKeyDto> ApiKeys { get; set; }
         public ICollection<NotificationSettingDto> NotificationSettings { get; set; }
         public ICollection<SessionDto> Sessions { get; set; }
