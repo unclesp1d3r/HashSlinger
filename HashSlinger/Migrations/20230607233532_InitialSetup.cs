@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Net;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -86,6 +85,21 @@ namespace HashSlinger.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_HashType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LogEntries",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Issuer = table.Column<string>(type: "text", nullable: false),
+                    Level = table.Column<int>(type: "integer", nullable: false),
+                    Message = table.Column<string>(type: "text", nullable: false),
+                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LogEntries", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -284,7 +298,7 @@ namespace HashSlinger.Api.Migrations
                     Token = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     LastAction = table.Column<int>(type: "integer", nullable: false),
                     LastSeenTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastIp = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    LastIp = table.Column<IPAddress>(type: "inet", nullable: true),
                     UserId = table.Column<int>(type: "integer", nullable: true),
                     CpuOnly = table.Column<bool>(type: "boolean", nullable: false),
                     ClientSignature = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
@@ -1115,6 +1129,9 @@ namespace HashSlinger.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "HealthCheckAgent");
+
+            migrationBuilder.DropTable(
+                name: "LogEntries");
 
             migrationBuilder.DropTable(
                 name: "NotificationSetting");

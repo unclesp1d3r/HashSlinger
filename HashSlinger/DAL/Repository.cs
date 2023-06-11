@@ -3,12 +3,15 @@
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.Enums;
 using SemanticVersioning;
 using Serilog;
 
 /// <summary>Represents the data storage provider for business objects</summary>
 public class Repository
 {
+    private const string Issuer = "Hashtopolis API";
+
     /// <summary>The database context</summary>
     internal HashSlingerContext DbContext = null!;
 
@@ -26,20 +29,21 @@ public class Repository
     /// <returns>The number of agents created. Should be 1.</returns>
     public async Task<int> CreateAgentAsync(Agent newAgent)
     {
-        Log.Information("Creating agent {@newAgent}", newAgent);
+        await WriteLogEventAsync(LogEntry.Information($"Creating agent {newAgent}", Issuer))
+            .ConfigureAwait(true);
         await DbContext.Agents.AddAsync(newAgent).ConfigureAwait(true);
-        int result = await DbContext.SaveChangesAsync().ConfigureAwait(true);
-        return result;
+        return await DbContext.SaveChangesAsync().ConfigureAwait(true);
     }
 
     /// <summary>Deletes the registration voucher asynchronously.</summary>
     /// <param name="voucher">The voucher.</param>
     /// <returns>The number of records deleted. Should be 1.<br /></returns>
-    public Task<int> DeleteRegistrationVoucherAsync(RegistrationVoucher voucher)
+    public async Task<int> DeleteRegistrationVoucherAsync(RegistrationVoucher voucher)
     {
-        Log.Information("Deleting voucher {@voucher}", voucher);
+        await WriteLogEventAsync(LogEntry.Information($"Deleting voucher {voucher}", Issuer))
+            .ConfigureAwait(true);
         DbContext.RegistrationVouchers.Remove(voucher);
-        return DbContext.SaveChangesAsync();
+        return await DbContext.SaveChangesAsync().ConfigureAwait(true);
     }
 
     /// <summary>Gets the agent asynchronously.</summary>
@@ -55,10 +59,10 @@ public class Repository
     /// <returns>The number of records updated. Should be 1.</returns>
     public async Task<int> UpdateAgentAsync(Agent agent)
     {
-        Log.Information("Updating agent {@agent}", agent);
+        await WriteLogEventAsync(LogEntry.Information($"Updating agent {agent}", Issuer))
+            .ConfigureAwait(true);
         DbContext.Agents.Update(agent);
-        int result = await DbContext.SaveChangesAsync().ConfigureAwait(true);
-        return result;
+        return await DbContext.SaveChangesAsync().ConfigureAwait(true);
     }
 
     /// <summary>Gets the agent by token asynchronous.</summary>
@@ -91,7 +95,8 @@ public class Repository
 
         if (getBinaries.Count == 0)
         {
-            Log.Warning("No binaries found for type {type}", type);
+            await WriteLogEventAsync(LogEntry.Warning($"No binaries found for type {type}", Issuer))
+                .ConfigureAwait(true);
             return null;
         }
 
@@ -108,9 +113,43 @@ public class Repository
     /// <returns>
     ///     <br />
     /// </returns>
-    public Task<User?> GetDefaultUser()
+    public Task<User?> GetDefaultUserAsync()
     {
         Log.Debug("Getting default user");
         return DbContext.Users.FirstOrDefaultAsync();
+    }
+
+    /// <summary>Writes the log event.</summary>
+    /// <param name="logEntry">The log entry.</param>
+    /// <returns>The number of records logged. It should be 1.<br /></returns>
+    /// <exception cref="System.ArgumentOutOfRangeException">Happens on an invalid LogEntryLevel</exception>
+    public async Task<int> WriteLogEventAsync(LogEntry logEntry)
+    {
+        switch (logEntry.Level)
+        {
+            case LogEntryLevels.Trace:
+                Log.Verbose(logEntry.Message);
+                break;
+            case LogEntryLevels.Debug:
+                Log.Debug(logEntry.Message);
+                break;
+            case LogEntryLevels.Information:
+                Log.Information(logEntry.Message);
+                break;
+            case LogEntryLevels.Warning:
+                Log.Warning(logEntry.Message);
+                break;
+            case LogEntryLevels.Error:
+                Log.Error(logEntry.Message);
+                break;
+            case LogEntryLevels.Fatal:
+                Log.Fatal(logEntry.Message);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(logEntry));
+        }
+
+        await DbContext.LogEntries.AddAsync(logEntry).ConfigureAwait(true);
+        return await DbContext.SaveChangesAsync().ConfigureAwait(true);
     }
 }

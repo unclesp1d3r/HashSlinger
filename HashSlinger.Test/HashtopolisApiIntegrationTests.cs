@@ -5,9 +5,7 @@ using System.Text.Json;
 using Api.Data;
 using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
-using Api.Models;
 using Api.Models.Enums;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Task = Task;
 
@@ -119,7 +117,8 @@ internal class HashtopolisApiIntegrationTests
             Utilities.TestToken,
             "Test Client",
             (int)AgentOperatingSystems.Windows,
-            new List<string> { "nvidia" });
+            new List<string> { "nvidia" },
+            null);
         string data = JsonSerializer.Serialize(request);
 
         using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
@@ -182,9 +181,12 @@ internal class HashtopolisApiIntegrationTests
             string actualJsonString = await response.Content.ReadAsStringAsync();
 
             var actual = JsonSerializer.Deserialize<CheckClientVersionResponse>(actualJsonString);
-            Assert.That(actual, Is.Not.Null);
-            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
-            Assert.That(actual!.Version, Is.EqualTo("OK"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(actual, Is.Not.Null);
+                Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+                Assert.That(actual!.Version, Is.EqualTo("OK"));
+            });
         }
 
         Assert.Pass();
@@ -207,43 +209,14 @@ internal class HashtopolisApiIntegrationTests
             string actualJsonString = await response.Content.ReadAsStringAsync();
 
             var actual = JsonSerializer.Deserialize<CheckClientVersionResponse>(actualJsonString);
-            Assert.That(actual, Is.Not.Null);
-            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
-            Assert.That(actual!.Version, Is.EqualTo("NEW"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(actual, Is.Not.Null);
+                Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+                Assert.That(actual!.Version, Is.EqualTo("NEW"));
+            });
         }
 
         Assert.Pass();
-    }
-}
-
-internal static class Utilities
-{
-    public const string TestVoucher = "test123456";
-    public const string TestToken = "testToken";
-
-    private static void InitializeDbForTests(HashSlingerContext db)
-    {
-        db.RegistrationVouchers.Add(new RegistrationVoucher
-        {
-            Voucher = TestVoucher, Expiration = DateTime.UtcNow.AddDays(1)
-        });
-        db.Agents.Add(new Agent { Name = "Test Client", Token = TestToken });
-        db.AgentBinaries.Add(new AgentBinary
-        {
-            Version = "1.0.1", DownloadUrl = "http://example.com",
-            FileName = "test.zip", OperatingSystems = AgentOperatingSystems.Windows.ToString(),
-            Type = "python",
-            UpdateAvailable = string.Empty,
-            UpdateTrack = "release"
-        });
-        db.SaveChanges();
-    }
-
-    public static void ReinitializeDbForTests(HashSlingerContext db)
-    {
-        db.RegistrationVouchers.ExecuteDelete();
-        db.Agents.ExecuteDelete();
-        db.AgentBinaries.ExecuteDelete();
-        Utilities.InitializeDbForTests(db);
     }
 }

@@ -35,6 +35,8 @@ public partial class HashSlingerContext : DbContext
     /// <value>The agent binaries.</value>
     public DbSet<AgentBinary> AgentBinaries { get; set; } = null!;
 
+    public DbSet<LogEntry> LogEntries { get; set; } = null!;
+
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

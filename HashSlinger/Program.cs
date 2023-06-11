@@ -13,6 +13,7 @@ Log.Logger = new LoggerConfiguration().WriteTo.Console(LogEventLevel.Information
 
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
 builder.Services.AddDbContext<HashSlingerContext>(options =>
     options.UseNpgsql(builder.Configuration["HashSlingerContext"])
@@ -44,16 +45,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-;
-
 app.UseHttpsRedirection();
-
 app.MapHashtopolisEndpoints();
-
-
 app.MapAgentEndpoints();
-
-app.MapUserEndpoints();
 
 app.Run();
 

@@ -1,7 +1,9 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
+using System.Net;
 using System.Text.Json.Serialization;
 using DAL;
+using Mapster;
 using Models;
 using Models.Enums;
 using Serilog;
@@ -13,7 +15,8 @@ public record UpdateInformationRequest(
     [property: JsonPropertyName("uid")] string Uid,
     [property: JsonPropertyName("os")] int? OperatingSystem,
     [property: JsonPropertyName("devices")]
-    ICollection<string> Devices
+    ICollection<string> Devices,
+    [property: JsonIgnore] IPAddress? IpAddress
 ) : IHashtopolisRequest
 {
     /// <inheritdoc />
@@ -29,16 +32,11 @@ public record UpdateInformationRequest(
                 "Agent not found.");
         }
 
-        AgentOperatingSystems os = OperatingSystem is not null
-            ? !Enum.IsDefined(typeof(AgentOperatingSystems), OperatingSystem.Value)
-                ? AgentOperatingSystems.Unknown
-                : (AgentOperatingSystems)OperatingSystem.Value
-            : AgentOperatingSystems.Unknown;
-
-        agent.OperatingSystem = os;
+        if (OperatingSystem != null) agent.OperatingSystem = OperatingSystem.Adapt<AgentOperatingSystems>();
         agent.LastAction = AgentActions.UpdateClientInformation;
         agent.LastSeenTime = DateTime.UtcNow;
-        agent.Devices = Devices.ToList();
+        agent.Devices = Devices.Adapt<List<string>>();
+        agent.LastIp = IpAddress;
         if (string.IsNullOrWhiteSpace(agent.Uid)) agent.CpuOnly = !agent.CheckForGpuDevices();
 
         agent.Uid = Uid;

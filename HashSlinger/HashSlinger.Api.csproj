@@ -11,6 +11,9 @@
 
     <ItemGroup>
         <PackageReference Include="Mapster" Version="7.3.0" />
+        <PackageReference Include="Mapster.Core" Version="1.2.0" />
+        <PackageReference Include="Mapster.EFCore" Version="5.1.0" />
+        <PackageReference Include="Mapster.JsonNet" Version="1.1.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
             <PrivateAssets>all</PrivateAssets>
@@ -23,13 +26,13 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.6" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
         <PackageReference Include="SemanticVersioning" Version="2.0.2" />
         <PackageReference Include="Serilog" Version="2.12.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageReference Include="System.Runtime" Version="4.3.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -44,4 +47,20 @@
         <ProjectReference Include="..\HashSlinger.Shared\HashSlinger.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Generated Include="**\*.g.cs" />
+    </ItemGroup>
+
+    <Target Name="CleanGenerated">
+        <Delete Files="@(Generated)" />
+    </Target>
+
+    <Target Name="Mapster">
+        <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet build" />
+        <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet tool restore" />
+        <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster model -a &quot;$(TargetDir)$(ProjectName).dll&quot; -n HashSlinger.Api.Generated -o Generated" />
+        <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster extension -a &quot;$(TargetDir)$(ProjectName).dll&quot;  -n HashSlinger.Api.Generated -o Generated" />
+        <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster mapper -a &quot;$(TargetDir)$(ProjectName).dll&quot;  -n HashSlinger.Api.Generated -o Generated" />
+    </Target>
+    
 </Project>

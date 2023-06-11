@@ -24,10 +24,12 @@ public static class HashtopolisEndpoints
                 async (
                     HashtopolisRequest request,
                     [FromServices] Repository repository,
-                    [FromServices] HashSlingerContext dbContext
+                    [FromServices] HashSlingerContext dbContext,
+                    HttpContext context
                 ) =>
                 {
                     repository.DbContext = dbContext; // This is a terrible hack, but it works.
+                    request = request with { IpAddress = context.Connection.RemoteIpAddress };
                     Log.Debug("New request: {@request}", request);
                     IHashtopolisRequest? message = request.ToHashtopolisRequest();
                     if (message is null)

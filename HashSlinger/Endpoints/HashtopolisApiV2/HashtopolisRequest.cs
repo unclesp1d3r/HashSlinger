@@ -1,5 +1,6 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2;
 
+using System.Net;
 using System.Text.Json.Serialization;
 using DTO;
 
@@ -63,6 +64,8 @@ public record HashtopolisRequest(
     string? Response = default
 ) : IHashtopolisMessage
 {
+    [property: JsonIgnore] internal IPAddress? IpAddress { get; set; } = default;
+
     /// <summary>Attempts to convert to a more specific form of IHashtopolisRequest.</summary>
     /// <returns>Specific implementation of IHashtopolisRequest, or null if not possible.</returns>
     /// <remarks>
@@ -81,7 +84,7 @@ public record HashtopolisRequest(
                 ? new RegisterRequest(Action!, Voucher, Name)
                 : null,
             "updateInformation" => Token != null && Uid != null && Devices != null
-                ? new UpdateInformationRequest(Action!, Token, Uid, Os, Devices)
+                ? new UpdateInformationRequest(Action!, Token, Uid, Os, Devices, IpAddress)
                 : null,
             "login" => ClientSignature != null && Token != null
                 ? new LoginRequest(Action!, ClientSignature, Token)
