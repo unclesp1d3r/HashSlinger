@@ -29,5 +29,6 @@ namespace HashSlinger.Api.Generated
         public ICollection<HealthCheckAgentDto> HealthCheckAgents { get; set; }
         public ICollection<SpeedDto> Speeds { get; set; }
         public UserDto? User { get; set; }
+        public ICollection<ZapDto> Zaps { get; set; }
     }
 }

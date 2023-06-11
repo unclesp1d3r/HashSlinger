@@ -6,6 +6,6 @@ namespace HashSlinger.Api.Generated
     {
         public int Id { get; set; }
         public string Voucher { get; set; }
-        public DateTime Expiration { get; set; }
+        public DateTime? Expiration { get; set; }
     }
 }

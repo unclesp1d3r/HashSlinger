@@ -36,10 +36,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Endpoints\ClientApiV1\" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\HashSlinger.Shared\HashSlinger.Shared.csproj" />
     </ItemGroup>
 

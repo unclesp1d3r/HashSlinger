@@ -2,6 +2,7 @@
 
 using System.Text.Json.Serialization;
 using DAL;
+using Mapster;
 using Models;
 using Models.Enums;
 using Serilog;
@@ -22,16 +23,17 @@ public record RegisterRequest(
 
         if (voucher == null)
         {
-            Log.Information("Voucher not found");
-            return new RegisterResponse(Action,
-                HashtopolisConstants.ErrorResponse,
-                string.Empty,
-                "Voucher not found.");
+            Log.Error("Voucher not found");
+            return this.Adapt<RegisterResponse>() with
+            {
+                Response = HashtopolisConstants.ErrorResponse,
+                Message = "Voucher not found."
+            };
         }
 
-        if (voucher.Expiration < DateTime.Now)
+        if (voucher.Expiration.HasValue && voucher.Expiration < DateTime.Now)
         {
-            Log.Information("Voucher expired");
+            Log.Error("Voucher expired");
             return new RegisterResponse(Action,
                 HashtopolisConstants.ErrorResponse,
                 string.Empty,
@@ -57,6 +59,7 @@ public record RegisterRequest(
             Token = voucher.GetRandomToken(),
             User = user
         };
+        if (voucher.AccessGroup != null) newAgent.AccessGroups.Add(voucher.AccessGroup);
 
 
         int result = await repository.CreateAgentAsync(newAgent).ConfigureAwait(true);

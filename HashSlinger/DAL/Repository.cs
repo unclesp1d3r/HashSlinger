@@ -21,7 +21,7 @@ public class Repository
     public Task<RegistrationVoucher?> GetRegistrationVoucherAsync(string voucher)
     {
         Log.Debug("Getting voucher {voucher}", voucher);
-        return DbContext.RegistrationVouchers.FirstOrDefaultAsync(v => v.Voucher == voucher);
+        return DbContext.RegistrationVouchers.SingleOrDefaultAsync(v => v.Voucher == voucher);
     }
 
     /// <summary>Creates the agent asynchronously.</summary>
@@ -151,5 +151,14 @@ public class Repository
 
         await DbContext.LogEntries.AddAsync(logEntry).ConfigureAwait(true);
         return await DbContext.SaveChangesAsync().ConfigureAwait(true);
+    }
+
+    public async Task<DownloadableBinary?> GetBinaryAsync(string name)
+    {
+        DownloadableBinary? result = await DbContext.DownloadableBinaries.Where(b => b.Name == name)
+            .OrderByDescending(b => b.Version)
+            .LastOrDefaultAsync()
+            .ConfigureAwait(true);
+        return result;
     }
 }

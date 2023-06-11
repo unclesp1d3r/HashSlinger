@@ -4,17 +4,18 @@ using System.Text.Json;
 using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
 
+[TestFixture]
 public class HashtopolisRequestTests
 
 
 {
+    [SetUp] public void Setup() { }
+
     private const string TestConnectionJsonMessage = """
             {
                 "action":"testConnection"
             }
             """;
-
-    [SetUp] public void Setup() { }
 
     /// <summary>Tests that a bad request is still deserialized correctly</summary>
     /// <remarks>It should still deserialize, but all of the fields will be null.</remarks>

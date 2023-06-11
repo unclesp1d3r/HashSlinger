@@ -7,15 +7,10 @@ using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
 using Api.Models.Enums;
 using Microsoft.Extensions.DependencyInjection;
-using Task = Task;
 
 [TestFixture]
 internal class HashtopolisApiIntegrationTests
 {
-    private HttpClient _client = null!;
-    private MyWebApplicationFactory _factory = null!;
-
-
     [SetUp]
     public void Setup()
     {
@@ -40,6 +35,9 @@ internal class HashtopolisApiIntegrationTests
         _client.Dispose();
         _factory.Dispose();
     }
+
+    private HttpClient _client = null!;
+    private MyWebApplicationFactory _factory = null!;
 
     [Test]
     public async Task BadRequestIntegrationTest()

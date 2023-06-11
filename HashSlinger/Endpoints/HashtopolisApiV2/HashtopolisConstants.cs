@@ -12,6 +12,12 @@ public static class HashtopolisConstants
     /// <summary>The URL prefix for the Hashtopolis API endpoint.</summary>
     public const string EndPointPrefix = "/api/Hashtopolis";
 
+    /// <summary>The upload end point prefix</summary>
+    public const string UploadEndPointPrefix = "/files";
+
+    /// <summary>The download end point prefix</summary>
+    public const string DownloadEndPointPrefix = "/files";
+
     /// <summary>The version string returned when a ClientVersionCheck has the current version.</summary>
     public const string ClientVersionCheckCurrent = "OK";
 

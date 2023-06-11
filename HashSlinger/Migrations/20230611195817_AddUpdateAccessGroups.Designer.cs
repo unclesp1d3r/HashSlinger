@@ -5,6 +5,7 @@ using System.Net;
 using HashSlinger.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HashSlinger.Api.Migrations
 {
     [DbContext(typeof(HashSlingerContext))]
-    partial class HashSlingerContextModelSnapshot : ModelSnapshot
+    [Migration("20230611195817_AddUpdateAccessGroups")]
+    partial class AddUpdateAccessGroups
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +39,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("AgentsId");
 
-                    b.ToTable("AccessGroupAgent", (string)null);
+                    b.ToTable("AccessGroupAgent");
                 });
 
             modelBuilder.Entity("AccessGroupUser", b =>
@@ -51,7 +54,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("AccessGroupUser", (string)null);
+                    b.ToTable("AccessGroupUser");
                 });
 
             modelBuilder.Entity("FilePreconfiguredTask", b =>
@@ -66,7 +69,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("PreconfiguredTasksId");
 
-                    b.ToTable("FilePreconfiguredTask", (string)null);
+                    b.ToTable("FilePreconfiguredTask");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AccessGroup", b =>
@@ -84,7 +87,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccessGroup", (string)null);
+                    b.ToTable("AccessGroup");
 
                     b.HasData(
                         new
@@ -166,7 +169,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Agents", (string)null);
+                    b.ToTable("Agents");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AgentError", b =>
@@ -199,7 +202,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("AgentError", (string)null);
+                    b.ToTable("AgentError");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AgentStat", b =>
@@ -228,7 +231,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("AgentId");
 
-                    b.ToTable("AgentStat", (string)null);
+                    b.ToTable("AgentStat");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.ApiGroup", b =>
@@ -250,7 +253,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApiGroup", (string)null);
+                    b.ToTable("ApiGroup");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.ApiKey", b =>
@@ -287,7 +290,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ApiKey", (string)null);
+                    b.ToTable("ApiKey");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Assignment", b =>
@@ -314,7 +317,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Assignment", (string)null);
+                    b.ToTable("Assignment");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Chunk", b =>
@@ -364,7 +367,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Chunk", (string)null);
+                    b.ToTable("Chunk");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinaryType", b =>
@@ -385,7 +388,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CrackerBinaryType", (string)null);
+                    b.ToTable("CrackerBinaryType");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.DownloadableBinary", b =>
@@ -431,7 +434,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("FileId");
 
-                    b.ToTable("DownloadableBinaries", (string)null);
+                    b.ToTable("DownloadableBinaries");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("DownloadableBinary");
 
@@ -473,7 +476,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("AccessGroupId");
 
-                    b.ToTable("Files", (string)null);
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.FileDownload", b =>
@@ -497,7 +500,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("FileId");
 
-                    b.ToTable("FileDownload", (string)null);
+                    b.ToTable("FileDownload");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.FileTask", b =>
@@ -520,7 +523,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("FileTask", (string)null);
+                    b.ToTable("FileTask");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Hash", b =>
@@ -564,7 +567,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HashlistId");
 
-                    b.ToTable("Hash", (string)null);
+                    b.ToTable("Hash");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.HashBinary", b =>
@@ -609,7 +612,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HashlistId");
 
-                    b.ToTable("HashBinary", (string)null);
+                    b.ToTable("HashBinary");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.HashType", b =>
@@ -633,7 +636,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HashType", (string)null);
+                    b.ToTable("HashType");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Hashlist", b =>
@@ -696,7 +699,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HashTypeId");
 
-                    b.ToTable("Hashlist", (string)null);
+                    b.ToTable("Hashlist");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.HealthCheck", b =>
@@ -734,7 +737,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("CrackerBinaryId");
 
-                    b.ToTable("HealthCheck", (string)null);
+                    b.ToTable("HealthCheck");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.HealthCheckAgent", b =>
@@ -776,7 +779,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HealthCheckId");
 
-                    b.ToTable("HealthCheckAgent", (string)null);
+                    b.ToTable("HealthCheckAgent");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.LogEntry", b =>
@@ -801,7 +804,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LogEntries", (string)null);
+                    b.ToTable("LogEntries");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.NotificationSetting", b =>
@@ -840,7 +843,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NotificationSetting", (string)null);
+                    b.ToTable("NotificationSetting");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.PreconfiguredTask", b =>
@@ -896,7 +899,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("CrackerBinaryTypeId");
 
-                    b.ToTable("PreconfiguredTask", (string)null);
+                    b.ToTable("PreconfiguredTask");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.RegistrationVoucher", b =>
@@ -922,7 +925,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("AccessGroupId");
 
-                    b.ToTable("RegistrationVouchers", (string)null);
+                    b.ToTable("RegistrationVouchers");
 
                     b.HasData(
                         new
@@ -964,7 +967,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Session", (string)null);
+                    b.ToTable("Session");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Speed", b =>
@@ -993,7 +996,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Speed", (string)null);
+                    b.ToTable("Speed");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Supertask", b =>
@@ -1011,7 +1014,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Supertask", (string)null);
+                    b.ToTable("Supertask");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.SupertaskPretask", b =>
@@ -1037,7 +1040,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("SupertaskId");
 
-                    b.ToTable("SupertaskPretask", (string)null);
+                    b.ToTable("SupertaskPretask");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Task", b =>
@@ -1133,7 +1136,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskWrapperId");
 
-                    b.ToTable("Task", (string)null);
+                    b.ToTable("Task");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.TaskDebugOutput", b =>
@@ -1156,7 +1159,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("TaskDebugOutput", (string)null);
+                    b.ToTable("TaskDebugOutput");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.TaskWrapper", b =>
@@ -1196,7 +1199,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HashlistId");
 
-                    b.ToTable("TaskWrapper", (string)null);
+                    b.ToTable("TaskWrapper");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.User", b =>
@@ -1237,7 +1240,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasData(
                         new
@@ -1280,7 +1283,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HashlistId");
 
-                    b.ToTable("Zap", (string)null);
+                    b.ToTable("Zap");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AgentBinary", b =>

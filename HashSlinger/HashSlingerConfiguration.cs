@@ -123,4 +123,7 @@ public static class HashSlingerConfiguration
     ///     <c>Ignore error messages from crackers which contain given strings (multiple values separated by comma)</c>
     /// </value>
     public static string HcErrorIgnore => "DeviceGetFanSpeed";
+
+
+    public static string LocalStoragePath => "storage";
 }

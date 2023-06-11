@@ -20,7 +20,8 @@ internal static class Utilities
         db.AgentBinaries.Add(new AgentBinary
         {
             Version = "1.0.1", DownloadUrl = "http://example.com",
-            FileName = "test.zip", OperatingSystems = AgentOperatingSystems.Windows.ToString(),
+            BinaryName = "test.zip",
+            OperatingSystems = new List<string> { AgentOperatingSystems.Windows.ToString() },
             Type = "python",
             UpdateAvailable = string.Empty,
             UpdateTrack = "release"

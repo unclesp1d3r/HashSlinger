@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -23,25 +25,6 @@ namespace HashSlinger.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AccessGroups", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AgentBinaries",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Type = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    Version = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    OperatingSystems = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    FileName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    UpdateTrack = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    DownloadUrl = table.Column<string>(type: "text", nullable: false),
-                    UpdateAvailable = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AgentBinaries", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -149,7 +132,7 @@ namespace HashSlinger.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "File",
+                name: "Files",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -159,36 +142,16 @@ namespace HashSlinger.Api.Migrations
                     IsSecret = table.Column<bool>(type: "boolean", nullable: false),
                     FileType = table.Column<int>(type: "integer", nullable: false),
                     AccessGroupId = table.Column<int>(type: "integer", nullable: false),
-                    LineCount = table.Column<long>(type: "bigint", nullable: true)
+                    LineCount = table.Column<long>(type: "bigint", nullable: true),
+                    FileGuid = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_File", x => x.Id);
+                    table.PrimaryKey("PK_Files", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_File_AccessGroups_AccessGroupId",
+                        name: "FK_Files_AccessGroups_AccessGroupId",
                         column: x => x.AccessGroupId,
                         principalTable: "AccessGroups",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CrackerBinary",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CrackerBinaryTypeId = table.Column<int>(type: "integer", nullable: false),
-                    Version = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    DownloadUrl = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    BinaryName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CrackerBinary", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CrackerBinary_CrackerBinaryType_CrackerBinaryTypeId",
-                        column: x => x.CrackerBinaryTypeId,
-                        principalTable: "CrackerBinaryType",
                         principalColumn: "Id");
                 });
 
@@ -388,6 +351,39 @@ namespace HashSlinger.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DownloadableBinaries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    BinaryName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    OperatingSystems = table.Column<List<string>>(type: "text[]", nullable: false),
+                    Version = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    DownloadUrl = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    FileId = table.Column<int>(type: "integer", nullable: true),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    UpdateTrack = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    UpdateAvailable = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    CrackerBinaryTypeId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DownloadableBinaries", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DownloadableBinaries_CrackerBinaryType_CrackerBinaryTypeId",
+                        column: x => x.CrackerBinaryTypeId,
+                        principalTable: "CrackerBinaryType",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_DownloadableBinaries_Files_FileId",
+                        column: x => x.FileId,
+                        principalTable: "Files",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FileDownload",
                 columns: table => new
                 {
@@ -401,33 +397,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     table.PrimaryKey("PK_FileDownload", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FileDownload_File_FileId",
+                        name: "FK_FileDownload_Files_FileId",
                         column: x => x.FileId,
-                        principalTable: "File",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HealthCheck",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    CheckType = table.Column<int>(type: "integer", nullable: false),
-                    HashtypeId = table.Column<int>(type: "integer", nullable: false),
-                    CrackerBinaryId = table.Column<int>(type: "integer", nullable: false),
-                    ExpectedCracks = table.Column<int>(type: "integer", nullable: false),
-                    AttackCmd = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HealthCheck", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_HealthCheck_CrackerBinary_CrackerBinaryId",
-                        column: x => x.CrackerBinaryId,
-                        principalTable: "CrackerBinary",
+                        principalTable: "Files",
                         principalColumn: "Id");
                 });
 
@@ -442,9 +414,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     table.PrimaryKey("PK_FilePreconfiguredTask", x => new { x.FilesId, x.PreconfiguredTasksId });
                     table.ForeignKey(
-                        name: "FK_FilePreconfiguredTask_File_FilesId",
+                        name: "FK_FilePreconfiguredTask_Files_FilesId",
                         column: x => x.FilesId,
-                        principalTable: "File",
+                        principalTable: "Files",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -582,32 +554,26 @@ namespace HashSlinger.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HealthCheckAgent",
+                name: "HealthCheck",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    HealthCheckId = table.Column<int>(type: "integer", nullable: false),
-                    AgentId = table.Column<int>(type: "integer", nullable: false),
+                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
-                    Cracked = table.Column<int>(type: "integer", nullable: false),
-                    NumGpus = table.Column<int>(type: "integer", nullable: false),
-                    Start = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    End = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Errors = table.Column<string>(type: "text", nullable: false)
+                    CheckType = table.Column<int>(type: "integer", nullable: false),
+                    HashtypeId = table.Column<int>(type: "integer", nullable: false),
+                    CrackerBinaryId = table.Column<int>(type: "integer", nullable: false),
+                    ExpectedCracks = table.Column<int>(type: "integer", nullable: false),
+                    AttackCmd = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HealthCheckAgent", x => x.Id);
+                    table.PrimaryKey("PK_HealthCheck", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HealthCheckAgent_Agents_AgentId",
-                        column: x => x.AgentId,
-                        principalTable: "Agents",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_HealthCheckAgent_HealthCheck_HealthCheckId",
-                        column: x => x.HealthCheckId,
-                        principalTable: "HealthCheck",
+                        name: "FK_HealthCheck_DownloadableBinaries_CrackerBinaryId",
+                        column: x => x.CrackerBinaryId,
+                        principalTable: "DownloadableBinaries",
                         principalColumn: "Id");
                 });
 
@@ -650,14 +616,44 @@ namespace HashSlinger.Api.Migrations
                         principalTable: "CrackerBinaryType",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Task_CrackerBinary_CrackerBinaryId",
+                        name: "FK_Task_DownloadableBinaries_CrackerBinaryId",
                         column: x => x.CrackerBinaryId,
-                        principalTable: "CrackerBinary",
+                        principalTable: "DownloadableBinaries",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Task_TaskWrapper_TaskWrapperId",
                         column: x => x.TaskWrapperId,
                         principalTable: "TaskWrapper",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HealthCheckAgent",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    HealthCheckId = table.Column<int>(type: "integer", nullable: false),
+                    AgentId = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Cracked = table.Column<int>(type: "integer", nullable: false),
+                    NumGpus = table.Column<int>(type: "integer", nullable: false),
+                    Start = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    End = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Errors = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HealthCheckAgent", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HealthCheckAgent_Agents_AgentId",
+                        column: x => x.AgentId,
+                        principalTable: "Agents",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_HealthCheckAgent_HealthCheck_HealthCheckId",
+                        column: x => x.HealthCheckId,
+                        principalTable: "HealthCheck",
                         principalColumn: "Id");
                 });
 
@@ -761,9 +757,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     table.PrimaryKey("PK_FileTask", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FileTask_File_FileId",
+                        name: "FK_FileTask_Files_FileId",
                         column: x => x.FileId,
-                        principalTable: "File",
+                        principalTable: "Files",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_FileTask_Task_TaskId",
@@ -938,14 +934,14 @@ namespace HashSlinger.Api.Migrations
                 column: "TaskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CrackerBinary_CrackerBinaryTypeId",
-                table: "CrackerBinary",
+                name: "IX_DownloadableBinaries_CrackerBinaryTypeId",
+                table: "DownloadableBinaries",
                 column: "CrackerBinaryTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_AccessGroupId",
-                table: "File",
-                column: "AccessGroupId");
+                name: "IX_DownloadableBinaries_FileId",
+                table: "DownloadableBinaries",
+                column: "FileId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FileDownload_FileId",
@@ -956,6 +952,11 @@ namespace HashSlinger.Api.Migrations
                 name: "IX_FilePreconfiguredTask_PreconfiguredTasksId",
                 table: "FilePreconfiguredTask",
                 column: "PreconfiguredTasksId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_AccessGroupId",
+                table: "Files",
+                column: "AccessGroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FileTask_FileId",
@@ -1098,9 +1099,6 @@ namespace HashSlinger.Api.Migrations
                 name: "AccessGroupUser");
 
             migrationBuilder.DropTable(
-                name: "AgentBinaries");
-
-            migrationBuilder.DropTable(
                 name: "AgentError");
 
             migrationBuilder.DropTable(
@@ -1158,9 +1156,6 @@ namespace HashSlinger.Api.Migrations
                 name: "ApiGroup");
 
             migrationBuilder.DropTable(
-                name: "File");
-
-            migrationBuilder.DropTable(
                 name: "Chunk");
 
             migrationBuilder.DropTable(
@@ -1182,13 +1177,16 @@ namespace HashSlinger.Api.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "CrackerBinary");
+                name: "DownloadableBinaries");
 
             migrationBuilder.DropTable(
                 name: "TaskWrapper");
 
             migrationBuilder.DropTable(
                 name: "CrackerBinaryType");
+
+            migrationBuilder.DropTable(
+                name: "Files");
 
             migrationBuilder.DropTable(
                 name: "Hashlist");

@@ -24,4 +24,14 @@
         <ProjectReference Include="..\HashSlinger\HashSlinger.Api.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="SupportFiles\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="SupportFiles\test_file.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

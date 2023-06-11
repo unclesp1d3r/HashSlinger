@@ -14,7 +14,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HashSlinger.Api.Migrations
 {
     [DbContext(typeof(HashSlingerContext))]
-    [Migration("20230607233532_InitialSetup")]
+    [Migration("20230611190921_InitialSetup")]
     partial class InitialSetup
     {
         /// <inheritdoc />
@@ -158,53 +158,6 @@ namespace HashSlinger.Api.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Agents");
-                });
-
-            modelBuilder.Entity("HashSlinger.Api.Models.AgentBinary", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DownloadUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("OperatingSystems")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("UpdateAvailable")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("UpdateTrack")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("Version")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AgentBinaries");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AgentError", b =>
@@ -405,39 +358,6 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Chunk");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinary", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BinaryName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<int>("CrackerBinaryTypeId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("DownloadUrl")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<string>("Version")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CrackerBinaryTypeId");
-
-                    b.ToTable("CrackerBinary");
-                });
-
             modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinaryType", b =>
                 {
                     b.Property<int>("Id")
@@ -459,6 +379,56 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("CrackerBinaryType");
                 });
 
+            modelBuilder.Entity("HashSlinger.Api.Models.DownloadableBinary", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BinaryName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DownloadUrl")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<int?>("FileId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<List<string>>("OperatingSystems")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileId");
+
+                    b.ToTable("DownloadableBinaries");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("DownloadableBinary");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("HashSlinger.Api.Models.File", b =>
                 {
                     b.Property<int>("Id")
@@ -469,6 +439,9 @@ namespace HashSlinger.Api.Migrations
 
                     b.Property<int>("AccessGroupId")
                         .HasColumnType("integer");
+
+                    b.Property<Guid?>("FileGuid")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("FileName")
                         .IsRequired()
@@ -491,7 +464,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("AccessGroupId");
 
-                    b.ToTable("File");
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.FileDownload", b =>
@@ -1276,6 +1249,40 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Zap");
                 });
 
+            modelBuilder.Entity("HashSlinger.Api.Models.AgentBinary", b =>
+                {
+                    b.HasBaseType("HashSlinger.Api.Models.DownloadableBinary");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("UpdateAvailable")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("UpdateTrack")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasDiscriminator().HasValue("AgentBinary");
+                });
+
+            modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinary", b =>
+                {
+                    b.HasBaseType("HashSlinger.Api.Models.DownloadableBinary");
+
+                    b.Property<int>("CrackerBinaryTypeId")
+                        .HasColumnType("integer");
+
+                    b.HasIndex("CrackerBinaryTypeId");
+
+                    b.HasDiscriminator().HasValue("CrackerBinary");
+                });
+
             modelBuilder.Entity("AccessGroupAgent", b =>
                 {
                     b.HasOne("HashSlinger.Api.Models.AccessGroup", null)
@@ -1408,14 +1415,13 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinary", b =>
+            modelBuilder.Entity("HashSlinger.Api.Models.DownloadableBinary", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.CrackerBinaryType", "CrackerBinaryType")
-                        .WithMany("CrackerBinaries")
-                        .HasForeignKey("CrackerBinaryTypeId")
-                        .IsRequired();
+                    b.HasOne("HashSlinger.Api.Models.File", "File")
+                        .WithMany()
+                        .HasForeignKey("FileId");
 
-                    b.Navigation("CrackerBinaryType");
+                    b.Navigation("File");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.File", b =>
@@ -1660,6 +1666,16 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Hashlist");
                 });
 
+            modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinary", b =>
+                {
+                    b.HasOne("HashSlinger.Api.Models.CrackerBinaryType", "CrackerBinaryType")
+                        .WithMany("CrackerBinaries")
+                        .HasForeignKey("CrackerBinaryTypeId")
+                        .IsRequired();
+
+                    b.Navigation("CrackerBinaryType");
+                });
+
             modelBuilder.Entity("HashSlinger.Api.Models.AccessGroup", b =>
                 {
                     b.Navigation("Files");
@@ -1696,13 +1712,6 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("HashBinaries");
 
                     b.Navigation("Hashes");
-                });
-
-            modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinary", b =>
-                {
-                    b.Navigation("HealthChecks");
-
-                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinaryType", b =>
@@ -1781,6 +1790,13 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("NotificationSettings");
 
                     b.Navigation("Sessions");
+                });
+
+            modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinary", b =>
+                {
+                    b.Navigation("HealthChecks");
+
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }
