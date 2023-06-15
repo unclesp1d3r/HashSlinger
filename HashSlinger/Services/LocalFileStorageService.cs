@@ -51,6 +51,18 @@ public class LocalFileStorageService : IFileStorageService
         return Task.FromResult(File.Exists(filePath));
     }
 
+    /// <inheritdoc />
+    public async Task<Results<Ok, NotFound>> DeleteFileAsync(Guid uuid, string bucket)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public async Task<Results<Ok, NotFound>> DeleteFilesAsync(Guid uuid)
+    {
+        throw new NotImplementedException();
+    }
+
     private static void EnsureDirectoryExists(string path)
     {
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
@@ -65,17 +77,5 @@ public class LocalFileStorageService : IFileStorageService
     private string GetBucketPath(string bucket)
     {
         return Path.Combine(LocalStoragePath, bucket);
-    }
-
-    /// <inheritdoc />
-    public async Task<Results<Ok, NotFound>> DeleteFileAsync(Guid uuid, string bucket)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public async Task<Results<Ok, NotFound>> DeleteFilesAsync(Guid uuid)
-    {
-        throw new NotImplementedException();
     }
 }

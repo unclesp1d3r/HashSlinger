@@ -11,8 +11,6 @@ using Models.Enums;
 using Serilog;
 
 /// <summary>Handles the Hashtopolis check client version call.</summary>
-/// <seealso
-///     cref="MediatR.IRequestHandler&lt;HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO.CheckClientVersionRequest, HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO.CheckClientVersionResponse&gt;" />
 public class
     CheckClientVersionHandler : IRequestHandler<CheckClientVersionRequest, CheckClientVersionResponse>
 {

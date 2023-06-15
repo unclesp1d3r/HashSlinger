@@ -7,8 +7,16 @@ using Microsoft.EntityFrameworkCore;
 
 internal static class Utilities
 {
-    public const string TestVoucher = "test123456";
     public const string TestToken = "testToken";
+    public const string TestVoucher = "test123456";
+
+    public static void ReinitializeDbForTests(HashSlingerContext db)
+    {
+        db.RegistrationVouchers.ExecuteDelete();
+        db.Agents.ExecuteDelete();
+        db.AgentBinaries.ExecuteDelete();
+        Utilities.InitializeDbForTests(db);
+    }
 
     private static void InitializeDbForTests(HashSlingerContext db)
     {
@@ -27,13 +35,5 @@ internal static class Utilities
             UpdateTrack = "release"
         });
         db.SaveChanges();
-    }
-
-    public static void ReinitializeDbForTests(HashSlingerContext db)
-    {
-        db.RegistrationVouchers.ExecuteDelete();
-        db.Agents.ExecuteDelete();
-        db.AgentBinaries.ExecuteDelete();
-        Utilities.InitializeDbForTests(db);
     }
 }

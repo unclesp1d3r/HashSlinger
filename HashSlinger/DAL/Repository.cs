@@ -15,16 +15,6 @@ public class Repository
     /// <summary>The database context</summary>
     internal HashSlingerContext DbContext = null!;
 
-    /// <summary>Gets the registration voucher asynchronously.</summary>
-    /// <param name="voucher">The voucher.</param>
-    /// <returns>The RegistrationVoucher, or null.</returns>
-    public Task<RegistrationVoucher?> GetRegistrationVoucherAsync(string voucher)
-    {
-        Log.Debug("Getting voucher {voucher}", voucher);
-        return DbContext.RegistrationVouchers.Include(r => r.AccessGroup)
-            .SingleOrDefaultAsync(v => v.Voucher == voucher);
-    }
-
     /// <summary>Creates the agent asynchronously.</summary>
     /// <param name="newAgent">The new agent.</param>
     /// <returns>The number of agents created. Should be 1.</returns>
@@ -45,33 +35,6 @@ public class Repository
             .ConfigureAwait(true);
         DbContext.RegistrationVouchers.Remove(voucher);
         return await DbContext.SaveChangesAsync().ConfigureAwait(true);
-    }
-
-    /// <summary>Gets the agent asynchronously.</summary>
-    /// <param name="agentId">The agent identifier.</param>
-    public Task<Agent?> GetAgentByIdAsync(int agentId)
-    {
-        Log.Debug("Getting agent {agentId}", agentId);
-        return DbContext.Agents.SingleOrDefaultAsync(a => a.Id == agentId);
-    }
-
-    /// <summary>Updates the agent.</summary>
-    /// <param name="agent">The agent.</param>
-    /// <returns>The number of records updated. Should be 1.</returns>
-    public Task<int> UpdateAgentAsync(Agent agent)
-    {
-        Log.Debug("Updating agent {agent}", agent);
-        DbContext.Agents.Update(agent);
-        return DbContext.SaveChangesAsync();
-    }
-
-    /// <summary>Gets the agent by token asynchronous.</summary>
-    /// <param name="token">The token.</param>
-    /// <returns>The agent associated with the token, or null.<br /></returns>
-    public Task<Agent?> GetAgentByTokenAsync(string token)
-    {
-        Log.Debug("Getting agent by token {token}", token);
-        return DbContext.Agents.SingleOrDefaultAsync(a => a.Token == token);
     }
 
     /// <summary>Gets the agent binary asynchronously.</summary>
@@ -110,6 +73,32 @@ public class Repository
         return clientBinary;
     }
 
+    /// <summary>Gets the agent asynchronously.</summary>
+    /// <param name="agentId">The agent identifier.</param>
+    public Task<Agent?> GetAgentByIdAsync(int agentId)
+    {
+        Log.Debug("Getting agent {agentId}", agentId);
+        return DbContext.Agents.SingleOrDefaultAsync(a => a.Id == agentId);
+    }
+
+    /// <summary>Gets the agent by token asynchronous.</summary>
+    /// <param name="token">The token.</param>
+    /// <returns>The agent associated with the token, or null.<br /></returns>
+    public Task<Agent?> GetAgentByTokenAsync(string token)
+    {
+        Log.Debug("Getting agent by token {token}", token);
+        return DbContext.Agents.SingleOrDefaultAsync(a => a.Token == token);
+    }
+
+    public async Task<DownloadableBinary?> GetBinaryAsync(string name)
+    {
+        DownloadableBinary? result = await DbContext.DownloadableBinaries.Where(b => b.Name == name)
+            .OrderByDescending(b => b.Version)
+            .LastOrDefaultAsync()
+            .ConfigureAwait(true);
+        return result;
+    }
+
     /// <summary>Gets the default user.</summary>
     /// <returns>
     ///     <br />
@@ -118,6 +107,26 @@ public class Repository
     {
         Log.Debug("Getting default user");
         return DbContext.Users.OrderBy(u => u.RegisteredSince).FirstOrDefaultAsync();
+    }
+
+    /// <summary>Gets the registration voucher asynchronously.</summary>
+    /// <param name="voucher">The voucher.</param>
+    /// <returns>The RegistrationVoucher, or null.</returns>
+    public Task<RegistrationVoucher?> GetRegistrationVoucherAsync(string voucher)
+    {
+        Log.Debug("Getting voucher {voucher}", voucher);
+        return DbContext.RegistrationVouchers.Include(r => r.AccessGroup)
+            .SingleOrDefaultAsync(v => v.Voucher == voucher);
+    }
+
+    /// <summary>Updates the agent.</summary>
+    /// <param name="agent">The agent.</param>
+    /// <returns>The number of records updated. Should be 1.</returns>
+    public Task<int> UpdateAgentAsync(Agent agent)
+    {
+        Log.Debug("Updating agent {agent}", agent);
+        DbContext.Agents.Update(agent);
+        return DbContext.SaveChangesAsync();
     }
 
     /// <summary>Writes the log event.</summary>
@@ -152,14 +161,5 @@ public class Repository
 
         await DbContext.LogEntries.AddAsync(logEntry).ConfigureAwait(true);
         return await DbContext.SaveChangesAsync().ConfigureAwait(true);
-    }
-
-    public async Task<DownloadableBinary?> GetBinaryAsync(string name)
-    {
-        DownloadableBinary? result = await DbContext.DownloadableBinaries.Where(b => b.Name == name)
-            .OrderByDescending(b => b.Version)
-            .LastOrDefaultAsync()
-            .ConfigureAwait(true);
-        return result;
     }
 }
