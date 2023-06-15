@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using HashSlinger.Api.DAL;
 using HashSlinger.Api.Data;
 using HashSlinger.Api.Endpoints.ClientApiV1;
 using HashSlinger.Api.Endpoints.HashtopolisApiV2;
@@ -29,7 +28,6 @@ builder.Services.AddDbContext<HashSlingerContext>(options =>
     options.UseNpgsql(builder.Configuration["HashSlingerContext"])
         .EnableSensitiveDataLogging()
         .EnableDetailedErrors());
-builder.Services.AddSingleton(new Repository());
 builder.Services.AddSingleton<IFileStorageService, LocalFileStorageService>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 

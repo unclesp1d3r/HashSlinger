@@ -1,7 +1,6 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using DAL;
 
 /// <summary>
 ///     In case there happens an error with Hashcat/Cracker on the client, it can submit the error message to the
@@ -16,11 +15,4 @@ public record ClientErrorRequest(
     int? ChunkId,
     [property: JsonPropertyName("message")]
     string Message
-) : IHashtopolisRequest
-{
-    /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(Repository repository)
-    {
-        throw new NotImplementedException();
-    }
-}
+) : IHashtopolisRequest;

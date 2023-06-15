@@ -10,16 +10,19 @@ using Serilog;
 /// <summary>Handles the Hashtopolis testConnection call.</summary>
 public class TestConnectionHandler : IRequestHandler<TestConnectionRequest, TestConnectionResponse>
 {
-    /// <inheritdoc />
-    public async Task<TestConnectionResponse> Handle(
+    /// <summary>Handles a request</summary>
+    /// <param name="request">The request</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Response from the request</returns>
+    public Task<TestConnectionResponse> Handle(
         TestConnectionRequest request,
         CancellationToken cancellationToken
     )
     {
         Log.Debug("TestConnectionRequest received");
-        return request.Adapt<TestConnectionResponse>() with
+        return Task.FromResult(request.Adapt<TestConnectionResponse>() with
         {
             Response = HashtopolisConstants.SuccessResponse
-        };
+        });
     }
 }

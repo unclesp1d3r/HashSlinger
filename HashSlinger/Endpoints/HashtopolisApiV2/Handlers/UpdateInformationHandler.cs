@@ -1,8 +1,7 @@
-﻿// ReSharper disable UnusedMember.Global
+﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
 
-namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
-
-using DAL;
+using Api.Handlers.Commands;
+using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
@@ -12,14 +11,15 @@ using Serilog;
 
 /// <summary>Handles the Hashtopolis API request to update the client information.</summary>
 /// <seealso
-///     cref="MediatR.IRequestHandler&lt;HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO.UpdateInformationRequest, HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO.UpdateInformationResponse&gt;" />
+///     cref="UpdateInformationResponse" />
+// ReSharper disable once UnusedMember.Global
 public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest, UpdateInformationResponse>
 {
-    private readonly Repository _repository;
+    private readonly IMediator _mediator;
 
     /// <summary>Initializes a new instance of the <see cref="UpdateInformationHandler" /> class.</summary>
-    /// <param name="repository">The repository.</param>
-    public UpdateInformationHandler(Repository repository) => _repository = repository;
+    /// <param name="mediator">The mediator.</param>
+    public UpdateInformationHandler(IMediator mediator) => _mediator = mediator;
 
     /// <inheritdoc />
     public async Task<UpdateInformationResponse> Handle(
@@ -27,7 +27,9 @@ public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest
         CancellationToken cancellationToken
     )
     {
-        Agent? agent = await _repository.GetAgentByTokenAsync(request.Token).ConfigureAwait(false);
+        Agent? agent = await _mediator
+            .Send(new GetAgentByTokenQuery { Token = request.Token }, cancellationToken)
+            .ConfigureAwait(false);
         if (agent == null)
         {
             Log.Information("Agent not found");
@@ -47,9 +49,7 @@ public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest
         if (string.IsNullOrWhiteSpace(agent.Uid)) agent.CpuOnly = !agent.CheckForGpuDevices();
         agent.Uid = request.Uid;
 
-        int result = await _repository.UpdateAgentAsync(agent).ConfigureAwait(true);
-        if (result != 1) Log.Error("Failed to update agent");
-
+        await _mediator.Send(new UpdateAgentCommand(agent), cancellationToken).ConfigureAwait(true);
         return request.Adapt<UpdateInformationResponse>() with
         {
             Response = HashtopolisConstants.SuccessResponse

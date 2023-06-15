@@ -2,7 +2,10 @@
 
 using Data;
 using Generated;
+using Handlers.Commands;
+using Handlers.Queries;
 using Mapster;
+using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Models;
@@ -24,14 +27,11 @@ public static class UserApiEndPoints
             .WithOpenApi();
 
         group.MapGet("/{id}",
-                async Task<Results<Ok<AgentDto>, NotFound>> (int id, HashSlingerContext db) =>
+                async Task<Results<Ok<AgentDto>, NotFound>> (int id, IMediator mediator) =>
                 {
-                    return await db.Agents.AsNoTracking()
-                        .ProjectToType<AgentDto>()
-                        .FirstOrDefaultAsync(a => a.Id == id)
-                        .ConfigureAwait(true) is AgentDto model
-                        ? TypedResults.Ok(model)
-                        : TypedResults.NotFound();
+                    Agent? agent = await mediator.Send(new GetAgentByIdQuery(id)).ConfigureAwait(true);
+                    if (agent is null) return TypedResults.NotFound();
+                    return TypedResults.Ok(agent.Adapt<AgentDto>());
                 })
             .WithName("GetAgentById")
             .WithOpenApi();
@@ -84,29 +84,7 @@ public static class UserApiEndPoints
 
         // Mostly for testing. This is not part of the final API.
         group.MapPost("/initial-setup",
-                (HashSlingerContext db) =>
-                {
-                    // Clean up the database.
-                    db.Agents.RemoveRange(db.Agents);
-                    db.Users.RemoveRange(db.Users);
-                    db.RegistrationVouchers.RemoveRange(db.RegistrationVouchers);
-                    db.AccessGroups.RemoveRange(db.AccessGroups);
-                    db.SaveChanges();
-
-                    var defaultGroup = new AccessGroup { Name = "Default" };
-                    db.AccessGroups.Add(defaultGroup);
-                    var admin = new User
-                    {
-                        Email = "admin@localhost", UserName = "admin",
-                        RegisteredSince = DateTime.UtcNow
-                    };
-                    admin.SetPasswordHash("admin");
-                    defaultGroup.Users.Add(admin);
-                    db.Users.Add(admin);
-                    db.RegistrationVouchers.Add(new RegistrationVoucher
-                        { Voucher = "abcd", AccessGroup = defaultGroup });
-                    db.SaveChanges();
-                })
+                (IMediator mediator) => { mediator.Send(new PerformInitialSetupCommand()); })
             .WithOpenApi();
     }
 }

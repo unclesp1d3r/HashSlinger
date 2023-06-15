@@ -1,6 +1,5 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2;
 
-using DAL;
 using Data;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -24,13 +23,11 @@ public static class HashtopolisEndpoints
         group.MapPost("/",
                 async (
                     HashtopolisRequest request,
-                    [FromServices] Repository repository,
                     [FromServices] HashSlingerContext dbContext,
                     IMediator mediator,
                     HttpContext context
                 ) =>
                 {
-                    repository.DbContext = dbContext; // This is a terrible hack, but it works.
                     request = request with { IpAddress = context.Connection.RemoteIpAddress };
                     Log.Debug("New request: {@request}", request);
 

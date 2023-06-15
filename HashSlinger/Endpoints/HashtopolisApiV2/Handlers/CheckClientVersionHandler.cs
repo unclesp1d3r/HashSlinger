@@ -2,7 +2,8 @@
 
 namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
 
-using DAL;
+using Api.Handlers.Commands;
+using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
@@ -14,11 +15,11 @@ using Serilog;
 public class
     CheckClientVersionHandler : IRequestHandler<CheckClientVersionRequest, CheckClientVersionResponse>
 {
-    private readonly Repository _repository;
+    private readonly IMediator _mediator;
 
     /// <summary>Initializes a new instance of the <see cref="CheckClientVersionHandler" /> class.</summary>
-    /// <param name="repository"></param>
-    public CheckClientVersionHandler(Repository repository) => _repository = repository;
+    /// <param name="mediator">The mediator.</param>
+    public CheckClientVersionHandler(IMediator mediator) => _mediator = mediator;
 
     /// <inheritdoc />
     public async Task<CheckClientVersionResponse> Handle(
@@ -27,7 +28,9 @@ public class
     )
     {
         Log.Debug("Processing request {request}", this);
-        Agent? agent = await _repository.GetAgentByTokenAsync(request.Token).ConfigureAwait(false);
+        Agent? agent = await _mediator
+            .Send(new GetAgentByTokenQuery { Token = request.Token }, cancellationToken)
+            .ConfigureAwait(false);
         if (agent == null)
         {
             Log.Information("Agent not found");
@@ -41,13 +44,14 @@ public class
         agent.LastAction = AgentActions.CheckClientVersion;
         agent.LastSeenTime = DateTime.UtcNow;
 
-        int result = await _repository.UpdateAgentAsync(agent).ConfigureAwait(true);
-        if (result != 1) Log.Error("Failed to update agent");
-
-        AgentBinary? clientBinary = await _repository.GetAgentBinaryAsync(request.Type, request.Version)
+        await _mediator.Send(new UpdateAgentCommand(agent), cancellationToken).ConfigureAwait(true);
+        AgentBinary? clientBinary = await _mediator
+            .Send(new GetAgentBinaryQuery { Type = request.Type, CurrentVersion = request.Version },
+                cancellationToken)
             .ConfigureAwait(false);
 
-        if (clientBinary == null)
+
+        if (clientBinary is null)
         {
             Log.Information("No client binary found for type {type}", request.Type);
             return request.Adapt<CheckClientVersionResponse>() with

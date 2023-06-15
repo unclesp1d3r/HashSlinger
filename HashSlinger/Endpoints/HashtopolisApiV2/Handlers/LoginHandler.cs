@@ -1,8 +1,7 @@
-﻿// ReSharper disable UnusedMember.Global
+﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
 
-namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
-
-using DAL;
+using Api.Handlers.Commands;
+using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
@@ -11,19 +10,22 @@ using Models.Enums;
 using Serilog;
 
 /// <summary>Handles Hashtopolis login requests.</summary>
+// ReSharper disable once UnusedMember.Global
 public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
 {
-    private readonly Repository _repository;
+    private readonly IMediator _mediator;
 
     /// <summary>Initializes a new instance of the <see cref="LoginHandler" /> class.</summary>
-    /// <param name="repository">The repository.</param>
-    public LoginHandler(Repository repository) => _repository = repository;
+    /// <param name="mediator">The mediator.</param>
+    public LoginHandler(IMediator mediator) => _mediator = mediator;
 
 
     /// <inheritdoc />
     public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
     {
-        Agent? agent = await _repository.GetAgentByTokenAsync(request.Token).ConfigureAwait(true);
+        Agent? agent = await _mediator
+            .Send(new GetAgentByTokenQuery { Token = request.Token }, cancellationToken)
+            .ConfigureAwait(false);
 
         if (agent is null)
         {
@@ -39,7 +41,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
         agent.LastSeenTime = DateTime.UtcNow;
         agent.LastAction = AgentActions.Login;
 
-        await _repository.UpdateAgentAsync(agent).ConfigureAwait(true);
+        await _mediator.Send(new UpdateAgentCommand(agent), cancellationToken).ConfigureAwait(true);
         return request.Adapt<LoginResponse>() with
         {
             Response = HashtopolisConstants.SuccessResponse,

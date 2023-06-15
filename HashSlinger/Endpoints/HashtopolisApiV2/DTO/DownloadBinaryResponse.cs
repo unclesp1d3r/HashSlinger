@@ -5,17 +5,22 @@ using System.Text.Json.Serialization;
 /// <inheritdoc />
 public record DownloadBinaryResponse(
     [property: JsonPropertyName("action")] string Action,
-    [property: JsonPropertyName("response")]
+    [property: JsonPropertyName("response"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string Response,
-    [property: JsonPropertyName("url")] string Url,
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("executable")]
+    [property: JsonPropertyName("url"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    string Url,
+    [property: JsonPropertyName("name"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    string Name,
+    [property: JsonPropertyName("executable"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Executable,
-    [property: JsonPropertyName("keyspaceCommand")]
+    [property: JsonPropertyName("keyspaceCommand"),
+               JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? KeyspaceCommand,
-    [property: JsonPropertyName("skipCommand")]
+    [property: JsonPropertyName("skipCommand"),
+               JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? SkipCommand,
-    [property: JsonPropertyName("limitCommand")]
+    [property: JsonPropertyName("limitCommand"),
+               JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? LimitCommand,
     [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null

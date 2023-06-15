@@ -48,12 +48,6 @@
         <Generated Include="**\*.g.cs" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Handlers\Commands\" />
-      <Folder Include="Handlers\Queries\" />
-      <Folder Include="Handlers\" />
-    </ItemGroup>
-
     <Target Name="CleanGenerated">
         <Delete Files="@(Generated)" />
     </Target>

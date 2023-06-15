@@ -1,7 +1,6 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using DAL;
 
 /// <summary>Reports the progress of the current chunk, in the given reporting interval.</summary>
 public record SendProgressRequest(
@@ -20,11 +19,4 @@ public record SendProgressRequest(
     ICollection<int>? GpuTemp,
     [property: JsonPropertyName("gpuUtil")]
     ICollection<int>? GpuUtil
-) : IHashtopolisRequest
-{
-    /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(Repository repository)
-    {
-        throw new NotImplementedException();
-    }
-}
+) : IHashtopolisRequest;
