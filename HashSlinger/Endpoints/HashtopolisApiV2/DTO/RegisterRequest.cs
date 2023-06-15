@@ -70,7 +70,8 @@ public record RegisterRequest(
             return new RegisterResponse(Action, "ERROR", string.Empty, "Failed to create agent");
         }
 
-        await repository.DeleteRegistrationVoucherAsync(voucher).ConfigureAwait(true);
+        if (voucher.Expiration != null)
+            await repository.DeleteRegistrationVoucherAsync(voucher).ConfigureAwait(true);
         Log.Debug("Created agent {AgentName} with token {AgentToken}", newAgent.Name, newAgent.Token);
         return new RegisterResponse(Action, HashtopolisConstants.SuccessResponse, newAgent.Token);
     }

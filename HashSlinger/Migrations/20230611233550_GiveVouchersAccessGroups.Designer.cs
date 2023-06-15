@@ -14,8 +14,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HashSlinger.Api.Migrations
 {
     [DbContext(typeof(HashSlingerContext))]
-    [Migration("20230611190921_InitialSetup")]
-    partial class InitialSetup
+    [Migration("20230611233550_GiveVouchersAccessGroups")]
+    partial class GiveVouchersAccessGroups
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -898,7 +898,10 @@ namespace HashSlinger.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Expiration")
+                    b.Property<int?>("AccessGroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("Expiration")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Voucher")
@@ -907,6 +910,8 @@ namespace HashSlinger.Api.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AccessGroupId");
 
                     b.ToTable("RegistrationVouchers");
                 });
@@ -1374,6 +1379,7 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Api.Models.User", "User")
                         .WithMany("ApiKeys")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ApiGroup");
@@ -1542,6 +1548,7 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Api.Models.User", "User")
                         .WithMany("NotificationSettings")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1557,11 +1564,21 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("CrackerBinaryType");
                 });
 
+            modelBuilder.Entity("HashSlinger.Api.Models.RegistrationVoucher", b =>
+                {
+                    b.HasOne("HashSlinger.Api.Models.AccessGroup", "AccessGroup")
+                        .WithMany("RegistrationVouchers")
+                        .HasForeignKey("AccessGroupId");
+
+                    b.Navigation("AccessGroup");
+                });
+
             modelBuilder.Entity("HashSlinger.Api.Models.Session", b =>
                 {
                     b.HasOne("HashSlinger.Api.Models.User", "User")
                         .WithMany("Sessions")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1681,6 +1698,8 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Files");
 
                     b.Navigation("Hashlists");
+
+                    b.Navigation("RegistrationVouchers");
 
                     b.Navigation("TaskWrappers");
                 });

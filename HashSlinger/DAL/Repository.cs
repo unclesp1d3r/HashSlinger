@@ -21,7 +21,8 @@ public class Repository
     public Task<RegistrationVoucher?> GetRegistrationVoucherAsync(string voucher)
     {
         Log.Debug("Getting voucher {voucher}", voucher);
-        return DbContext.RegistrationVouchers.SingleOrDefaultAsync(v => v.Voucher == voucher);
+        return DbContext.RegistrationVouchers.Include(r => r.AccessGroup)
+            .SingleOrDefaultAsync(v => v.Voucher == voucher);
     }
 
     /// <summary>Creates the agent asynchronously.</summary>
@@ -51,18 +52,17 @@ public class Repository
     public Task<Agent?> GetAgentByIdAsync(int agentId)
     {
         Log.Debug("Getting agent {agentId}", agentId);
-        return DbContext.Agents.FirstOrDefaultAsync(a => a.Id == agentId);
+        return DbContext.Agents.SingleOrDefaultAsync(a => a.Id == agentId);
     }
 
     /// <summary>Updates the agent.</summary>
     /// <param name="agent">The agent.</param>
     /// <returns>The number of records updated. Should be 1.</returns>
-    public async Task<int> UpdateAgentAsync(Agent agent)
+    public Task<int> UpdateAgentAsync(Agent agent)
     {
-        await WriteLogEventAsync(LogEntry.Information($"Updating agent {agent}", Issuer))
-            .ConfigureAwait(true);
+        Log.Debug("Updating agent {agent}", agent);
         DbContext.Agents.Update(agent);
-        return await DbContext.SaveChangesAsync().ConfigureAwait(true);
+        return DbContext.SaveChangesAsync();
     }
 
     /// <summary>Gets the agent by token asynchronous.</summary>
@@ -71,7 +71,7 @@ public class Repository
     public Task<Agent?> GetAgentByTokenAsync(string token)
     {
         Log.Debug("Getting agent by token {token}", token);
-        return DbContext.Agents.FirstOrDefaultAsync(a => a.Token == token);
+        return DbContext.Agents.SingleOrDefaultAsync(a => a.Token == token);
     }
 
     /// <summary>Gets the agent binary asynchronously.</summary>
@@ -89,7 +89,8 @@ public class Repository
     {
         Log.Debug("Getting client binary for type {type}", type);
         var satisfyingRange = new Range($">={currentVersion}");
-        List<AgentBinary> getBinaries = await DbContext.AgentBinaries.Where(b => b.Type == type)
+        List<AgentBinary> getBinaries = await DbContext.AgentBinaries.Include(a => a.File)
+            .Where(b => b.Type == type)
             .ToListAsync()
             .ConfigureAwait(true);
 
@@ -104,7 +105,7 @@ public class Repository
             .Where(v => satisfyingRange.IsSatisfied(v));
         Version? latestVersion = satisfyingRange.MaxSatisfying(validVersions);
 
-        AgentBinary? clientBinary = getBinaries.FirstOrDefault(b => b.Version == latestVersion?.ToString());
+        AgentBinary? clientBinary = getBinaries.SingleOrDefault(b => b.Version == latestVersion?.ToString());
         Log.Debug("The latest version for {type} is {version}", type, clientBinary!.Version);
         return clientBinary;
     }
@@ -116,7 +117,7 @@ public class Repository
     public Task<User?> GetDefaultUserAsync()
     {
         Log.Debug("Getting default user");
-        return DbContext.Users.FirstOrDefaultAsync();
+        return DbContext.Users.OrderBy(u => u.RegisteredSince).FirstOrDefaultAsync();
     }
 
     /// <summary>Writes the log event.</summary>

@@ -81,5 +81,32 @@ public static class UserApiEndPoints
                 })
             .WithName("DeleteAgent")
             .WithOpenApi();
+
+        // Mostly for testing. This is not part of the final API.
+        group.MapPost("/initial-setup",
+                (HashSlingerContext db) =>
+                {
+                    // Clean up the database.
+                    db.Agents.RemoveRange(db.Agents);
+                    db.Users.RemoveRange(db.Users);
+                    db.RegistrationVouchers.RemoveRange(db.RegistrationVouchers);
+                    db.AccessGroups.RemoveRange(db.AccessGroups);
+                    db.SaveChanges();
+
+                    var defaultGroup = new AccessGroup { Name = "Default" };
+                    db.AccessGroups.Add(defaultGroup);
+                    var admin = new User
+                    {
+                        Email = "admin@localhost", UserName = "admin",
+                        RegisteredSince = DateTime.UtcNow
+                    };
+                    admin.SetPasswordHash("admin");
+                    defaultGroup.Users.Add(admin);
+                    db.Users.Add(admin);
+                    db.RegistrationVouchers.Add(new RegistrationVoucher
+                    { Voucher = "abcd", AccessGroup = defaultGroup });
+                    db.SaveChanges();
+                })
+            .WithOpenApi();
     }
 }

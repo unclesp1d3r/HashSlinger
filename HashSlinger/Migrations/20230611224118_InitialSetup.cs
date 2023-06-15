@@ -15,7 +15,7 @@ namespace HashSlinger.Api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AccessGroups",
+                name: "AccessGroup",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -24,7 +24,7 @@ namespace HashSlinger.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccessGroups", x => x.Id);
+                    table.PrimaryKey("PK_AccessGroup", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,20 +86,6 @@ namespace HashSlinger.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RegistrationVouchers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Voucher = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Expiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RegistrationVouchers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Supertask",
                 columns: table => new
                 {
@@ -149,9 +135,29 @@ namespace HashSlinger.Api.Migrations
                 {
                     table.PrimaryKey("PK_Files", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Files_AccessGroups_AccessGroupId",
+                        name: "FK_Files_AccessGroup_AccessGroupId",
                         column: x => x.AccessGroupId,
-                        principalTable: "AccessGroups",
+                        principalTable: "AccessGroup",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RegistrationVouchers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Voucher = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Expiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    AccessGroupId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RegistrationVouchers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RegistrationVouchers_AccessGroup_AccessGroupId",
+                        column: x => x.AccessGroupId,
+                        principalTable: "AccessGroup",
                         principalColumn: "Id");
                 });
 
@@ -209,9 +215,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     table.PrimaryKey("PK_Hashlist", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Hashlist_AccessGroups_AccessGroupId",
+                        name: "FK_Hashlist_AccessGroup_AccessGroupId",
                         column: x => x.AccessGroupId,
-                        principalTable: "AccessGroups",
+                        principalTable: "AccessGroup",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Hashlist_HashType_HashTypeId",
@@ -231,9 +237,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     table.PrimaryKey("PK_AccessGroupUser", x => new { x.AccessGroupsId, x.UsersId });
                     table.ForeignKey(
-                        name: "FK_AccessGroupUser_AccessGroups_AccessGroupsId",
+                        name: "FK_AccessGroupUser_AccessGroup_AccessGroupsId",
                         column: x => x.AccessGroupsId,
-                        principalTable: "AccessGroups",
+                        principalTable: "AccessGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -470,9 +476,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     table.PrimaryKey("PK_TaskWrapper", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TaskWrapper_AccessGroups_AccessGroupId",
+                        name: "FK_TaskWrapper_AccessGroup_AccessGroupId",
                         column: x => x.AccessGroupId,
-                        principalTable: "AccessGroups",
+                        principalTable: "AccessGroup",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TaskWrapper_Hashlist_HashlistId",
@@ -492,9 +498,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     table.PrimaryKey("PK_AccessGroupAgent", x => new { x.AccessGroupsId, x.AgentsId });
                     table.ForeignKey(
-                        name: "FK_AccessGroupAgent_AccessGroups_AccessGroupsId",
+                        name: "FK_AccessGroupAgent_AccessGroup_AccessGroupsId",
                         column: x => x.AccessGroupsId,
-                        principalTable: "AccessGroups",
+                        principalTable: "AccessGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -1024,6 +1030,11 @@ namespace HashSlinger.Api.Migrations
                 column: "CrackerBinaryTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RegistrationVouchers_AccessGroupId",
+                table: "RegistrationVouchers",
+                column: "AccessGroupId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Session_UserId",
                 table: "Session",
                 column: "UserId");
@@ -1192,7 +1203,7 @@ namespace HashSlinger.Api.Migrations
                 name: "Hashlist");
 
             migrationBuilder.DropTable(
-                name: "AccessGroups");
+                name: "AccessGroup");
 
             migrationBuilder.DropTable(
                 name: "HashType");

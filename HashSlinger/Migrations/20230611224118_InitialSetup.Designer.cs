@@ -14,8 +14,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HashSlinger.Api.Migrations
 {
     [DbContext(typeof(HashSlingerContext))]
-    [Migration("20230611193921_AddSeeds")]
-    partial class AddSeeds
+    [Migration("20230611224118_InitialSetup")]
+    partial class InitialSetup
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,19 +87,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccessGroups");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Default"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Admins"
-                        });
+                    b.ToTable("AccessGroup");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Agent", b =>
@@ -910,6 +898,9 @@ namespace HashSlinger.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AccessGroupId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("Expiration")
                         .HasColumnType("timestamp with time zone");
 
@@ -920,14 +911,9 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RegistrationVouchers");
+                    b.HasIndex("AccessGroupId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Voucher = "abcd"
-                        });
+                    b.ToTable("RegistrationVouchers");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Session", b =>
@@ -1236,19 +1222,6 @@ namespace HashSlinger.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 2,
-                            Email = "admin@localhost",
-                            IsValid = false,
-                            LastLoginDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PasswordHash = "D67A512B30394510FF1241A04B2CB45FBAE0E1A8B675FAC2F51C0D5A3E9A15A01DF4B6C1B199606C60126E9005B2BE8E507365C4EFFA3580BC55DC4F24428D22",
-                            PasswordSalt = new byte[] { 173, 20, 26, 124, 85, 58, 38, 143, 252, 14, 40, 4, 253, 98, 186, 194, 91, 65, 144, 73, 135, 108, 243, 140, 69, 174, 159, 92, 223, 121, 0, 123, 123, 28, 204, 89, 66, 107, 96, 238, 170, 49, 121, 201, 72, 17, 107, 229, 61, 31, 23, 68, 58, 215, 249, 149, 96, 212, 4, 179, 166, 62, 129, 27 },
-                            RegisteredSince = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserName = "admin"
-                        });
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Zap", b =>
@@ -1587,6 +1560,15 @@ namespace HashSlinger.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("CrackerBinaryType");
+                });
+
+            modelBuilder.Entity("HashSlinger.Api.Models.RegistrationVoucher", b =>
+                {
+                    b.HasOne("HashSlinger.Api.Models.AccessGroup", "AccessGroup")
+                        .WithMany()
+                        .HasForeignKey("AccessGroupId");
+
+                    b.Navigation("AccessGroup");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Session", b =>

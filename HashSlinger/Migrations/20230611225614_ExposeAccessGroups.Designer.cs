@@ -14,8 +14,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HashSlinger.Api.Migrations
 {
     [DbContext(typeof(HashSlingerContext))]
-    [Migration("20230611192512_MadeRegistrationExpirationNullable")]
-    partial class MadeRegistrationExpirationNullable
+    [Migration("20230611225614_ExposeAccessGroups")]
+    partial class ExposeAccessGroups
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -88,18 +88,6 @@ namespace HashSlinger.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AccessGroups");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Default"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Agent", b =>
@@ -910,6 +898,9 @@ namespace HashSlinger.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AccessGroupId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("Expiration")
                         .HasColumnType("timestamp with time zone");
 
@@ -920,14 +911,9 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RegistrationVouchers");
+                    b.HasIndex("AccessGroupId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Voucher = "abcd"
-                        });
+                    b.ToTable("RegistrationVouchers");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Session", b =>
@@ -1574,6 +1560,15 @@ namespace HashSlinger.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("CrackerBinaryType");
+                });
+
+            modelBuilder.Entity("HashSlinger.Api.Models.RegistrationVoucher", b =>
+                {
+                    b.HasOne("HashSlinger.Api.Models.AccessGroup", "AccessGroup")
+                        .WithMany()
+                        .HasForeignKey("AccessGroupId");
+
+                    b.Navigation("AccessGroup");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Session", b =>
