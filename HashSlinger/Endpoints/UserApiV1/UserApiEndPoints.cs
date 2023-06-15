@@ -104,7 +104,7 @@ public static class UserApiEndPoints
                     defaultGroup.Users.Add(admin);
                     db.Users.Add(admin);
                     db.RegistrationVouchers.Add(new RegistrationVoucher
-                    { Voucher = "abcd", AccessGroup = defaultGroup });
+                        { Voucher = "abcd", AccessGroup = defaultGroup });
                     db.SaveChanges();
                 })
             .WithOpenApi();

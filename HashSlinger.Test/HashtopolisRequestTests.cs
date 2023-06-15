@@ -58,7 +58,8 @@ public class HashtopolisRequestTests
             """;
 
         var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
-        IHashtopolisRequest? testConnectionRequest = hashtopolisRequest?.ToHashtopolisRequest();
+        IHashtopolisRequest? testConnectionRequest
+            = HashtopolisRequest.ToHashtopolisRequest(hashtopolisRequest);
         Assert.That(testConnectionRequest, Is.Null);
         Assert.Pass();
     }
@@ -72,7 +73,8 @@ public class HashtopolisRequestTests
 
         Assert.That(hashtopolisRequest, Is.Not.Null);
 
-        var testConnectionRequest = (TestConnectionRequest?)hashtopolisRequest?.ToHashtopolisRequest();
+        var testConnectionRequest
+            = (TestConnectionRequest?)HashtopolisRequest.ToHashtopolisRequest(hashtopolisRequest);
         Assert.That(testConnectionRequest, Is.Not.Null);
         Assert.That(testConnectionRequest, Is.TypeOf<TestConnectionRequest>());
         Assert.That(testConnectionRequest?.Action, Is.EqualTo("testConnection"));

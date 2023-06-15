@@ -3,6 +3,7 @@
 using System.Net;
 using System.Text.Json.Serialization;
 using DTO;
+using Mapster;
 
 /// <summary>
 ///     A big, ugly DTO object to be able to deserialize the initial request from a Hashtopolis client into the
@@ -66,90 +67,32 @@ public record HashtopolisRequest(
 {
     [property: JsonIgnore] internal IPAddress? IpAddress { get; set; } = default;
 
-    /// <summary>Attempts to convert to a more specific form of IHashtopolisRequest.</summary>
-    /// <returns>Specific implementation of IHashtopolisRequest, or null if not possible.</returns>
-    /// <remarks>
-    ///     Some of these null checks might be wrong, or should return other errors. This will need constant
-    ///     attention as I finish out the API. Also, there doesn't appear to be any instructions in the spec on
-    ///     whether the action is case sensitive or not.
-    /// </remarks>
-    public IHashtopolisRequest? ToHashtopolisRequest()
+    /// <summary>Converts to a specific IHashtopolisRequest implementation.</summary>
+    /// <param name="request">The request.</param>
+    public static IHashtopolisRequest? ToHashtopolisRequest(HashtopolisRequest? request)
     {
-        if (Action == null) return null;
-
-        return Action switch
+        if (request == null) return null;
+        return request.Action switch
         {
-            "testConnection" => new TestConnectionRequest(Action!),
-            "register" => Voucher != null && Name != null
-                ? new RegisterRequest(Action!, Voucher, Name)
-                : null,
-            "updateInformation" => Token != null && Uid != null && Devices != null
-                ? new UpdateInformationRequest(Action!, Token, Uid, Os, Devices, IpAddress)
-                : null,
-            "login" => ClientSignature != null && Token != null
-                ? new LoginRequest(Action!, ClientSignature, Token)
-                : null,
-            "checkClientVersion" => Version != null && Type != null && Token != null
-                ? new CheckClientVersionRequest(Action!, Version, Type, Token)
-                : null,
-            "downloadBinary" => Type != null && Token != null
-                ? new DownloadBinaryRequest(Action!, Type, PreprocessorId, Token, BinaryVersionId)
-                : null,
-            "clientError" => Token != null && Message != null
-                ? new ClientErrorRequest(Action!, TaskId, Token, ChunkId, Message)
-                : null,
-            "getFile" => Token != null && File != null
-                ? new GetFileRequest(Action!, Token, TaskId, File)
-                : null,
-            "getHashlist" => Token != null && HashlistId != null && Action != null
-                ? new GetHashlistRequest(Action!, Token, HashlistId.GetValueOrDefault())
-                : null,
-            "getTask" => Token != null ? new GetTaskRequest(Action!, Token, null) : null,
-            "getChunk" => Token != null && TaskId != null
-                ? new GetChunkRequest(Action!, Token, TaskId)
-                : null,
-            "sendKeyspace" => Token != null && TaskId != null && Keyspace != null
-                ? new SendKeyspaceRequest(Action!,
-                    Token,
-                    TaskId.GetValueOrDefault(),
-                    Keyspace.GetValueOrDefault())
-                : null,
-            "sendBenchmark" => Token != null && TaskId != null && Type != null && Result != null
-                ? new SendBenchmarkRequest(Action!, Token, TaskId, Type, Result)
-                : null,
-            "sendProgress" => Token != null
-                              && ChunkId != null
-                              && KeyspaceProgress != null
-                              && RelativeProgress != null
-                              && Speed != null
-                              && State != null
-                              && Cracks != null
-                              && GpuTemp != null
-                              && GpuUtil != null
-                ? new SendProgressRequest(Action!,
-                    Token,
-                    ChunkId,
-                    KeyspaceProgress,
-                    RelativeProgress,
-                    Speed,
-                    State,
-                    Cracks!,
-                    GpuTemp,
-                    GpuUtil)
-                : null,
-            "getFileStatus" => Token != null ? new GetFileStatusRequest(Action!, Token) : null,
-            "getHealthCheck" => Token != null ? new GetHealthCheckRequest(Action!, Token) : null,
-            "SendHealthCheck" => Token != null
-                                 && NumCracked != null
-                                 && Start != null
-                                 && End != null
-                                 && NumGpus != null
-                                 && Errors != null
-                                 && CheckId != null
-                ? new SendHealthCheckRequest(Action!, Token, NumCracked, Start, End, NumGpus, Errors, CheckId)
-                : null,
-            "deregister" => Token != null ? new DeregisterRequest(Action!, Token) : null,
-            var _ => null
+            "testConnection" => request.Adapt<TestConnectionRequest>(),
+            "register" => request.Adapt<RegisterRequest>(),
+            "updateInformation" => request.Adapt<UpdateInformationRequest>(),
+            "login" => request.Adapt<LoginRequest>(),
+            "checkClientVersion" => request.Adapt<CheckClientVersionRequest>(),
+            "downloadBinary" => request.Adapt<DownloadBinaryRequest>(),
+            "clientError" => request.Adapt<ClientErrorRequest>(),
+            "getFile" => request.Adapt<GetFileRequest>(),
+            "getHashlist" => request.Adapt<GetHashlistRequest>(),
+            "getTask" => request.Adapt<GetTaskRequest>(),
+            "getChunk" => request.Adapt<GetChunkRequest>(),
+            "sendKeyspace" => request.Adapt<SendKeyspaceRequest>(),
+            "sendBenchmark" => request.Adapt<SendBenchmarkRequest>(),
+            "sendProgress" => request.Adapt<SendProgressRequest>(),
+            "getFileStatus" => request.Adapt<GetFileStatusRequest>(),
+            "getHealthCheck" => request.Adapt<GetHealthCheckRequest>(),
+            "SendHealthCheck" => request.Adapt<SendHealthCheckRequest>(),
+            "deregister" => request.Adapt<DeregisterRequest>(),
+            _ => null
         };
     }
 }

@@ -2,6 +2,7 @@
 
 using DAL;
 using Data;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -25,13 +26,15 @@ public static class HashtopolisEndpoints
                     HashtopolisRequest request,
                     [FromServices] Repository repository,
                     [FromServices] HashSlingerContext dbContext,
+                    IMediator mediator,
                     HttpContext context
                 ) =>
                 {
                     repository.DbContext = dbContext; // This is a terrible hack, but it works.
                     request = request with { IpAddress = context.Connection.RemoteIpAddress };
                     Log.Debug("New request: {@request}", request);
-                    IHashtopolisRequest? message = request.ToHashtopolisRequest();
+
+                    IHashtopolisRequest? message = HashtopolisRequest.ToHashtopolisRequest(request);
                     if (message is null)
                     {
                         HashtopolisRequest badRequest = request with { Response = "ERROR" };
@@ -39,10 +42,8 @@ public static class HashtopolisEndpoints
                         return Results.BadRequest(badRequest);
                     }
 
-                    // The result would never be null, because the spec says that a bad request should just
-                    // return a 200 with an error message.
-                    IHashtopolisMessage result
-                        = await message.ProcessRequestAsync(repository).ConfigureAwait(true);
+                    object? result = await mediator.Send(message).ConfigureAwait(true);
+
                     return Results.Ok(result);
                 })
             .Accepts<HashtopolisRequest>("application/json")

@@ -31,7 +31,7 @@ builder.Services.AddDbContext<HashSlingerContext>(options =>
         .EnableDetailedErrors());
 builder.Services.AddSingleton(new Repository());
 builder.Services.AddSingleton<IFileStorageService, LocalFileStorageService>();
-
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
