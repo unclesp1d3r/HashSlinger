@@ -9,6 +9,10 @@ public interface IFileStorageService
     /// <returns>True, if the file exists; false, if not.</returns>
     public Task<bool> FileExistsAsync(string name, string bucket);
 
+    /// <summary>Gets the file asynchronously.</summary>
+    /// <param name="name"></param>
+    /// <param name="bucket"></param>
+    /// <returns></returns>
     public Task<Stream?> GetFileAsync(string name, string bucket);
 
     /// <summary>Stores the file asynchronously.</summary>

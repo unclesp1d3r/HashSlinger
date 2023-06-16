@@ -9,6 +9,7 @@ public record LoginResponse(
     string Response,
     [property: JsonPropertyName("timeout")]
     int? Timeout,
-    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("message")]
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 ) : IHashtopolisMessage;

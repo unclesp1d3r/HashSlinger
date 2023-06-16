@@ -9,7 +9,9 @@ using Models;
 public record GetBinaryByNameQuery(string Name) : IRequest<DownloadableBinary?>;
 
 /// <summary>Handles getting a binary by name</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class GetBinaryByNameHandler : IRequestHandler<GetBinaryByNameQuery, DownloadableBinary?>
 {
     private readonly HashSlingerContext _dbContext;
@@ -28,9 +30,9 @@ public class GetBinaryByNameHandler : IRequestHandler<GetBinaryByNameQuery, Down
     )
     {
         DownloadableBinary? result = await _dbContext.DownloadableBinaries.Where(b => b.Name == request.Name)
-            .OrderByDescending(b => b.Version)
-            .LastOrDefaultAsync(cancellationToken)
-            .ConfigureAwait(true);
+                                                     .OrderByDescending(b => b.Version)
+                                                     .LastOrDefaultAsync(cancellationToken)
+                                                     .ConfigureAwait(true);
         return result;
     }
 }

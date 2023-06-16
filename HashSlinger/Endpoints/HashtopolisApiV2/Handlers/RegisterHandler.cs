@@ -10,6 +10,8 @@ using Models.Enums;
 using Serilog;
 
 /// <summary>Handles the Hashtopolis register call.</summary>
+
+// ReSharper disable once UnusedType.Global
 public class RegisterHandler : IRequestHandler<RegisterRequest, RegisterResponse>
 {
     private readonly IMediator _mediator;
@@ -22,8 +24,9 @@ public class RegisterHandler : IRequestHandler<RegisterRequest, RegisterResponse
     public async Task<RegisterResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
     {
         RegistrationVoucher? voucher = await _mediator
-            .Send(new GetRegistrationVoucherQuery(request.Voucher), cancellationToken)
-            .ConfigureAwait(true);
+                                             .Send(new GetRegistrationVoucherQuery(request.Voucher),
+                                                 cancellationToken)
+                                             .ConfigureAwait(true);
         if (voucher == null)
         {
             Log.Error("Voucher not found");
@@ -53,21 +56,20 @@ public class RegisterHandler : IRequestHandler<RegisterRequest, RegisterResponse
                 "Voucher does not match.");
         }
 
-        User? user = await _mediator.Send(new GetDefaultUserQuery(), cancellationToken).ConfigureAwait(true);
+        User user = await _mediator.Send(new GetDefaultUserQuery(), cancellationToken).ConfigureAwait(true);
         var newAgent = new Agent
         {
             Name = request.Name,
             LastAction = AgentActions.Register,
             LastSeenTime = DateTime.UtcNow,
-            Token = voucher.GetRandomToken(),
+            Token = RegistrationVoucher.GetRandomToken(),
             User = user
         };
         if (voucher.AccessGroup != null) newAgent.AccessGroups.Add(voucher.AccessGroup);
 
-
         //int result = await _repository.CreateAgentAsync(newAgent).ConfigureAwait(true);
         int result = await _mediator.Send(new CreateAgentCommand(newAgent), cancellationToken)
-            .ConfigureAwait(true);
+                                    .ConfigureAwait(true);
         if (result == 0)
         {
             Log.Error("Failed to create agent");
@@ -76,7 +78,7 @@ public class RegisterHandler : IRequestHandler<RegisterRequest, RegisterResponse
 
         if (voucher.Expiration != null)
             await _mediator.Send(new DeleteRegistrationVoucherCommand(voucher.Id), cancellationToken)
-                .ConfigureAwait(true);
+                           .ConfigureAwait(true);
         Log.Debug("Created agent {AgentName} with token {AgentToken}", newAgent.Name, newAgent.Token);
         return new RegisterResponse(request.Action, HashtopolisConstants.SuccessResponse, newAgent.Token);
     }

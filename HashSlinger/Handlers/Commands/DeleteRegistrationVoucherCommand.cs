@@ -11,7 +11,9 @@ using Task = System.Threading.Tasks.Task;
 public record DeleteRegistrationVoucherCommand(int Id) : IRequest;
 
 /// <summary>Handles removing a registration voucher from the database.</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class DeleteRegistrationVoucherCommandHandler : IRequestHandler<DeleteRegistrationVoucherCommand>
 {
     private readonly HashSlingerContext _dbContext;
@@ -26,8 +28,9 @@ public class DeleteRegistrationVoucherCommandHandler : IRequestHandler<DeleteReg
     public async Task Handle(DeleteRegistrationVoucherCommand request, CancellationToken cancellationToken)
     {
         RegistrationVoucher? voucher = await _dbContext.RegistrationVouchers
-            .SingleOrDefaultAsync(r => r.Id == request.Id, cancellationToken)
-            .ConfigureAwait(true);
+                                                       .SingleOrDefaultAsync(r => r.Id == request.Id,
+                                                           cancellationToken)
+                                                       .ConfigureAwait(true);
 
         if (voucher == null)
         {

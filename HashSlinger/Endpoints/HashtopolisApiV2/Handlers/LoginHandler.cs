@@ -10,7 +10,9 @@ using Models.Enums;
 using Serilog;
 
 /// <summary>Handles Hashtopolis login requests.</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
 {
     private readonly IMediator _mediator;
@@ -24,7 +26,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
     public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
     {
         Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
-            .ConfigureAwait(false);
+                                      .ConfigureAwait(false);
 
         if (agent is null)
         {

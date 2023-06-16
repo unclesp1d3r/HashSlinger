@@ -10,6 +10,8 @@ using Serilog;
 public record GetDefaultUserQuery : IRequest<User>;
 
 /// <summary>Handles retrieving the default user.</summary>
+
+// ReSharper disable once UnusedType.Global
 public record GetDefaultUserHandler : IRequestHandler<GetDefaultUserQuery, User?>
 {
     private readonly HashSlingerContext _dbContext;

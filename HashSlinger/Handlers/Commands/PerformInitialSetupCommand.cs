@@ -9,7 +9,9 @@ using Task = System.Threading.Tasks.Task;
 public record PerformInitialSetupCommand : IRequest;
 
 /// <summary>Handles the initial setup of the application.</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class PerformInitialSetupHandler : IRequestHandler<PerformInitialSetupCommand>
 {
     private readonly HashSlingerContext _dbContext;
@@ -61,6 +63,7 @@ public class PerformInitialSetupHandler : IRequestHandler<PerformInitialSetupCom
         _dbContext.DownloadableBinaries.Add(new DownloadableBinary
         {
             Executable = "7zr.exe",
+
             // This is not idea, but it is for testing. You should host your own binaries.
             DownloadUrl = "https://github.com/hashtopolis/server/raw/master/src/static/7zr.exe",
             Name = "7zr",

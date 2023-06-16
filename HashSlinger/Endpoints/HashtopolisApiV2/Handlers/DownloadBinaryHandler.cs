@@ -7,7 +7,9 @@ using MediatR;
 using Models;
 
 /// <summary>Handles the Hashtopolis API v2 downloadBinary endpoint.</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class DownloadBinaryHandler : IRequestHandler<DownloadBinaryRequest, DownloadBinaryResponse>
 {
     private readonly IMediator _mediator;
@@ -23,7 +25,7 @@ public class DownloadBinaryHandler : IRequestHandler<DownloadBinaryRequest, Down
     )
     {
         Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
-            .ConfigureAwait(false);
+                                      .ConfigureAwait(false);
         if (agent == null)
             return request.Adapt<DownloadBinaryResponse>() with
             {
@@ -47,7 +49,7 @@ public class DownloadBinaryHandler : IRequestHandler<DownloadBinaryRequest, Down
                 Message = $"Requested binary type: {request.Type}"
             },
             "cracker" => await GetCrackerResponseAsync(request).ConfigureAwait(true),
-            _ => request.Adapt<DownloadBinaryResponse>() with
+            var _ => request.Adapt<DownloadBinaryResponse>() with
             {
                 Response = HashtopolisConstants.ErrorResponse,
                 Message = $"Unknown binary type: {request.Type}"
@@ -62,8 +64,8 @@ public class DownloadBinaryHandler : IRequestHandler<DownloadBinaryRequest, Down
         // response, but the python agent actually downloads the binary from the Executable value.
 
         DownloadableBinary? sevenZipBinary = await _mediator
-            .Send(new GetBinaryByNameQuery("7zr"))
-            .ConfigureAwait(true);
+                                                   .Send(new GetBinaryByNameQuery("7zr"))
+                                                   .ConfigureAwait(true);
         if (sevenZipBinary == null)
             return request.Adapt<DownloadBinaryResponse>() with
             {
@@ -80,8 +82,8 @@ public class DownloadBinaryHandler : IRequestHandler<DownloadBinaryRequest, Down
     private async Task<DownloadBinaryResponse> GetCrackerResponseAsync(DownloadBinaryRequest request)
     {
         DownloadableBinary? crackerBinary = await _mediator
-            .Send(new GetCrackerBinaryQuery(request.BinaryVersionId))
-            .ConfigureAwait(true);
+                                                  .Send(new GetCrackerBinaryQuery(request.BinaryVersionId))
+                                                  .ConfigureAwait(true);
         if (crackerBinary == null)
             return request.Adapt<DownloadBinaryResponse>() with
             {

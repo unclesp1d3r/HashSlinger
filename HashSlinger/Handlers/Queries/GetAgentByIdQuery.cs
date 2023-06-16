@@ -10,6 +10,8 @@ using Serilog;
 public record GetAgentByIdQuery(int Id) : IRequest<Agent>;
 
 /// <summary>Handles retrieving an agent by its ID</summary>
+
+// ReSharper disable once UnusedType.Global
 public class GetAgentByIdHandler : IRequestHandler<GetAgentByIdQuery, Agent?>
 {
     private readonly HashSlingerContext _dbContext;
@@ -24,12 +26,12 @@ public class GetAgentByIdHandler : IRequestHandler<GetAgentByIdQuery, Agent?>
     /// <returns>Response from the request</returns>
     public async Task<Agent?> Handle(GetAgentByIdQuery request, CancellationToken cancellationToken)
     {
-        Log.Debug("Getting agent {id}", request.Id);
+        Log.Debug("Getting agent {Id}", request.Id);
         Agent? agent = await _dbContext.Agents.Include(a => a.AccessGroups)
-            .Include(a => a.User)
-            .Include(a => a.Chunks)
-            .SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken)
-            .ConfigureAwait(true);
+                                       .Include(a => a.User)
+                                       .Include(a => a.Chunks)
+                                       .SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken)
+                                       .ConfigureAwait(true);
         return agent;
     }
 }

@@ -11,7 +11,9 @@ using Serilog;
 public record GetAgentBinaryQuery(string CurrentVersion, string Type) : IRequest<AgentBinary>;
 
 /// <summary>Handles retrieving the agent binary.</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class GetAgentBinaryQueryHandler : IRequestHandler<GetAgentBinaryQuery, AgentBinary?>
 {
     private readonly HashSlingerContext _dbContext;
@@ -26,25 +28,25 @@ public class GetAgentBinaryQueryHandler : IRequestHandler<GetAgentBinaryQuery, A
     /// <returns>Response from the request</returns>
     public async Task<AgentBinary?> Handle(GetAgentBinaryQuery request, CancellationToken cancellationToken)
     {
-        Log.Debug("Getting client binary for type {type}", request.Type);
+        Log.Debug("Getting client binary for type {Type}", request.Type);
         var satisfyingRange = new Range($">={request.CurrentVersion}");
         List<AgentBinary> getBinaries = await _dbContext.AgentBinaries.Include(a => a.File)
-            .Where(b => b.Type == request.Type)
-            .ToListAsync(cancellationToken)
-            .ConfigureAwait(true);
+                                                        .Where(b => b.Type == request.Type)
+                                                        .ToListAsync(cancellationToken)
+                                                        .ConfigureAwait(true);
 
         if (getBinaries.Count == 0)
         {
-            Log.Warning("No binaries found for type {type}", request.Type);
+            Log.Warning("No binaries found for type {Type}", request.Type);
             return null;
         }
 
         IEnumerable<Version> validVersions = getBinaries.Select(b => new Version(b.Version))
-            .Where(v => satisfyingRange.IsSatisfied(v));
+                                                        .Where(v => satisfyingRange.IsSatisfied(v));
         Version? latestVersion = satisfyingRange.MaxSatisfying(validVersions);
 
         AgentBinary? clientBinary = getBinaries.SingleOrDefault(b => b.Version == latestVersion?.ToString());
-        Log.Debug("The latest version for {type} is {version}", request.Type, clientBinary!.Version);
+        Log.Debug("The latest version for {Type} is {Version}", request.Type, clientBinary!.Version);
         return clientBinary;
     }
 }

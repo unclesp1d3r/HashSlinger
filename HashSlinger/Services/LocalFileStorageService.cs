@@ -15,7 +15,7 @@ public class LocalFileStorageService : IFileStorageService
         get => _localStoragePath;
         set
         {
-            LocalFileStorageService.EnsureDirectoryExists(value);
+            EnsureDirectoryExists(value);
             _localStoragePath = value;
         }
     }
@@ -39,7 +39,7 @@ public class LocalFileStorageService : IFileStorageService
             await fileStream.CopyToAsync(stream).ConfigureAwait(true);
         }
 
-        Log.Information("Stored file {name} in bucket {bucket} at {filePath}", name, bucket, filePath);
+        Log.Information("Stored file {Name} in bucket {Bucket} at {FilePath}", name, bucket, filePath);
         return await FileExistsAsync(name, bucket).ConfigureAwait(true);
     }
 
@@ -60,7 +60,7 @@ public class LocalFileStorageService : IFileStorageService
     private void EnsureBucketExists(string bucket)
     {
         string bucketPath = GetBucketPath(bucket);
-        LocalFileStorageService.EnsureDirectoryExists(bucketPath);
+        EnsureDirectoryExists(bucketPath);
     }
 
     private string GetBucketPath(string bucket)
@@ -68,7 +68,7 @@ public class LocalFileStorageService : IFileStorageService
         return Path.Combine(LocalStoragePath, SanitizePath(bucket));
     }
 
-    private string SanitizePath(string path)
+    private static string SanitizePath(string path)
     {
         string regexSearch = new string(Path.GetInvalidFileNameChars())
                              + new string(Path.GetInvalidPathChars());

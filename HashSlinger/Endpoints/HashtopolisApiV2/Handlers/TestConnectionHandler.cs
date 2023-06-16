@@ -6,7 +6,9 @@ using MediatR;
 using Serilog;
 
 /// <summary>Handles the Hashtopolis testConnection call.</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class TestConnectionHandler : IRequestHandler<TestConnectionRequest, TestConnectionResponse>
 {
     /// <summary>Handles a request</summary>

@@ -36,7 +36,7 @@ public record LogEntry
     /// <param name="message">The message.</param>
     /// <param name="level">The level.</param>
     /// <param name="issuer">The issuer.</param>
-    public static LogEntry CreateEntry(
+    private static LogEntry CreateEntry(
         string message,
         LogEntryLevels level = LogEntryLevels.Information,
         string issuer = "HashSlinger"
@@ -52,56 +52,56 @@ public record LogEntry
         };
     }
 
-    /// <summary>Debugs the specified message.</summary>
+    /// <summary>Creates a new Debug level entry.</summary>
     /// <param name="message">The message.</param>
     /// <param name="issuer">The issuer.</param>
     /// <returns>A new LogEntry</returns>
     public static LogEntry Debug(string message, string issuer = "HashSlinger")
     {
-        return LogEntry.CreateEntry(message, LogEntryLevels.Debug, issuer);
+        return CreateEntry(message, LogEntryLevels.Debug, issuer);
     }
 
-    /// <summary>Errors the specified message.</summary>
+    /// <summary>Creates a new Error level entry.</summary>
     /// <param name="message">The message.</param>
     /// <param name="issuer">The issuer.</param>
     /// <returns>A new LogEntry</returns>
     public static LogEntry Error(string message, string issuer = "HashSlinger")
     {
-        return LogEntry.CreateEntry(message, LogEntryLevels.Error, issuer);
+        return CreateEntry(message, LogEntryLevels.Error, issuer);
     }
 
-    /// <summary>Fatals the specified message.</summary>
+    /// <summary>Creates a new Fatal level entry.</summary>
     /// <param name="message">The message.</param>
     /// <param name="issuer">The issuer.</param>
     /// <returns>A new LogEntry</returns>
     public static LogEntry Fatal(string message, string issuer = "HashSlinger")
     {
-        return LogEntry.CreateEntry(message, LogEntryLevels.Fatal, issuer);
+        return CreateEntry(message, LogEntryLevels.Fatal, issuer);
     }
 
-    /// <summary>Informations the specified message.</summary>
+    /// <summary>Creates a new Information level entry.</summary>
     /// <param name="message">The message.</param>
     /// <param name="issuer">The issuer.</param>
     /// <returns>A new LogEntry</returns>
     public static LogEntry Information(string message, string issuer = "HashSlinger")
     {
-        return LogEntry.CreateEntry(message, LogEntryLevels.Information, issuer);
+        return CreateEntry(message, LogEntryLevels.Information, issuer);
     }
 
-    /// <summary>Tracings the specified message.</summary>
+    /// <summary>Creates a new Trace level entry.</summary>
     /// <param name="message">The message.</param>
     /// <param name="issuer">The issuer.</param>
     public static LogEntry Tracing(string message, string issuer = "HashSlinger")
     {
-        return LogEntry.CreateEntry(message, LogEntryLevels.Trace, issuer);
+        return CreateEntry(message, LogEntryLevels.Trace, issuer);
     }
 
-    /// <summary>Warnings the specified message.</summary>
+    /// <summary>Creates a new Warning level entry.</summary>
     /// <param name="message">The message.</param>
     /// <param name="issuer">The issuer.</param>
     /// <returns>A new LogEntry</returns>
     public static LogEntry Warning(string message, string issuer = "HashSlinger")
     {
-        return LogEntry.CreateEntry(message, LogEntryLevels.Warning, issuer);
+        return CreateEntry(message, LogEntryLevels.Warning, issuer);
     }
 }

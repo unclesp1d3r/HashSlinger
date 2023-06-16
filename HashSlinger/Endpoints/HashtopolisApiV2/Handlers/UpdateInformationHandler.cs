@@ -10,7 +10,9 @@ using Models.Enums;
 using Serilog;
 
 /// <summary>Handles the Hashtopolis API request to update the client information.</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest, UpdateInformationResponse>
 {
     private readonly IMediator _mediator;
@@ -26,7 +28,7 @@ public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest
     )
     {
         Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
-            .ConfigureAwait(false);
+                                      .ConfigureAwait(false);
         if (agent == null)
         {
             Log.Information("Agent not found");

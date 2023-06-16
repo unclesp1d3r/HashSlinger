@@ -39,17 +39,16 @@ internal class FileEndpointIntegrationTests
     [Test]
     public async Task FileUploadDownloadIntegrationTest()
     {
-        var bucket = "test_bucket";
+        const string bucket = "test_bucket";
         var fileId = new Guid();
-        byte[]? file = await File.ReadAllBytesAsync(Path.Combine("SupportFiles", "test_file.txt"));
+        byte[] file = await File.ReadAllBytesAsync(Path.Combine("SupportFiles", "test_file.txt"));
         var fileContent = new ByteArrayContent(file);
         fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("text/plain");
-
 
         using (HttpContent requestContent = new MultipartFormDataContent
                    { { fileContent, "file", "test_file.txt" } })
         {
-            HttpResponseMessage? response = await _client.PostAsync(
+            HttpResponseMessage response = await _client.PostAsync(
                 $"{HashtopolisConstants.UploadEndPointPrefix}/{bucket}/{fileId}",
                 requestContent);
 
@@ -61,7 +60,7 @@ internal class FileEndpointIntegrationTests
         {
             response.EnsureSuccessStatusCode();
 
-            byte[]? actual = await response.Content.ReadAsByteArrayAsync();
+            byte[] actual = await response.Content.ReadAsByteArrayAsync();
 
             Assert.That(actual, Is.EqualTo(file));
         }

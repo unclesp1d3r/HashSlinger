@@ -10,6 +10,8 @@ using Task = System.Threading.Tasks.Task;
 public record UpdateAgentCommand(Agent Agent) : IRequest;
 
 /// <summary>Handles updating an agent in the database.</summary>
+
+// ReSharper disable once UnusedType.Global
 public class UpdateAgentHandler : IRequestHandler<UpdateAgentCommand>
 {
     private readonly HashSlingerContext _dbContext;
@@ -21,7 +23,7 @@ public class UpdateAgentHandler : IRequestHandler<UpdateAgentCommand>
     /// <inheritdoc />
     public Task Handle(UpdateAgentCommand request, CancellationToken cancellationToken)
     {
-        Log.Debug("Updating agent {agent}", request.Agent);
+        Log.Debug("Updating agent {Agent}", request.Agent);
         _dbContext.Agents.Update(request.Agent);
         return _dbContext.SaveChangesAsync(cancellationToken);
     }

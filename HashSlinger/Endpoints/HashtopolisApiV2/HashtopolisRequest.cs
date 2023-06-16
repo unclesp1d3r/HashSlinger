@@ -65,7 +65,7 @@ public record HashtopolisRequest(
     string? Response = default
 ) : IHashtopolisMessage
 {
-    [property: JsonIgnore] internal IPAddress? IpAddress { get; set; } = default;
+    [property: JsonIgnore] internal IPAddress? IpAddress { get; set; }
 
     /// <summary>Converts to a specific IHashtopolisRequest implementation.</summary>
     /// <param name="request">The request.</param>
@@ -92,7 +92,7 @@ public record HashtopolisRequest(
             "getHealthCheck" => request.Adapt<GetHealthCheckRequest>(),
             "SendHealthCheck" => request.Adapt<SendHealthCheckRequest>(),
             "deregister" => request.Adapt<DeregisterRequest>(),
-            _ => null
+            var _ => null
         };
     }
 }

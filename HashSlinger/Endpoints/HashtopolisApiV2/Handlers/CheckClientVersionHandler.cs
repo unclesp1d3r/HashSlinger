@@ -11,7 +11,9 @@ using Serilog;
 
 /// <summary>Handles the Hashtopolis check client version call.</summary>
 public class
+
     // ReSharper disable once UnusedMember.Global
+    // ReSharper disable once UnusedType.Global
     CheckClientVersionHandler : IRequestHandler<CheckClientVersionRequest, CheckClientVersionResponse>
 {
     private readonly IMediator _mediator;
@@ -26,9 +28,9 @@ public class
         CancellationToken cancellationToken
     )
     {
-        Log.Debug("Processing request {request}", this);
+        Log.Debug("Processing request {@Request}", this);
         Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
-            .ConfigureAwait(false);
+                                      .ConfigureAwait(false);
         if (agent == null)
         {
             Log.Information("Agent not found");
@@ -44,13 +46,13 @@ public class
 
         await _mediator.Send(new UpdateAgentCommand(agent), cancellationToken).ConfigureAwait(true);
         AgentBinary? clientBinary = await _mediator
-            .Send(new GetAgentBinaryQuery(request.Version, request.Type), cancellationToken)
-            .ConfigureAwait(false);
-
+                                          .Send(new GetAgentBinaryQuery(request.Version, request.Type),
+                                              cancellationToken)
+                                          .ConfigureAwait(false);
 
         if (clientBinary is null)
         {
-            Log.Information("No client binary found for type {type}", request.Type);
+            Log.Information("No client binary found for type {Type}", request.Type);
             return request.Adapt<CheckClientVersionResponse>() with
             {
                 Response = HashtopolisConstants.ErrorResponse,
@@ -60,7 +62,7 @@ public class
 
         if (clientBinary.Version != request.Version)
         {
-            Log.Information("Client update available: {version} -> {newVersion}",
+            Log.Information("Client update available: {Version} -> {NewVersion}",
                 request.Version,
                 clientBinary.Version);
             return request.Adapt<CheckClientVersionResponse>() with

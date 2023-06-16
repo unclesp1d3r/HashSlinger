@@ -1,6 +1,3 @@
-using System;
-using HashSlinger.Api.Generated;
-
 namespace HashSlinger.Api.Generated
 {
     public partial class HealthCheckAgentDto

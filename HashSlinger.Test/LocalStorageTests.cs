@@ -9,11 +9,10 @@ public class LocalStorageTests
     [SetUp]
     public void Setup()
     {
-        _logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
+        new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
         _service = new LocalFileStorageService();
     }
 
-    private ILogger _logger = null!;
     private LocalFileStorageService _service = null!;
 
 
