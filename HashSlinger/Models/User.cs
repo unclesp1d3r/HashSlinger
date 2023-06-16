@@ -27,8 +27,7 @@ public record User
 
     /// <summary>Gets or sets the notification settings.</summary>
     /// <value>The notification settings.</value>
-    public virtual ICollection<NotificationSetting> NotificationSettings { get; set; }
-        = new List<NotificationSetting>();
+    public virtual ICollection<NotificationSetting> NotificationSettings { get; set; } = new List<NotificationSetting>();
 
 
     /// <summary>Gets or sets the sessions.</summary>

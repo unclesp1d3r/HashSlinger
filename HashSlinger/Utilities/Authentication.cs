@@ -16,11 +16,7 @@ public static class Authentication
     public static (string, byte[]) HashPassword(string password)
     {
         byte[] salt = RandomNumberGenerator.GetBytes(KeySize);
-        byte[] hash = Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password),
-            salt,
-            Iterations,
-            HashAlgorithm,
-            KeySize);
+        byte[] hash = Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password), salt, Iterations, HashAlgorithm, KeySize);
         return (Convert.ToHexString(hash), salt);
     }
 

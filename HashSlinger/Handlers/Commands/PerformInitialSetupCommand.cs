@@ -45,8 +45,7 @@ public class PerformInitialSetupHandler : IRequestHandler<PerformInitialSetupCom
         admin.SetPasswordHash("admin");
         defaultGroup.Users.Add(admin);
         _dbContext.Users.Add(admin);
-        _dbContext.RegistrationVouchers.Add(new RegistrationVoucher
-            { Voucher = "abcd", AccessGroup = defaultGroup });
+        _dbContext.RegistrationVouchers.Add(new RegistrationVoucher { Voucher = "abcd", AccessGroup = defaultGroup });
 
         _dbContext.AgentBinaries.Add(new AgentBinary
         {

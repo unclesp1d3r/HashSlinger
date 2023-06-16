@@ -70,8 +70,7 @@ public class LocalFileStorageService : IFileStorageService
 
     private static string SanitizePath(string path)
     {
-        string regexSearch = new string(Path.GetInvalidFileNameChars())
-                             + new string(Path.GetInvalidPathChars());
+        string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
         var r = new Regex($"[{Regex.Escape(regexSearch)}]");
         return r.Replace(path, "_");
     }

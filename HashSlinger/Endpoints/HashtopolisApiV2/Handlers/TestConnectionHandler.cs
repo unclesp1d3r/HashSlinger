@@ -15,10 +15,7 @@ public class TestConnectionHandler : IRequestHandler<TestConnectionRequest, Test
     /// <param name="request">The request</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Response from the request</returns>
-    public Task<TestConnectionResponse> Handle(
-        TestConnectionRequest request,
-        CancellationToken cancellationToken
-    )
+    public Task<TestConnectionResponse> Handle(TestConnectionRequest request, CancellationToken cancellationToken)
     {
         Log.Debug("TestConnectionRequest received");
         return Task.FromResult(request.Adapt<TestConnectionResponse>() with
