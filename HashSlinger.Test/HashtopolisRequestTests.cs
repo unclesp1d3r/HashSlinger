@@ -4,17 +4,18 @@ using System.Text.Json;
 using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
 
+[TestFixture]
 public class HashtopolisRequestTests
 
 
 {
+    [SetUp] public void Setup() { }
+
     private const string TestConnectionJsonMessage = """
             {
                 "action":"testConnection"
             }
             """;
-
-    [SetUp] public void Setup() { }
 
     /// <summary>Tests that a bad request is still deserialized correctly</summary>
     /// <remarks>It should still deserialize, but all of the fields will be null.</remarks>
@@ -57,7 +58,8 @@ public class HashtopolisRequestTests
             """;
 
         var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
-        IHashtopolisRequest? testConnectionRequest = hashtopolisRequest?.ToHashtopolisRequest();
+        IHashtopolisRequest? testConnectionRequest
+            = HashtopolisRequest.ToHashtopolisRequest(hashtopolisRequest);
         Assert.That(testConnectionRequest, Is.Null);
         Assert.Pass();
     }
@@ -71,7 +73,8 @@ public class HashtopolisRequestTests
 
         Assert.That(hashtopolisRequest, Is.Not.Null);
 
-        var testConnectionRequest = (TestConnectionRequest?)hashtopolisRequest?.ToHashtopolisRequest();
+        var testConnectionRequest
+            = (TestConnectionRequest?)HashtopolisRequest.ToHashtopolisRequest(hashtopolisRequest);
         Assert.That(testConnectionRequest, Is.Not.Null);
         Assert.That(testConnectionRequest, Is.TypeOf<TestConnectionRequest>());
         Assert.That(testConnectionRequest?.Action, Is.EqualTo("testConnection"));

@@ -1,19 +1,14 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using DAL;
-using Serilog;
+using MediatR;
 
-/// <inheritdoc />
-public record TestConnectionRequest(
-    [property: JsonPropertyName("action")] string Action
-) : IHashtopolisRequest
-{
-    /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(Repository repository)
-    {
-        Log.Debug("TestConnectionRequest received");
-        return Task.FromResult<IHashtopolisMessage>(new TestConnectionResponse("testConnection",
-            HashtopolisConstants.SuccessResponse));
-    }
-}
+/// <summary>Represents a request to test the connection to the Hashtopolis server.</summary>
+/// <seealso cref="HashSlinger.Api.Endpoints.HashtopolisApiV2.IHashtopolisRequest" />
+/// <seealso cref="HashSlinger.Api.Endpoints.HashtopolisApiV2.IHashtopolisMessage" />
+/// <seealso cref="MediatR.IRequest&lt;HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO.TestConnectionResponse&gt;" />
+/// <seealso cref="MediatR.IBaseRequest" />
+/// <seealso cref="System.IEquatable&lt;HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO.TestConnectionRequest&gt;" />
+public record TestConnectionRequest
+    ([property: JsonPropertyName("action")] string Action) : IHashtopolisRequest,
+        IRequest<TestConnectionResponse>;

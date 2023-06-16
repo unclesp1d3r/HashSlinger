@@ -5,17 +5,12 @@ using System.Text.Json;
 using Api.Data;
 using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
-using Api.Models;
 using Api.Models.Enums;
 using Microsoft.Extensions.DependencyInjection;
-using Task = System.Threading.Tasks.Task;
 
+[TestFixture]
 internal class HashtopolisApiIntegrationTests
 {
-    private HttpClient _client = null!;
-    private MyWebApplicationFactory _factory = null!;
-
-
     [SetUp]
     public void Setup()
     {
@@ -28,6 +23,21 @@ internal class HashtopolisApiIntegrationTests
         db.Database.EnsureCreated();
         Utilities.ReinitializeDbForTests(db);
     }
+
+    [TearDown]
+    public void TearDown()
+    {
+        using IServiceScope scope = _factory.Services.CreateScope();
+        IServiceProvider scopedServices = scope.ServiceProvider;
+        var db = scopedServices.GetRequiredService<HashSlingerContext>();
+        db.Database.EnsureDeleted();
+
+        _client.Dispose();
+        _factory.Dispose();
+    }
+
+    private HttpClient _client = null!;
+    private MyWebApplicationFactory _factory = null!;
 
     [Test]
     public async Task BadRequestIntegrationTest()
@@ -105,7 +115,8 @@ internal class HashtopolisApiIntegrationTests
             Utilities.TestToken,
             "Test Client",
             (int)AgentOperatingSystems.Windows,
-            new List<string> { "nvidia" });
+            new List<string> { "nvidia" },
+            null);
         string data = JsonSerializer.Serialize(request);
 
         using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
@@ -152,7 +163,7 @@ internal class HashtopolisApiIntegrationTests
     }
 
     [Test]
-    public async Task CheckClientVersionCurentIntegrationTest()
+    public async Task CheckClientVersionCurrentIntegrationTest()
     {
         var request
             = new CheckClientVersionRequest("checkClientVersion", "1.0.1", "python", Utilities.TestToken);
@@ -168,14 +179,18 @@ internal class HashtopolisApiIntegrationTests
             string actualJsonString = await response.Content.ReadAsStringAsync();
 
             var actual = JsonSerializer.Deserialize<CheckClientVersionResponse>(actualJsonString);
-            Assert.That(actual, Is.Not.Null);
-            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
-            Assert.That(actual!.Version, Is.EqualTo("OK"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(actual, Is.Not.Null);
+                Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+                Assert.That(actual.Version, Is.EqualTo("OK"));
+            });
         }
 
         Assert.Pass();
     }
 
+    [Test]
     public async Task CheckClientVersionNewIntegrationTest()
     {
         var request
@@ -192,42 +207,14 @@ internal class HashtopolisApiIntegrationTests
             string actualJsonString = await response.Content.ReadAsStringAsync();
 
             var actual = JsonSerializer.Deserialize<CheckClientVersionResponse>(actualJsonString);
-            Assert.That(actual, Is.Not.Null);
-            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
-            Assert.That(actual!.Version, Is.EqualTo("NEW"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(actual, Is.Not.Null);
+                Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+                Assert.That(actual.Version, Is.EqualTo("NEW"));
+            });
         }
 
         Assert.Pass();
-    }
-}
-
-internal static class Utilities
-{
-    public const string TestVoucher = "test123456";
-    public const string TestToken = "testToken";
-
-    private static void InitializeDbForTests(HashSlingerContext db)
-    {
-        db.RegistrationVouchers.Add(new RegistrationVoucher
-        {
-            Voucher = TestVoucher, Expiration = DateTime.Now.AddDays(1)
-        });
-        db.Agents.Add(new Agent { Name = "Test Client", Token = TestToken });
-        db.AgentBinaries.Add(new AgentBinary
-        {
-            Version = "1.0.1", DownloadUrl = "http://example.com",
-            FileName = "test.zip", OperatingSystems = AgentOperatingSystems.Windows.ToString(),
-            Type = "python",
-            UpdateAvailable = string.Empty,
-            UpdateTrack = "release"
-        });
-        db.SaveChanges();
-    }
-
-    public static void ReinitializeDbForTests(HashSlingerContext db)
-    {
-        db.RegistrationVouchers.RemoveRange(db.RegistrationVouchers);
-        db.Agents.RemoveRange(db.Agents);
-        Utilities.InitializeDbForTests(db);
     }
 }

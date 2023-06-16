@@ -1,7 +1,6 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
-using DAL;
 
 /// <summary>
 ///     The client can request a list of deleted filenames from the server to be able to clean up unused
@@ -10,11 +9,4 @@ using DAL;
 public record GetFileStatusRequest(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("token")] string Token
-) : IHashtopolisRequest
-{
-    /// <inheritdoc />
-    public Task<IHashtopolisMessage> ProcessRequestAsync(Repository repository)
-    {
-        throw new NotImplementedException();
-    }
-}
+) : IHashtopolisRequest;
