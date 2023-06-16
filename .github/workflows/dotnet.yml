@@ -15,19 +15,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Start PostgreSQL on Ubuntu
-      run: |
-        sudo systemctl start postgresql.service
-        pg_isready
+    #- name: Start PostgreSQL on Ubuntu
+    #  run: |
+    #    sudo systemctl start postgresql.service
+    #    pg_isready
     
-    - name: Create additional user
-      run: |
-        sudo -u postgres psql --command="CREATE USER postgres PASSWORD 'postgres'" --command="\du"
+    #- name: Create additional user
+    #  run: |
+    #    sudo -u postgres psql --command="CREATE USER postgres PASSWORD 'postgres'" --command="\du"
     
-    - name: Create additional database
-      run: |
-        sudo -u postgres createdb HashSlinger_Dev --owner=postgres 
-        PGPASSWORD=postgres 
+    #- name: Create additional database
+    #  run: |
+    #    sudo -u postgres createdb HashSlinger_Dev --owner=postgres 
+    #    PGPASSWORD=postgres 
+    - uses: harmon758/postgresql-action@v1
+      with:
+        postgresql db: HashSlinger_Dev
+        postgresql user: postgres
+        postgresql password: postgres
+
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
@@ -36,7 +42,7 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
         restore-keys: |
             ${{ runner.os }}-nuget
     - name: Restore dependencies
