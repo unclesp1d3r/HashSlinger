@@ -17,6 +17,8 @@ jobs:
       postgres:
         image: postgres:latest
         env:
+          POSTGRES_USER: postgres
+          POSTGRES_DATABASE: hashslinger
           POSTGRES_AUTH_METHOD: trust
         ports:
         - 5432:5432
