@@ -4,23 +4,19 @@
 public interface IFileStorageService
 {
     /// <summary>Files the exists asynchronously.</summary>
-    /// <param name="uuid">The UUID.</param>
+    /// <param name="name">The name.</param>
     /// <param name="bucket">The bucket.</param>
     /// <returns>True, if the file exists; false, if not.</returns>
-    public Task<bool> FileExistsAsync(Guid uuid, string bucket);
+    public Task<bool> FileExistsAsync(string name, string bucket);
 
-    /// <summary>Gets the file asynchronously.</summary>
-    /// <param name="uuid">The UUID.</param>
-    /// <param name="bucket">The bucket.</param>
-    /// <returns>A stream of file contents.</returns>
-    public Task<Stream?> GetFileAsync(Guid uuid, string bucket);
+    public Task<Stream?> GetFileAsync(string name, string bucket);
 
     /// <summary>Stores the file asynchronously.</summary>
-    /// <param name="uuid">The UUID.</param>
+    /// <param name="name">The name.</param>
     /// <param name="bucket">The bucket.</param>
     /// <param name="fileStream">The file stream.</param>
-    public Task<bool> StoreFileAsync(Guid uuid, string bucket, Stream fileStream);
-
-    //public Task<Results<Ok, NotFound>> DeleteFileAsync(Guid uuid, string bucket);
-    //public Task<Results<Ok, NotFound>> DeleteFilesAsync(Guid uuid);
+    /// <returns>
+    ///     <br />
+    /// </returns>
+    public Task<bool> StoreFileAsync(string name, string bucket, Stream fileStream);
 }

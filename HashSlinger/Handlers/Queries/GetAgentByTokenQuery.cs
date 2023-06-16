@@ -7,14 +7,10 @@ using Models;
 using Serilog;
 
 /// <summary>Represents a query to retrieve an agent by token.</summary>
-public record GetAgentByTokenQuery : IRequest<Agent?>
-{
-    /// <summary>Gets or sets the token.</summary>
-    /// <value>The token.</value>
-    public string Token { get; set; } = null!;
-}
+public record GetAgentByTokenQuery(string Token) : IRequest<Agent?>;
 
 /// <summary>Handles retrieving an agent by token.</summary>
+// ReSharper disable once UnusedMember.Global
 public class GetAgentByTokenHandler : IRequestHandler<GetAgentByTokenQuery, Agent?>
 {
     private readonly HashSlingerContext _dbContext;

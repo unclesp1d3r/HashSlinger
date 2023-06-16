@@ -1,6 +1,4 @@
-﻿// ReSharper disable UnusedMember.Global
-
-namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
+﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
 
 using Api.Handlers.Commands;
 using Api.Handlers.Queries;
@@ -13,6 +11,7 @@ using Serilog;
 
 /// <summary>Handles the Hashtopolis check client version call.</summary>
 public class
+    // ReSharper disable once UnusedMember.Global
     CheckClientVersionHandler : IRequestHandler<CheckClientVersionRequest, CheckClientVersionResponse>
 {
     private readonly IMediator _mediator;
@@ -28,8 +27,7 @@ public class
     )
     {
         Log.Debug("Processing request {request}", this);
-        Agent? agent = await _mediator
-            .Send(new GetAgentByTokenQuery { Token = request.Token }, cancellationToken)
+        Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
             .ConfigureAwait(false);
         if (agent == null)
         {
@@ -46,8 +44,7 @@ public class
 
         await _mediator.Send(new UpdateAgentCommand(agent), cancellationToken).ConfigureAwait(true);
         AgentBinary? clientBinary = await _mediator
-            .Send(new GetAgentBinaryQuery { Type = request.Type, CurrentVersion = request.Version },
-                cancellationToken)
+            .Send(new GetAgentBinaryQuery(request.Version, request.Type), cancellationToken)
             .ConfigureAwait(false);
 
 

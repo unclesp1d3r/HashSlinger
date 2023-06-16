@@ -46,18 +46,12 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 app.MapHashtopolisEndpoints();
 app.MapAgentEndpoints();
 
 app.MapFileEndpoints();
-
 
 app.Run();
 

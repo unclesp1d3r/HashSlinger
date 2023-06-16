@@ -8,16 +8,7 @@ using SemanticVersioning;
 using Serilog;
 
 /// <summary>Represents a query to retrieve the agent binary.</summary>
-public record GetAgentBinaryQuery : IRequest<AgentBinary>
-{
-    /// <summary>Gets or sets the current version.</summary>
-    /// <value>The current version.</value>
-    public string CurrentVersion { get; set; } = null!;
-
-    /// <summary>Gets or sets the type.</summary>
-    /// <value>The type.</value>
-    public string Type { get; set; } = null!;
-}
+public record GetAgentBinaryQuery(string CurrentVersion, string Type) : IRequest<AgentBinary>;
 
 /// <summary>Handles retrieving the agent binary.</summary>
 // ReSharper disable once UnusedMember.Global

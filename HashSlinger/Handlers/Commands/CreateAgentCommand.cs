@@ -5,12 +5,7 @@ using MediatR;
 using Models;
 
 /// <summary>Command for creating an agent.</summary>
-public class CreateAgentCommand : IRequest<int>
-{
-    /// <summary>Gets or sets the agent.</summary>
-    /// <value>The agent.</value>
-    public Agent Agent { get; set; } = null!;
-}
+public record CreateAgentCommand(Agent Agent) : IRequest<int>;
 
 /// <summary>Handler for creating an agent.</summary>
 public class CreateAgentHandler : IRequestHandler<CreateAgentCommand, int>

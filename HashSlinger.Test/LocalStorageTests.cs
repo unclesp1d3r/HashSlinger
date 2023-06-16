@@ -24,10 +24,10 @@ public class LocalStorageTests
     public async Task StoreAndRetrieveFileTest()
     {
         const string testString = "Hello, world!";
-        var uuid = Guid.NewGuid();
+        var name = Guid.NewGuid().ToString();
 
         _service.LocalStoragePath = LocalStoragePath;
-        string filePath = Path.Combine(LocalStoragePath, LocalStorageBucket, uuid.ToString());
+        string filePath = Path.Combine(LocalStoragePath, LocalStorageBucket, name);
         using (var fileStream = new MemoryStream())
         {
             var writer = new StreamWriter(fileStream);
@@ -35,12 +35,12 @@ public class LocalStorageTests
             await writer.FlushAsync();
             fileStream.Position = 0;
 
-            await _service.StoreFileAsync(uuid, LocalStorageBucket, fileStream);
+            await _service.StoreFileAsync(name, LocalStorageBucket, fileStream);
         }
 
         Assert.That(File.Exists(filePath), Is.True);
 
-        await using (Stream? fileStream2 = await _service.GetFileAsync(uuid, LocalStorageBucket))
+        await using (Stream? fileStream2 = await _service.GetFileAsync(name, LocalStorageBucket))
         {
             Assert.That(fileStream2, Is.Not.Null);
             var reader = new StreamReader(fileStream2!);

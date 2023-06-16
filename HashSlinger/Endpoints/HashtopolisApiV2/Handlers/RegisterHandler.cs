@@ -1,6 +1,4 @@
-﻿// ReSharper disable UnusedMember.Global
-
-namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
+﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
 
 using Api.Handlers.Commands;
 using Api.Handlers.Queries;
@@ -68,7 +66,7 @@ public class RegisterHandler : IRequestHandler<RegisterRequest, RegisterResponse
 
 
         //int result = await _repository.CreateAgentAsync(newAgent).ConfigureAwait(true);
-        int result = await _mediator.Send(new CreateAgentCommand { Agent = newAgent }, cancellationToken)
+        int result = await _mediator.Send(new CreateAgentCommand(newAgent), cancellationToken)
             .ConfigureAwait(true);
         if (result == 0)
         {

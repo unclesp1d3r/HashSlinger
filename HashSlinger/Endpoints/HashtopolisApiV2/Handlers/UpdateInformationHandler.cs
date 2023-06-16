@@ -10,8 +10,6 @@ using Models.Enums;
 using Serilog;
 
 /// <summary>Handles the Hashtopolis API request to update the client information.</summary>
-/// <seealso
-///     cref="UpdateInformationResponse" />
 // ReSharper disable once UnusedMember.Global
 public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest, UpdateInformationResponse>
 {
@@ -27,8 +25,7 @@ public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest
         CancellationToken cancellationToken
     )
     {
-        Agent? agent = await _mediator
-            .Send(new GetAgentByTokenQuery { Token = request.Token }, cancellationToken)
+        Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
             .ConfigureAwait(false);
         if (agent == null)
         {

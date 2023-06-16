@@ -22,8 +22,7 @@ public class DownloadBinaryHandler : IRequestHandler<DownloadBinaryRequest, Down
         CancellationToken cancellationToken
     )
     {
-        Agent? agent = await _mediator
-            .Send(new GetAgentByTokenQuery { Token = request.Token }, cancellationToken)
+        Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
             .ConfigureAwait(false);
         if (agent == null)
             return request.Adapt<DownloadBinaryResponse>() with
@@ -33,41 +32,66 @@ public class DownloadBinaryHandler : IRequestHandler<DownloadBinaryRequest, Down
             };
 
         // This is the best I can come up with, given how weird the Hashtopolis API is.
-        switch (request.Type)
+        return request.Type switch
         {
-            case "7zr":
-                DownloadableBinary? sevenZipBinary = await _mediator
-                    .Send(new GetBinaryByNameQuery("7zr"), cancellationToken)
-                    .ConfigureAwait(true);
-                if (sevenZipBinary == null)
-                    return request.Adapt<DownloadBinaryResponse>() with
-                    {
-                        Response = HashtopolisConstants.ErrorResponse,
-                        Message = "7zr binary not found"
-                    };
-                return request.Adapt<DownloadBinaryResponse>() with
-                {
-                    Response = HashtopolisConstants.SuccessResponse,
-                    Url = sevenZipBinary.DownloadUrl
-                };
-            case "preprocessor":
-                return request.Adapt<DownloadBinaryResponse>() with
-                {
-                    Response = HashtopolisConstants.SuccessResponse,
-                    Message = $"Requested binary type: {request.Type}"
-                };
-            case "cracker":
-                return request.Adapt<DownloadBinaryResponse>() with
-                {
-                    Response = HashtopolisConstants.SuccessResponse,
-                    Message = $"Requested binary type: {request.Type}"
-                };
-            default:
-                return request.Adapt<DownloadBinaryResponse>() with
-                {
-                    Response = HashtopolisConstants.ErrorResponse,
-                    Message = $"Unknown binary type: {request.Type}"
-                };
-        }
+            "7zr" => await Get7ZipResponseAsync(request).ConfigureAwait(true),
+            "uftpd" => request.Adapt<DownloadBinaryResponse>() with
+            {
+                Response = HashtopolisConstants.ErrorResponse,
+                Message = "Multicast is not currently supported."
+            },
+            "preprocessor" => request.Adapt<DownloadBinaryResponse>() with
+            {
+                // Still need to implement this.
+                Response = HashtopolisConstants.SuccessResponse,
+                Message = $"Requested binary type: {request.Type}"
+            },
+            "cracker" => await GetCrackerResponseAsync(request).ConfigureAwait(true),
+            _ => request.Adapt<DownloadBinaryResponse>() with
+            {
+                Response = HashtopolisConstants.ErrorResponse,
+                Message = $"Unknown binary type: {request.Type}"
+            }
+        };
+    }
+
+    private async Task<DownloadBinaryResponse> Get7ZipResponseAsync(DownloadBinaryRequest request)
+    {
+        // The hashtopolis python agent doesn't actually follow the documented APIs.
+        // The documentation says that the 7zr binary is downloaded from the URL value in the
+        // response, but the python agent actually downloads the binary from the Executable value.
+
+        DownloadableBinary? sevenZipBinary = await _mediator
+            .Send(new GetBinaryByNameQuery("7zr"))
+            .ConfigureAwait(true);
+        if (sevenZipBinary == null)
+            return request.Adapt<DownloadBinaryResponse>() with
+            {
+                Response = HashtopolisConstants.ErrorResponse,
+                Message = "7zr binary not found"
+            };
+        return request.Adapt<DownloadBinaryResponse>() with
+        {
+            Response = HashtopolisConstants.SuccessResponse,
+            Executable = sevenZipBinary.DownloadUrl
+        };
+    }
+
+    private async Task<DownloadBinaryResponse> GetCrackerResponseAsync(DownloadBinaryRequest request)
+    {
+        DownloadableBinary? crackerBinary = await _mediator
+            .Send(new GetCrackerBinaryQuery(request.BinaryVersionId))
+            .ConfigureAwait(true);
+        if (crackerBinary == null)
+            return request.Adapt<DownloadBinaryResponse>() with
+            {
+                Response = HashtopolisConstants.ErrorResponse,
+                Message = "Cracker binary not found"
+            };
+        return request.Adapt<DownloadBinaryResponse>() with
+        {
+            Response = HashtopolisConstants.SuccessResponse,
+            Url = crackerBinary.DownloadUrl
+        };
     }
 }

@@ -5,11 +5,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Serilog;
-using Task = Task;
+using Task = System.Threading.Tasks.Task;
 
 /// <summary>Represents a command to delete a registration voucher.</summary>
-/// <seealso cref="MediatR.IRequest" />
-/// <seealso cref="MediatR.IBaseRequest" />
 public record DeleteRegistrationVoucherCommand(int Id) : IRequest;
 
 /// <summary>Handles removing a registration voucher from the database.</summary>

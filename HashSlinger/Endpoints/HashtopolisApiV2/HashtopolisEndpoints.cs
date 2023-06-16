@@ -29,7 +29,7 @@ public static class HashtopolisEndpoints
                 ) =>
                 {
                     request = request with { IpAddress = context.Connection.RemoteIpAddress };
-                    Log.Debug("New request: {@request}", request);
+                    Log.Information("New request: {@request}", request);
 
                     IHashtopolisRequest? message = HashtopolisRequest.ToHashtopolisRequest(request);
                     if (message is null)
@@ -40,7 +40,7 @@ public static class HashtopolisEndpoints
                     }
 
                     object? result = await mediator.Send(message).ConfigureAwait(true);
-
+                    Log.Information("Result: {@result}", result);
                     return Results.Ok(result);
                 })
             .Accepts<HashtopolisRequest>("application/json")

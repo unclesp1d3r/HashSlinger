@@ -183,7 +183,7 @@ internal class HashtopolisApiIntegrationTests
             {
                 Assert.That(actual, Is.Not.Null);
                 Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
-                Assert.That(actual!.Version, Is.EqualTo("OK"));
+                Assert.That(actual.Version, Is.EqualTo("OK"));
             });
         }
 
@@ -211,7 +211,7 @@ internal class HashtopolisApiIntegrationTests
             {
                 Assert.That(actual, Is.Not.Null);
                 Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
-                Assert.That(actual!.Version, Is.EqualTo("NEW"));
+                Assert.That(actual.Version, Is.EqualTo("NEW"));
             });
         }
 

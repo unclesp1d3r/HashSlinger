@@ -4,11 +4,9 @@ using Data;
 using MediatR;
 using Models;
 using Serilog;
-using Task = Task;
+using Task = System.Threading.Tasks.Task;
 
 /// <summary>Represents a command to update an agent.</summary>
-/// <seealso cref="MediatR.IRequest" />
-/// <seealso cref="MediatR.IBaseRequest" />
 public record UpdateAgentCommand(Agent Agent) : IRequest;
 
 /// <summary>Handles updating an agent in the database.</summary>

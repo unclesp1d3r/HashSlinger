@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -15,7 +13,7 @@ namespace HashSlinger.Api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AccessGroup",
+                name: "AccessGroups",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -24,7 +22,7 @@ namespace HashSlinger.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccessGroup", x => x.Id);
+                    table.PrimaryKey("PK_AccessGroups", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -47,8 +45,8 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TypeName = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    IsChunkingAvailable = table.Column<bool>(type: "boolean", nullable: false)
+                    IsChunkingAvailable = table.Column<bool>(type: "boolean", nullable: false),
+                    TypeName = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -104,13 +102,13 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    PasswordHash = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    PasswordSalt = table.Column<byte[]>(type: "bytea", nullable: false),
                     IsValid = table.Column<bool>(type: "boolean", nullable: false),
                     LastLoginDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    RegisteredSince = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    PasswordHash = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    PasswordSalt = table.Column<byte[]>(type: "bytea", nullable: false),
+                    RegisteredSince = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -123,21 +121,21 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FileName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Size = table.Column<long>(type: "bigint", nullable: false),
-                    IsSecret = table.Column<bool>(type: "boolean", nullable: false),
-                    FileType = table.Column<int>(type: "integer", nullable: false),
                     AccessGroupId = table.Column<int>(type: "integer", nullable: false),
+                    FileGuid = table.Column<Guid>(type: "uuid", nullable: true),
+                    FileName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    FileType = table.Column<int>(type: "integer", nullable: false),
+                    IsSecret = table.Column<bool>(type: "boolean", nullable: false),
                     LineCount = table.Column<long>(type: "bigint", nullable: true),
-                    FileGuid = table.Column<Guid>(type: "uuid", nullable: true)
+                    Size = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Files", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Files_AccessGroup_AccessGroupId",
+                        name: "FK_Files_AccessGroups_AccessGroupId",
                         column: x => x.AccessGroupId,
-                        principalTable: "AccessGroup",
+                        principalTable: "AccessGroups",
                         principalColumn: "Id");
                 });
 
@@ -147,17 +145,17 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Voucher = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    AccessGroupId = table.Column<int>(type: "integer", nullable: true),
                     Expiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    AccessGroupId = table.Column<int>(type: "integer", nullable: true)
+                    Voucher = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RegistrationVouchers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RegistrationVouchers_AccessGroup_AccessGroupId",
+                        name: "FK_RegistrationVouchers_AccessGroups_AccessGroupId",
                         column: x => x.AccessGroupId,
-                        principalTable: "AccessGroup",
+                        principalTable: "AccessGroups",
                         principalColumn: "Id");
                 });
 
@@ -167,18 +165,18 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     AttackCommand = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     ChunkTime = table.Column<int>(type: "integer", nullable: false),
-                    StatusTimer = table.Column<int>(type: "integer", nullable: false),
                     Color = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    IsSmall = table.Column<bool>(type: "boolean", nullable: false),
+                    CrackerBinaryTypeId = table.Column<int>(type: "integer", nullable: false),
                     IsCpuTask = table.Column<bool>(type: "boolean", nullable: false),
-                    UseNewBench = table.Column<bool>(type: "boolean", nullable: false),
-                    Priority = table.Column<int>(type: "integer", nullable: false),
-                    MaxAgents = table.Column<int>(type: "integer", nullable: false),
                     IsMaskImport = table.Column<bool>(type: "boolean", nullable: false),
-                    CrackerBinaryTypeId = table.Column<int>(type: "integer", nullable: false)
+                    IsSmall = table.Column<bool>(type: "boolean", nullable: false),
+                    MaxAgents = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Priority = table.Column<int>(type: "integer", nullable: false),
+                    StatusTimer = table.Column<int>(type: "integer", nullable: false),
+                    UseNewBench = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -196,28 +194,28 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Format = table.Column<int>(type: "integer", nullable: false),
-                    HashTypeId = table.Column<int>(type: "integer", nullable: false),
-                    HashCount = table.Column<int>(type: "integer", nullable: false),
-                    SaltSeparator = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
-                    Cracked = table.Column<int>(type: "integer", nullable: false),
-                    IsSecret = table.Column<bool>(type: "boolean", nullable: false),
-                    HexSalt = table.Column<bool>(type: "boolean", nullable: false),
-                    IsSalted = table.Column<bool>(type: "boolean", nullable: false),
                     AccessGroupId = table.Column<int>(type: "integer", nullable: false),
-                    Notes = table.Column<string>(type: "text", nullable: false),
-                    BrainId = table.Column<int>(type: "integer", nullable: false),
                     BrainFeatures = table.Column<short>(type: "smallint", nullable: false),
-                    IsArchived = table.Column<bool>(type: "boolean", nullable: false)
+                    BrainId = table.Column<int>(type: "integer", nullable: false),
+                    Cracked = table.Column<int>(type: "integer", nullable: false),
+                    Format = table.Column<int>(type: "integer", nullable: false),
+                    HashCount = table.Column<int>(type: "integer", nullable: false),
+                    HashTypeId = table.Column<int>(type: "integer", nullable: false),
+                    HexSalt = table.Column<bool>(type: "boolean", nullable: false),
+                    IsArchived = table.Column<bool>(type: "boolean", nullable: false),
+                    IsSalted = table.Column<bool>(type: "boolean", nullable: false),
+                    IsSecret = table.Column<bool>(type: "boolean", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Notes = table.Column<string>(type: "text", nullable: false),
+                    SaltSeparator = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Hashlist", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Hashlist_AccessGroup_AccessGroupId",
+                        name: "FK_Hashlist_AccessGroups_AccessGroupId",
                         column: x => x.AccessGroupId,
-                        principalTable: "AccessGroup",
+                        principalTable: "AccessGroups",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Hashlist_HashType_HashTypeId",
@@ -237,9 +235,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     table.PrimaryKey("PK_AccessGroupUser", x => new { x.AccessGroupsId, x.UsersId });
                     table.ForeignKey(
-                        name: "FK_AccessGroupUser_AccessGroup_AccessGroupsId",
+                        name: "FK_AccessGroupUser_AccessGroups_AccessGroupsId",
                         column: x => x.AccessGroupsId,
-                        principalTable: "AccessGroup",
+                        principalTable: "AccessGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -256,21 +254,21 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Uid = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    OperatingSystem = table.Column<int>(type: "integer", nullable: false),
-                    Devices = table.Column<List<string>>(type: "text[]", nullable: true),
+                    ClientSignature = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     CommandParameters = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    CpuOnly = table.Column<bool>(type: "boolean", nullable: false),
+                    Devices = table.Column<List<string>>(type: "text[]", nullable: true),
                     IgnoreErrors = table.Column<bool>(type: "boolean", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     IsTrusted = table.Column<bool>(type: "boolean", nullable: false),
-                    Token = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
                     LastAction = table.Column<int>(type: "integer", nullable: false),
-                    LastSeenTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastIp = table.Column<IPAddress>(type: "inet", nullable: true),
-                    UserId = table.Column<int>(type: "integer", nullable: true),
-                    CpuOnly = table.Column<bool>(type: "boolean", nullable: false),
-                    ClientSignature = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                    LastSeenTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    OperatingSystem = table.Column<int>(type: "integer", nullable: false),
+                    Token = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    Uid = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -288,12 +286,12 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    StartValid = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EndValid = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AccessKey = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     AccessCount = table.Column<int>(type: "integer", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    ApiGroupId = table.Column<int>(type: "integer", nullable: false)
+                    AccessKey = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    ApiGroupId = table.Column<int>(type: "integer", nullable: false),
+                    EndValid = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    StartValid = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -307,7 +305,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_ApiKey_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -317,11 +316,11 @@ namespace HashSlinger.Api.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Action = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    ObjectId = table.Column<int>(type: "integer", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     Notification = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    ObjectId = table.Column<int>(type: "integer", nullable: true),
                     Receiver = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
+                    UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -330,7 +329,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_NotificationSetting_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -339,12 +339,12 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    SessionStartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastActionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     IsOpen = table.Column<bool>(type: "boolean", nullable: false),
+                    LastActionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    SessionKey = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     SessionLifetime = table.Column<int>(type: "integer", nullable: false),
-                    SessionKey = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
+                    SessionStartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -353,7 +353,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_Session_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -362,16 +363,16 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    BinaryName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    OperatingSystems = table.Column<List<string>>(type: "text[]", nullable: false),
-                    Version = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Executable = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     DownloadUrl = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     FileId = table.Column<int>(type: "integer", nullable: true),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    OperatingSystems = table.Column<List<string>>(type: "text[]", nullable: false),
+                    Version = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     Discriminator = table.Column<string>(type: "text", nullable: false),
                     Type = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    UpdateTrack = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     UpdateAvailable = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    UpdateTrack = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     CrackerBinaryTypeId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
@@ -395,9 +396,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     FileId = table.Column<int>(type: "integer", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false)
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -439,9 +440,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SupertaskId = table.Column<int>(type: "integer", nullable: false),
+                    PreconfiguredTaskId = table.Column<int>(type: "integer", nullable: false),
                     PretaskId = table.Column<int>(type: "integer", nullable: false),
-                    PreconfiguredTaskId = table.Column<int>(type: "integer", nullable: false)
+                    SupertaskId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -464,21 +465,21 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Priority = table.Column<int>(type: "integer", nullable: false),
-                    TaskType = table.Column<int>(type: "integer", nullable: false),
-                    HashlistId = table.Column<int>(type: "integer", nullable: false),
                     AccessGroupId = table.Column<int>(type: "integer", nullable: true),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Cracked = table.Column<int>(type: "integer", nullable: false),
+                    HashlistId = table.Column<int>(type: "integer", nullable: false),
                     IsArchived = table.Column<bool>(type: "boolean", nullable: false),
-                    Cracked = table.Column<int>(type: "integer", nullable: false)
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Priority = table.Column<int>(type: "integer", nullable: false),
+                    TaskType = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TaskWrapper", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TaskWrapper_AccessGroup_AccessGroupId",
+                        name: "FK_TaskWrapper_AccessGroups_AccessGroupId",
                         column: x => x.AccessGroupId,
-                        principalTable: "AccessGroup",
+                        principalTable: "AccessGroups",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TaskWrapper_Hashlist_HashlistId",
@@ -498,9 +499,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     table.PrimaryKey("PK_AccessGroupAgent", x => new { x.AccessGroupsId, x.AgentsId });
                     table.ForeignKey(
-                        name: "FK_AccessGroupAgent_AccessGroup_AccessGroupsId",
+                        name: "FK_AccessGroupAgent_AccessGroups_AccessGroupsId",
                         column: x => x.AccessGroupsId,
-                        principalTable: "AccessGroup",
+                        principalTable: "AccessGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -538,10 +539,10 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Hash = table.Column<string>(type: "text", nullable: false),
-                    SolveTime = table.Column<long>(type: "bigint", nullable: false),
                     AgentId = table.Column<int>(type: "integer", nullable: true),
-                    HashlistId = table.Column<int>(type: "integer", nullable: false)
+                    Hash = table.Column<string>(type: "text", nullable: false),
+                    HashlistId = table.Column<int>(type: "integer", nullable: false),
+                    SolveTime = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -565,13 +566,13 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
+                    AttackCmd = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     CheckType = table.Column<int>(type: "integer", nullable: false),
-                    HashtypeId = table.Column<int>(type: "integer", nullable: false),
                     CrackerBinaryId = table.Column<int>(type: "integer", nullable: false),
                     ExpectedCracks = table.Column<int>(type: "integer", nullable: false),
-                    AttackCmd = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
+                    HashtypeId = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -589,29 +590,29 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     AttackCommand = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    ChunkSize = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     ChunkTime = table.Column<int>(type: "integer", nullable: false),
-                    StatusTimer = table.Column<int>(type: "integer", nullable: false),
-                    Keyspace = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    KeyspaceProgress = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    Priority = table.Column<int>(type: "integer", nullable: false),
-                    MaxAgents = table.Column<int>(type: "integer", nullable: false),
                     Color = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    IsSmall = table.Column<bool>(type: "boolean", nullable: false),
-                    IsCpuTask = table.Column<bool>(type: "boolean", nullable: false),
-                    UseNewBenchmark = table.Column<bool>(type: "boolean", nullable: false),
-                    SkipKeyspace = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     CrackerBinaryId = table.Column<int>(type: "integer", nullable: true),
                     CrackerBinaryTypeId = table.Column<int>(type: "integer", nullable: true),
-                    TaskWrapperId = table.Column<int>(type: "integer", nullable: false),
-                    IsArchived = table.Column<bool>(type: "boolean", nullable: false),
-                    Notes = table.Column<string>(type: "text", nullable: false),
-                    StaticChunks = table.Column<int>(type: "integer", nullable: false),
-                    ChunkSize = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     ForcePipe = table.Column<bool>(type: "boolean", nullable: false),
-                    UsePreprocessor = table.Column<bool>(type: "boolean", nullable: false),
-                    PreprocessorCommand = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
+                    IsArchived = table.Column<bool>(type: "boolean", nullable: false),
+                    IsCpuTask = table.Column<bool>(type: "boolean", nullable: false),
+                    IsSmall = table.Column<bool>(type: "boolean", nullable: false),
+                    Keyspace = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    KeyspaceProgress = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    MaxAgents = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Notes = table.Column<string>(type: "text", nullable: false),
+                    PreprocessorCommand = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Priority = table.Column<int>(type: "integer", nullable: false),
+                    SkipKeyspace = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    StaticChunks = table.Column<int>(type: "integer", nullable: false),
+                    StatusTimer = table.Column<int>(type: "integer", nullable: false),
+                    TaskWrapperId = table.Column<int>(type: "integer", nullable: false),
+                    UseNewBenchmark = table.Column<bool>(type: "boolean", nullable: false),
+                    UsePreprocessor = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -639,14 +640,14 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    HealthCheckId = table.Column<int>(type: "integer", nullable: false),
                     AgentId = table.Column<int>(type: "integer", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
                     Cracked = table.Column<int>(type: "integer", nullable: false),
+                    End = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Errors = table.Column<string>(type: "text", nullable: false),
+                    HealthCheckId = table.Column<int>(type: "integer", nullable: false),
                     NumGpus = table.Column<int>(type: "integer", nullable: false),
                     Start = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    End = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Errors = table.Column<string>(type: "text", nullable: false)
+                    Status = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -670,10 +671,10 @@ namespace HashSlinger.Api.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AgentId = table.Column<int>(type: "integer", nullable: false),
-                    TaskId = table.Column<int>(type: "integer", nullable: true),
-                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ChunkId = table.Column<int>(type: "integer", nullable: true),
                     Error = table.Column<string>(type: "text", nullable: false),
-                    ChunkId = table.Column<int>(type: "integer", nullable: true)
+                    TaskId = table.Column<int>(type: "integer", nullable: true),
+                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -697,9 +698,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TaskId = table.Column<int>(type: "integer", nullable: false),
                     AgentId = table.Column<int>(type: "integer", nullable: false),
-                    Benchmark = table.Column<string>(type: "text", nullable: false)
+                    Benchmark = table.Column<string>(type: "text", nullable: false),
+                    TaskId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -722,17 +723,17 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TaskId = table.Column<int>(type: "integer", nullable: false),
-                    Skip = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    Length = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     AgentId = table.Column<int>(type: "integer", nullable: true),
-                    DispatchTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    SolveTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Checkpoint = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    Progress = table.Column<int>(type: "integer", nullable: true),
-                    State = table.Column<int>(type: "integer", nullable: false),
                     Cracked = table.Column<int>(type: "integer", nullable: false),
-                    Speed = table.Column<decimal>(type: "numeric(20,0)", nullable: false)
+                    DispatchTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Length = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    Progress = table.Column<int>(type: "integer", nullable: true),
+                    Skip = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    SolveTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Speed = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    State = table.Column<int>(type: "integer", nullable: false),
+                    TaskId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -781,8 +782,8 @@ namespace HashSlinger.Api.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AgentId = table.Column<int>(type: "integer", nullable: false),
-                    TaskId = table.Column<int>(type: "integer", nullable: false),
                     SpeedValue = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    TaskId = table.Column<int>(type: "integer", nullable: false),
                     Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -806,8 +807,8 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TaskId = table.Column<int>(type: "integer", nullable: false),
-                    Output = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
+                    Output = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    TaskId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -825,14 +826,14 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ChunkId = table.Column<int>(type: "integer", nullable: true),
+                    CrackPos = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     HashlistId = table.Column<int>(type: "integer", nullable: false),
                     HashValue = table.Column<string>(type: "text", nullable: false),
-                    Salt = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Plaintext = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    TimeCracked = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ChunkId = table.Column<int>(type: "integer", nullable: true),
                     IsCracked = table.Column<bool>(type: "boolean", nullable: false),
-                    CrackPos = table.Column<decimal>(type: "numeric(20,0)", nullable: false)
+                    Plaintext = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Salt = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    TimeCracked = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -855,14 +856,14 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    HashlistId = table.Column<int>(type: "integer", nullable: false),
+                    ChunkId = table.Column<int>(type: "integer", nullable: true),
+                    CrackPos = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     Essid = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Hash = table.Column<string>(type: "text", nullable: false),
-                    Plaintext = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
-                    TimeCracked = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ChunkId = table.Column<int>(type: "integer", nullable: true),
+                    HashlistId = table.Column<int>(type: "integer", nullable: false),
                     IsCracked = table.Column<bool>(type: "boolean", nullable: false),
-                    CrackPos = table.Column<decimal>(type: "numeric(20,0)", nullable: false)
+                    Plaintext = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: true),
+                    TimeCracked = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1203,7 +1204,7 @@ namespace HashSlinger.Api.Migrations
                 name: "Hashlist");
 
             migrationBuilder.DropTable(
-                name: "AccessGroup");
+                name: "AccessGroups");
 
             migrationBuilder.DropTable(
                 name: "HashType");

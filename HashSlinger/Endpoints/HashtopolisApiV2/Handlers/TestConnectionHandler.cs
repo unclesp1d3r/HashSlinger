@@ -1,6 +1,4 @@
-﻿// ReSharper disable UnusedMember.Global
-
-namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
+﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
 
 using DTO;
 using Mapster;
@@ -8,6 +6,7 @@ using MediatR;
 using Serilog;
 
 /// <summary>Handles the Hashtopolis testConnection call.</summary>
+// ReSharper disable once UnusedMember.Global
 public class TestConnectionHandler : IRequestHandler<TestConnectionRequest, TestConnectionResponse>
 {
     /// <summary>Handles a request</summary>

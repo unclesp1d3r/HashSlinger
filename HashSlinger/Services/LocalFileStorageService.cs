@@ -1,6 +1,5 @@
 ﻿namespace HashSlinger.Api.Services;
 
-using Microsoft.AspNetCore.Http.HttpResults;
 using Serilog;
 
 /// <summary>A <see cref="IFileStorageService" /> implementation that uses the local file system.</summary>
@@ -21,47 +20,36 @@ public class LocalFileStorageService : IFileStorageService
     }
 
     /// <inheritdoc />
-    public async Task<bool> StoreFileAsync(Guid uuid, string bucket, Stream fileStream)
+    public async Task<Stream?> GetFileAsync(string name, string bucket)
     {
-        string filePath = Path.Combine(GetBucketPath(bucket), uuid.ToString());
-        EnsureBucketExists(bucket);
-        await using (FileStream stream = File.Create(filePath))
-        {
-            await fileStream.CopyToAsync(stream).ConfigureAwait(true);
-        }
-
-        Log.Information("Stored file {uuid} in bucket {bucket} at {filePath}", uuid, bucket, filePath);
-        return await FileExistsAsync(uuid, bucket).ConfigureAwait(true);
-    }
-
-
-    /// <inheritdoc />
-    public async Task<Stream?> GetFileAsync(Guid uuid, string bucket)
-    {
-        string filePath = Path.Combine(GetBucketPath(bucket), uuid.ToString());
+        string filePath = Path.Combine(GetBucketPath(bucket), name);
         if (!File.Exists(filePath)) return null;
         FileStream stream = File.OpenRead(filePath);
         return stream;
     }
 
     /// <inheritdoc />
-    public Task<bool> FileExistsAsync(Guid uuid, string bucket)
+    public async Task<bool> StoreFileAsync(string name, string bucket, Stream fileStream)
     {
-        string filePath = Path.Combine(GetBucketPath(bucket), uuid.ToString());
+        string filePath = Path.Combine(GetBucketPath(bucket), name);
+        EnsureBucketExists(bucket);
+        await using (FileStream stream = File.Create(filePath))
+        {
+            await fileStream.CopyToAsync(stream).ConfigureAwait(true);
+        }
+
+        Log.Information("Stored file {name} in bucket {bucket} at {filePath}", name, bucket, filePath);
+        return await FileExistsAsync(name, bucket).ConfigureAwait(true);
+    }
+
+
+    /// <inheritdoc />
+    public Task<bool> FileExistsAsync(string name, string bucket)
+    {
+        string filePath = Path.Combine(GetBucketPath(bucket), name);
         return Task.FromResult(File.Exists(filePath));
     }
 
-    /// <inheritdoc />
-    public async Task<Results<Ok, NotFound>> DeleteFileAsync(Guid uuid, string bucket)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public async Task<Results<Ok, NotFound>> DeleteFilesAsync(Guid uuid)
-    {
-        throw new NotImplementedException();
-    }
 
     private static void EnsureDirectoryExists(string path)
     {
