@@ -1,5 +1,6 @@
 ﻿namespace HashSlinger.Api.Services;
 
+using System.Text.RegularExpressions;
 using Serilog;
 
 /// <summary>A <see cref="IFileStorageService" /> implementation that uses the local file system.</summary>
@@ -20,18 +21,18 @@ public class LocalFileStorageService : IFileStorageService
     }
 
     /// <inheritdoc />
-    public async Task<Stream?> GetFileAsync(string name, string bucket)
+    public Task<Stream?> GetFileAsync(string name, string bucket)
     {
         string filePath = Path.Combine(GetBucketPath(bucket), name);
-        if (!File.Exists(filePath)) return null;
+        if (!File.Exists(filePath)) return Task.FromResult<Stream?>(null);
         FileStream stream = File.OpenRead(filePath);
-        return stream;
+        return Task.FromResult<Stream?>(stream);
     }
 
     /// <inheritdoc />
     public async Task<bool> StoreFileAsync(string name, string bucket, Stream fileStream)
     {
-        string filePath = Path.Combine(GetBucketPath(bucket), name);
+        string filePath = Path.Combine(GetBucketPath(bucket), SanitizePath(name));
         EnsureBucketExists(bucket);
         await using (FileStream stream = File.Create(filePath))
         {
@@ -46,7 +47,7 @@ public class LocalFileStorageService : IFileStorageService
     /// <inheritdoc />
     public Task<bool> FileExistsAsync(string name, string bucket)
     {
-        string filePath = Path.Combine(GetBucketPath(bucket), name);
+        string filePath = Path.Combine(GetBucketPath(bucket), SanitizePath(name));
         return Task.FromResult(File.Exists(filePath));
     }
 
@@ -64,6 +65,14 @@ public class LocalFileStorageService : IFileStorageService
 
     private string GetBucketPath(string bucket)
     {
-        return Path.Combine(LocalStoragePath, bucket);
+        return Path.Combine(LocalStoragePath, SanitizePath(bucket));
+    }
+
+    private string SanitizePath(string path)
+    {
+        string regexSearch = new string(Path.GetInvalidFileNameChars())
+                             + new string(Path.GetInvalidPathChars());
+        var r = new Regex($"[{Regex.Escape(regexSearch)}]");
+        return r.Replace(path, "_");
     }
 }
