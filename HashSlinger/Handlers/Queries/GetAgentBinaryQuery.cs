@@ -8,7 +8,7 @@ using SemanticVersioning;
 using Serilog;
 
 /// <summary>Represents a query to retrieve the agent binary.</summary>
-public record GetAgentBinaryQuery(string CurrentVersion, string Type) : IRequest<AgentBinary>;
+public record GetAgentBinaryQuery(string CurrentVersion, string Type) : IRequest<AgentBinary?>;
 
 /// <summary>Handles retrieving the agent binary.</summary>
 

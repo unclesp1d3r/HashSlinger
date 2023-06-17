@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class CrackerBinaryDto
+    public partial record CrackerBinaryDto
     {
         public CrackerBinaryTypeDto CrackerBinaryType { get; set; }
         public ICollection<HealthCheckDto> HealthChecks { get; set; }

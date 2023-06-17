@@ -2,7 +2,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class AssignmentDto
+    public partial record AssignmentDto
     {
         public AgentDto Agent { get; set; }
         public TaskDto Task { get; set; }

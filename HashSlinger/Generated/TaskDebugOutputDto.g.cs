@@ -2,7 +2,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class TaskDebugOutputDto
+    public partial record TaskDebugOutputDto
     {
         public TaskDto Task { get; set; }
         public int Id { get; set; }

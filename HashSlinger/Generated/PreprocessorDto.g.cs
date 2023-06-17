@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class PreprocessorDto
+    public partial record PreprocessorDto
     {
         public string? KeyspaceCommand { get; set; }
         public string? LimitCommand { get; set; }

@@ -4,7 +4,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class HealthCheckDto
+    public partial record HealthCheckDto
     {
         public CrackerBinaryDto CrackerBinary { get; set; }
         public ICollection<HealthCheckAgentDto> HealthCheckAgents { get; set; }

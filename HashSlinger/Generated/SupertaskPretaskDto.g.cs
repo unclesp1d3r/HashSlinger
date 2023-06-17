@@ -2,7 +2,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class SupertaskPretaskDto
+    public partial record SupertaskPretaskDto
     {
         public PreconfiguredTaskDto PreconfiguredTask { get; set; }
         public SupertaskDto Supertask { get; set; }

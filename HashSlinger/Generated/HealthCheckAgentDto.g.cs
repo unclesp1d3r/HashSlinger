@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class HealthCheckAgentDto
+    public partial record HealthCheckAgentDto
     {
         public AgentDto Agent { get; set; }
         public HealthCheckDto HealthCheck { get; set; }

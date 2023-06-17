@@ -11,4 +11,5 @@
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Supertask/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=suppressions/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=uftpd/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Wordlist/@EntryIndexedValue">True</s:Boolean>
 </wpf:ResourceDictionary>

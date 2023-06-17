@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class AgentBinaryDto
+    public partial record AgentBinaryDto
     {
         public string Type { get; set; }
         public string UpdateAvailable { get; set; }

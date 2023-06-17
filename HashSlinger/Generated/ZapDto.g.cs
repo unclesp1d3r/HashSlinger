@@ -2,7 +2,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class ZapDto
+    public partial record ZapDto
     {
         public AgentDto? Agent { get; set; }
         public HashlistDto Hashlist { get; set; }

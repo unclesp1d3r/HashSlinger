@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class DownloadableBinaryDto
+    public partial record DownloadableBinaryDto
     {
         public string DownloadUrl { get; set; }
         public string Executable { get; set; }

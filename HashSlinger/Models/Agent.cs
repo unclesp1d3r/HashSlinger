@@ -1,4 +1,6 @@
-﻿namespace HashSlinger.Api.Models;
+﻿// ReSharper disable StringLiteralTypo
+
+namespace HashSlinger.Api.Models;
 
 using System.ComponentModel.DataAnnotations;
 using System.Net;

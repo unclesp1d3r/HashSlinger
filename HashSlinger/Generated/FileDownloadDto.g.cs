@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class FileDownloadDto
+    public partial record FileDownloadDto
     {
         public FileDto File { get; set; }
         public int FileId { get; set; }

@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class SessionDto
+    public partial record SessionDto
     {
         public UserDto User { get; set; }
         public int Id { get; set; }

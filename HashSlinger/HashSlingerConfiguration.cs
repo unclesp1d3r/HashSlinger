@@ -1,3 +1,5 @@
+// ReSharper disable UnusedMember.Global
+
 namespace HashSlinger.Api;
 
 /// <summary>Stores application-wide configuration values.</summary>

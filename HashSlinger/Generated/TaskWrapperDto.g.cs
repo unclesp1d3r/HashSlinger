@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class TaskWrapperDto
+    public partial record TaskWrapperDto
     {
         public AccessGroupDto? AccessGroup { get; set; }
         public HashlistDto Hashlist { get; set; }

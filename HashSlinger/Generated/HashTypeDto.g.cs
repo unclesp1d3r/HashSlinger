@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class HashTypeDto
+    public partial record HashTypeDto
     {
         public ICollection<HashlistDto> Hashlists { get; set; }
         public string Description { get; set; }

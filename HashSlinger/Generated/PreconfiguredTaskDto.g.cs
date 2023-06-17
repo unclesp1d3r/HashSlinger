@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class PreconfiguredTaskDto
+    public partial record PreconfiguredTaskDto
     {
         public CrackerBinaryTypeDto CrackerBinaryType { get; set; }
         public ICollection<FileDto> Files { get; set; }

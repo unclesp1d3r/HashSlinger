@@ -1,4 +1,6 @@
-﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
+﻿// ReSharper disable StringLiteralTypo
+
+namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
 
@@ -9,12 +11,12 @@ public record GetTaskResponse(
     string Response,
     [property: JsonPropertyName("taskId")] int? TaskId,
     [property: JsonPropertyName("attackcmd")]
-    string? Attackcmd,
+    string? AttackCommand,
     [property: JsonPropertyName("hashlistId")]
     int? HashlistId,
     [property: JsonPropertyName("bench")] int? Bench,
     [property: JsonPropertyName("statustimer")]
-    int? Statustimer,
+    int? StatusTimer,
     [property: JsonPropertyName("benchType")]
     string? BenchType,
     [property: JsonPropertyName("crackerId")]

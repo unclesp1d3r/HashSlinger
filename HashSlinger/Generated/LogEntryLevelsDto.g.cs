@@ -1,6 +1,6 @@
 namespace HashSlinger.Api.Generated
 {
-    public partial class LogEntryLevelsDto
+    public partial record LogEntryLevelsDto
     {
         public int value__ { get; set; }
     }

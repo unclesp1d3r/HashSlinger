@@ -1,5 +1,6 @@
 namespace HashSlinger.Test;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
@@ -48,7 +49,7 @@ public class HashtopolisRequestTests
     }
 
     /// <summary>Tests to ensure that a bad request is not converted to a HashtopolisRequest</summary>
-    [Test]
+    [Test, SuppressMessage("ReSharper", "StringLiteralTypo")]
     public void BadRequestConvertTest()
     {
         const string jsonMessage = """

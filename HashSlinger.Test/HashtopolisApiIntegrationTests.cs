@@ -1,5 +1,6 @@
 ﻿namespace HashSlinger.Test;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 using Api.Data;
@@ -8,7 +9,7 @@ using Api.Endpoints.HashtopolisApiV2.DTO;
 using Api.Models.Enums;
 using Microsoft.Extensions.DependencyInjection;
 
-[TestFixture]
+[TestFixture, SuppressMessage("ReSharper", "StringLiteralTypo")]
 internal class HashtopolisApiIntegrationTests
 {
     [SetUp]

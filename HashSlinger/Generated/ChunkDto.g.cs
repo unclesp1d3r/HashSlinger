@@ -4,7 +4,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class ChunkDto
+    public partial record ChunkDto
     {
         public AgentDto? Agent { get; set; }
         public ICollection<HashBinaryDto> HashBinaries { get; set; }

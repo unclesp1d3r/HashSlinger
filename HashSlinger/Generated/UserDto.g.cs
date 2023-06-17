@@ -4,7 +4,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class UserDto
+    public partial record UserDto
     {
         public ICollection<AccessGroupDto> AccessGroups { get; set; }
         public ICollection<ApiKeyDto> ApiKeys { get; set; }

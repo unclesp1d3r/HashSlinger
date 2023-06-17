@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class AgentErrorDto
+    public partial record AgentErrorDto
     {
         public AgentDto Agent { get; set; }
         public TaskDto? Task { get; set; }

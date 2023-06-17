@@ -2,7 +2,7 @@ using System;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class FileDeleteDto
+    public partial record FileDeleteDto
     {
         public string FileName { get; set; }
         public int Id { get; set; }

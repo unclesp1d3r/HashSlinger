@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class HashDto
+    public partial record HashDto
     {
         public ChunkDto? Chunk { get; set; }
         public HashlistDto Hashlist { get; set; }

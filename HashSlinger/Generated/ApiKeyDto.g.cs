@@ -3,7 +3,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class ApiKeyDto
+    public partial record ApiKeyDto
     {
         public ApiGroupDto ApiGroup { get; set; }
         public UserDto User { get; set; }

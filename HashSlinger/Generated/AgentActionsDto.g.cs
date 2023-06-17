@@ -1,6 +1,6 @@
 namespace HashSlinger.Api.Generated
 {
-    public partial class AgentActionsDto
+    public partial record AgentActionsDto
     {
         public int value__ { get; set; }
     }

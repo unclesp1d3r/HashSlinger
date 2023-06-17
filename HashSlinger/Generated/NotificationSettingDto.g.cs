@@ -2,7 +2,7 @@ using HashSlinger.Api.Generated;
 
 namespace HashSlinger.Api.Generated
 {
-    public partial class NotificationSettingDto
+    public partial record NotificationSettingDto
     {
         public UserDto User { get; set; }
         public string Action { get; set; }
