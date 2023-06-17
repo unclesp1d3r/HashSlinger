@@ -1,3 +1,5 @@
+using System;
+
 namespace HashSlinger.Api.Generated
 {
     public partial class FileDeleteDto

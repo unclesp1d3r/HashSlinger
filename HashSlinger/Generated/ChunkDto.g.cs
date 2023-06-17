@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using HashSlinger.Api.Generated;
+
 namespace HashSlinger.Api.Generated
 {
     public partial class ChunkDto

@@ -21,31 +21,31 @@ public static class HashtopolisEndpoints
         RouteGroupBuilder group = routes.MapGroup(HashtopolisConstants.EndPointPrefix);
 
         group.MapPost("/",
-                 async (
-                     HashtopolisRequest request,
-                     [FromServices] HashSlingerContext dbContext,
-                     IMediator mediator,
-                     HttpContext context
-                 ) =>
-                 {
-                     request = request with { IpAddress = context.Connection.RemoteIpAddress };
-                     Log.Information("New request: {@Request}", request);
+                async (
+                    HashtopolisRequest request,
+                    [FromServices] HashSlingerContext dbContext,
+                    IMediator mediator,
+                    HttpContext context
+                ) =>
+                {
+                    request = request with { IpAddress = context.Connection.RemoteIpAddress };
+                    Log.Information("New request: {@Request}", request);
 
-                     IHashtopolisRequest? message = HashtopolisRequest.ToHashtopolisRequest(request);
-                     if (message is null)
-                     {
-                         HashtopolisRequest badRequest = request with { Response = "ERROR" };
-                         Log.Error("Bad API request: {@BadRequest}", badRequest);
-                         return Results.BadRequest(badRequest);
-                     }
+                    IHashtopolisRequest? message = HashtopolisRequest.ToHashtopolisRequest(request);
+                    if (message is null)
+                    {
+                        HashtopolisRequest badRequest = request with { Response = "ERROR" };
+                        Log.Error("Bad API request: {@BadRequest}", badRequest);
+                        return Results.BadRequest(badRequest);
+                    }
 
-                     object? result = await mediator.Send(message).ConfigureAwait(true);
-                     Log.Information("Result: {@Result}", result);
-                     return Results.Ok(result);
-                 })
-             .Accepts<HashtopolisRequest>("application/json")
-             .Produces<IHashtopolisMessage>()
-             .Produces(400)
-             .Produces(401);
+                    var result = await mediator.Send(message).ConfigureAwait(true);
+                    Log.Information("Result: {@Result}", result);
+                    return Results.Ok(result);
+                })
+            .Accepts<HashtopolisRequest>("application/json")
+            .Produces<IHashtopolisMessage>()
+            .Produces(400)
+            .Produces(401);
     }
 }

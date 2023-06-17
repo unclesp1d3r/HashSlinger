@@ -15,7 +15,7 @@ internal static class Utilities
         db.RegistrationVouchers.ExecuteDelete();
         db.Agents.ExecuteDelete();
         db.AgentBinaries.ExecuteDelete();
-        InitializeDbForTests(db);
+        Utilities.InitializeDbForTests(db);
     }
 
     private static void InitializeDbForTests(HashSlingerContext db)
@@ -34,6 +34,8 @@ internal static class Utilities
             UpdateAvailable = string.Empty,
             UpdateTrack = "release"
         });
+        db.FileDeletes.Add(new FileDelete { FileName = "fake_file.txt", Time = DateTime.UtcNow.AddDays(-1) });
+
         db.SaveChanges();
     }
 }

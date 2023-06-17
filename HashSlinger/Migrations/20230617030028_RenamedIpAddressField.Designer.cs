@@ -5,6 +5,7 @@ using System.Net;
 using HashSlinger.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HashSlinger.Api.Migrations
 {
     [DbContext(typeof(HashSlingerContext))]
-    partial class HashSlingerContextModelSnapshot : ModelSnapshot
+    [Migration("20230617030028_RenamedIpAddressField")]
+    partial class RenamedIpAddressField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

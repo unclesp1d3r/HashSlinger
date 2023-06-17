@@ -3,7 +3,7 @@
 using Data;
 using MediatR;
 using Models;
-using Task = System.Threading.Tasks.Task;
+using Task = Task;
 
 /// <summary>Represents a command to perform the initial setup of the application.</summary>
 public record PerformInitialSetupCommand : IRequest;

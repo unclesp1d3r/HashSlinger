@@ -28,7 +28,7 @@ public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest
     )
     {
         Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
-                                      .ConfigureAwait(false);
+            .ConfigureAwait(false);
         if (agent == null)
         {
             Log.Information("Agent not found");
@@ -44,7 +44,7 @@ public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest
         agent.LastAction = AgentActions.UpdateClientInformation;
         agent.LastSeenTime = DateTime.UtcNow;
         agent.Devices = request.Devices.Adapt<List<string>>();
-        agent.LastIp = request.IpAddress;
+        agent.LastSeenIpAddress = request.IpAddress;
         if (string.IsNullOrWhiteSpace(agent.Uid)) agent.CpuOnly = !agent.CheckForGpuDevices();
         agent.Uid = request.Uid;
 
