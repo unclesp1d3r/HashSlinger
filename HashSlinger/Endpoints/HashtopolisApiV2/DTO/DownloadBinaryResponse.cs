@@ -5,28 +5,20 @@ using System.Text.Json.Serialization;
 /// <inheritdoc />
 public record DownloadBinaryResponse(
     [property: JsonPropertyName("action")] string Action,
-    [property: JsonPropertyName("response")]
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("response"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string Response,
-    [property: JsonPropertyName("url")]
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("url"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string Url,
-    [property: JsonPropertyName("name")]
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("name"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string Name,
-    [property: JsonPropertyName("executable")]
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("executable"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Executable,
-    [property: JsonPropertyName("keyspaceCommand")]
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("keyspaceCommand"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? KeyspaceCommand,
-    [property: JsonPropertyName("skipCommand")]
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("skipCommand"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? SkipCommand,
-    [property: JsonPropertyName("limitCommand")]
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("limitCommand"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? LimitCommand,
-    [property: JsonPropertyName("message")]
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 ) : IHashtopolisMessage;

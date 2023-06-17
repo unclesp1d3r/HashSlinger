@@ -27,9 +27,9 @@ public class GetBinaryByNameHandler : IRequestHandler<GetBinaryByNameQuery, Down
     public async Task<DownloadableBinary?> Handle(GetBinaryByNameQuery request, CancellationToken cancellationToken)
     {
         DownloadableBinary? result = await _dbContext.DownloadableBinaries.Where(b => b.Name == request.Name)
-                                                     .OrderByDescending(b => b.Version)
-                                                     .LastOrDefaultAsync(cancellationToken)
-                                                     .ConfigureAwait(true);
+            .OrderByDescending(b => b.Version)
+            .LastOrDefaultAsync(cancellationToken)
+            .ConfigureAwait(true);
         return result;
     }
 }

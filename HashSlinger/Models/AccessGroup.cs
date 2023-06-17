@@ -19,8 +19,7 @@ public record AccessGroup
     public virtual ICollection<Hashlist> Hashlists { get; set; } = new List<Hashlist>();
 
     /// <summary>Gets or sets the registration vouchers, which are used to register new Agents to the access group.</summary>
-    public virtual ICollection<RegistrationVoucher> RegistrationVouchers { get; set; }
-        = new List<RegistrationVoucher>();
+    public virtual ICollection<RegistrationVoucher> RegistrationVouchers { get; set; } = new List<RegistrationVoucher>();
 
     /// <summary>Gets or sets the task wrappers.</summary>
     /// <value>The task wrappers.</value>

@@ -1,16 +1,14 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
 
+using Api.Handlers.Commands;
 using Api.Handlers.Queries;
 using DTO;
-using HashSlinger.Api.Handlers.Commands;
 using Mapster;
 using MediatR;
 using Models;
 using Models.Enums;
 
-/// <summary>
-/// Handles the Hashtopolis API v2 GetFileStatus endpoint.
-/// </summary>
+/// <summary>Handles the Hashtopolis API v2 GetFileStatus endpoint.</summary>
 // ReSharper disable once UnusedMember.Global
 public class GetFileStatusHandler : IRequestHandler<GetFileStatusRequest, GetFileStatusResponse>
 {

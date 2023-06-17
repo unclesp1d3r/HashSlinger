@@ -15,7 +15,7 @@ public class LocalFileStorageService : IFileStorageService
         get => _localStoragePath;
         set
         {
-            EnsureDirectoryExists(value);
+            LocalFileStorageService.EnsureDirectoryExists(value);
             _localStoragePath = value;
         }
     }
@@ -23,7 +23,7 @@ public class LocalFileStorageService : IFileStorageService
     /// <inheritdoc />
     public Task<Stream?> GetFileAsync(string name, string bucket)
     {
-        string filePath = Path.Combine(GetBucketPath(bucket), name);
+        var filePath = Path.Combine(GetBucketPath(bucket), name);
         if (!File.Exists(filePath)) return Task.FromResult<Stream?>(null);
         FileStream stream = File.OpenRead(filePath);
         return Task.FromResult<Stream?>(stream);
@@ -32,7 +32,7 @@ public class LocalFileStorageService : IFileStorageService
     /// <inheritdoc />
     public async Task<bool> StoreFileAsync(string name, string bucket, Stream fileStream)
     {
-        string filePath = Path.Combine(GetBucketPath(bucket), SanitizePath(name));
+        var filePath = Path.Combine(GetBucketPath(bucket), LocalFileStorageService.SanitizePath(name));
         EnsureBucketExists(bucket);
         await using (FileStream stream = File.Create(filePath))
         {
@@ -47,7 +47,7 @@ public class LocalFileStorageService : IFileStorageService
     /// <inheritdoc />
     public Task<bool> FileExistsAsync(string name, string bucket)
     {
-        string filePath = Path.Combine(GetBucketPath(bucket), SanitizePath(name));
+        var filePath = Path.Combine(GetBucketPath(bucket), LocalFileStorageService.SanitizePath(name));
         return Task.FromResult(File.Exists(filePath));
     }
 
@@ -57,21 +57,21 @@ public class LocalFileStorageService : IFileStorageService
         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
     }
 
+    private static string SanitizePath(string path)
+    {
+        var regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+        var r = new Regex($"[{Regex.Escape(regexSearch)}]");
+        return r.Replace(path, "_");
+    }
+
     private void EnsureBucketExists(string bucket)
     {
-        string bucketPath = GetBucketPath(bucket);
-        EnsureDirectoryExists(bucketPath);
+        var bucketPath = GetBucketPath(bucket);
+        LocalFileStorageService.EnsureDirectoryExists(bucketPath);
     }
 
     private string GetBucketPath(string bucket)
     {
-        return Path.Combine(LocalStoragePath, SanitizePath(bucket));
-    }
-
-    private static string SanitizePath(string path)
-    {
-        string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-        var r = new Regex($"[{Regex.Escape(regexSearch)}]");
-        return r.Replace(path, "_");
+        return Path.Combine(LocalStoragePath, LocalFileStorageService.SanitizePath(bucket));
     }
 }

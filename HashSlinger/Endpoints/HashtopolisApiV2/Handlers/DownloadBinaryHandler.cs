@@ -1,8 +1,8 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
 
+using Api.Handlers.Commands;
 using Api.Handlers.Queries;
 using DTO;
-using HashSlinger.Api.Handlers.Commands;
 using Mapster;
 using MediatR;
 using Models;

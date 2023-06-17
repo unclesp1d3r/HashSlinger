@@ -26,7 +26,7 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
     public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
     {
         Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
-                                      .ConfigureAwait(false);
+            .ConfigureAwait(false);
 
         if (agent is null)
         {

@@ -27,8 +27,7 @@ public class GetFileByNameHandler : IRequestHandler<GetFileByNameQuery, Stream?>
     /// <returns>Response from the request</returns>
     public async Task<Stream?> Handle(GetFileByNameQuery request, CancellationToken cancellationToken)
     {
-        Stream? file = await _fileStorageService.GetFileAsync(request.Name, request.Bucket)
-                                                .ConfigureAwait(true);
+        Stream? file = await _fileStorageService.GetFileAsync(request.Name, request.Bucket).ConfigureAwait(true);
         return file;
     }
 }

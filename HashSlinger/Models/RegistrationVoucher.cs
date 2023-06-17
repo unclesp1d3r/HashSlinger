@@ -40,8 +40,6 @@ public record RegistrationVoucher
     /// </returns>
     public static string GetRandomToken()
     {
-        return new string(Enumerable.Repeat(TokenChars, TokenLength)
-                                    .Select(s => s[Random.Next(s.Length)])
-                                    .ToArray());
+        return new string(Enumerable.Repeat(TokenChars, TokenLength).Select(s => s[Random.Next(s.Length)]).ToArray());
     }
 }

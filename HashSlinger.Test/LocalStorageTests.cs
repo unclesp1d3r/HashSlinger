@@ -26,7 +26,7 @@ public class LocalStorageTests
         var name = Guid.NewGuid().ToString();
 
         _service.LocalStoragePath = LocalStoragePath;
-        string filePath = Path.Combine(LocalStoragePath, LocalStorageBucket, name);
+        var filePath = Path.Combine(LocalStoragePath, LocalStorageBucket, name);
         using (var fileStream = new MemoryStream())
         {
             var writer = new StreamWriter(fileStream);
@@ -43,7 +43,7 @@ public class LocalStorageTests
         {
             Assert.That(fileStream2, Is.Not.Null);
             var reader = new StreamReader(fileStream2!);
-            string? contents = await reader.ReadLineAsync();
+            var contents = await reader.ReadLineAsync();
             Assert.That(contents, Is.EqualTo(testString));
         }
 

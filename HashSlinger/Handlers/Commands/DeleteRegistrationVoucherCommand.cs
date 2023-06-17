@@ -28,9 +28,8 @@ public class DeleteRegistrationVoucherCommandHandler : IRequestHandler<DeleteReg
     public async Task Handle(DeleteRegistrationVoucherCommand request, CancellationToken cancellationToken)
     {
         RegistrationVoucher? voucher = await _dbContext.RegistrationVouchers
-                                                       .SingleOrDefaultAsync(r => r.Id == request.Id,
-                                                           cancellationToken)
-                                                       .ConfigureAwait(true);
+            .SingleOrDefaultAsync(r => r.Id == request.Id, cancellationToken)
+            .ConfigureAwait(true);
 
         if (voucher == null)
         {

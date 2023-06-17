@@ -5,14 +5,10 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-/// <summary>
-/// Represents a query to validating an agent token.
-/// </summary>
+/// <summary>Represents a query to validating an agent token.</summary>
 public record ValidateAgentTokenQuery(string Token) : IRequest<bool>;
 
-/// <summary>
-/// Handles validating an agent token.
-/// </summary>
+/// <summary>Handles validating an agent token.</summary>
 // ReSharper disable once UnusedMember.Global
 public class ValidateAgentTokenHandler : IRequestHandler<ValidateAgentTokenQuery, bool>
 {

@@ -15,8 +15,8 @@ public static class Authentication
     /// <returns>A tuple of hash and the salt.</returns>
     public static (string, byte[]) HashPassword(string password)
     {
-        byte[] salt = RandomNumberGenerator.GetBytes(KeySize);
-        byte[] hash = Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password), salt, Iterations, HashAlgorithm, KeySize);
+        var salt = RandomNumberGenerator.GetBytes(KeySize);
+        var hash = Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password), salt, Iterations, HashAlgorithm, KeySize);
         return (Convert.ToHexString(hash), salt);
     }
 
@@ -27,7 +27,7 @@ public static class Authentication
     /// <returns>True if the password matches the hash and salt; else false.</returns>
     public static bool VerifyPassword(string password, string hash, byte[] salt)
     {
-        byte[] hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, HashAlgorithm, KeySize);
+        var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, HashAlgorithm, KeySize);
         return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
     }
 }

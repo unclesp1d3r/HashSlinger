@@ -17,8 +17,7 @@ public record User
 
     /// <summary>Gets or sets the agents.</summary>
     /// <value>The agents.</value>
-    [JsonIgnore]
-    [AdaptIgnore]
+    [JsonIgnore, AdaptIgnore]
     public virtual ICollection<Agent> Agents { get; set; } = new List<Agent>();
 
     /// <summary>Gets or sets the API keys.</summary>
@@ -55,15 +54,12 @@ public record User
 
     /// <summary>Gets or sets the password hash.</summary>
     /// <value>The password hash.</value>
-    [StringLength(256)]
-    [JsonIgnore]
-    [AdaptIgnore]
+    [StringLength(256), JsonIgnore, AdaptIgnore]
     public string PasswordHash { get; set; } = null!;
 
     /// <summary>Gets or sets the password salt.</summary>
     /// <value>The password salt.</value>
-    [JsonIgnore]
-    [AdaptIgnore]
+    [JsonIgnore, AdaptIgnore]
     public byte[] PasswordSalt { get; set; } = null!;
 
     /// <summary>Gets or sets the registered since.</summary>

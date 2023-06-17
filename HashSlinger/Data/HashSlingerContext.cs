@@ -32,13 +32,13 @@ public partial class HashSlingerContext : DbContext
     /// <value>The downloadable binaries.</value>
     public DbSet<DownloadableBinary> DownloadableBinaries { get; set; } = null!;
 
-    /// <summary>Gets or sets the files.</summary>
-    /// <value>The files.</value>
-    public DbSet<File> Files { get; set; } = null!;
-
     /// <summary>Gets or sets the deleted file events.</summary>
     /// <value>The files that have been deleted from the server.</value>
     public DbSet<FileDelete> FileDeletes { get; set; } = null!;
+
+    /// <summary>Gets or sets the files.</summary>
+    /// <value>The files.</value>
+    public DbSet<File> Files { get; set; } = null!;
 
     /// <summary>Gets or sets the log entries.</summary>
     /// <value>The log entries.</value>
@@ -59,9 +59,7 @@ public partial class HashSlingerContext : DbContext
     {
         modelBuilder.Entity<AccessGroup>(entity =>
         {
-            entity.HasMany(e => e.RegistrationVouchers)
-                .WithOne(e => e.AccessGroup)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasMany(e => e.RegistrationVouchers).WithOne(e => e.AccessGroup).OnDelete(DeleteBehavior.ClientSetNull);
             entity.HasMany(e => e.Users).WithMany(e => e.AccessGroups);
         });
 
@@ -137,50 +135,36 @@ public partial class HashSlingerContext : DbContext
         {
             entity.HasOne(d => d.Chunk).WithMany(p => p.HashBinaries);
 
-            entity.HasOne(d => d.Hashlist)
-                .WithMany(p => p.HashBinaries)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.Hashlist).WithMany(p => p.HashBinaries).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<Hashlist>(entity =>
         {
-            entity.HasOne(d => d.AccessGroup)
-                .WithMany(p => p.Hashlists)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.AccessGroup).WithMany(p => p.Hashlists).OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.HashType).WithMany(p => p.Hashlists).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<HealthCheck>(entity =>
         {
-            entity.HasOne(d => d.CrackerBinary)
-                .WithMany(p => p.HealthChecks)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.CrackerBinary).WithMany(p => p.HealthChecks).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<HealthCheckAgent>(entity =>
         {
-            entity.HasOne(d => d.Agent)
-                .WithMany(p => p.HealthCheckAgents)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.Agent).WithMany(p => p.HealthCheckAgents).OnDelete(DeleteBehavior.ClientSetNull);
 
-            entity.HasOne(d => d.HealthCheck)
-                .WithMany(p => p.HealthCheckAgents)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.HealthCheck).WithMany(p => p.HealthCheckAgents).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<NotificationSetting>(entity =>
         {
-            entity.HasOne(d => d.User)
-                .WithMany(p => p.NotificationSettings)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.User).WithMany(p => p.NotificationSettings).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<PreconfiguredTask>(entity =>
         {
-            entity.HasOne(d => d.CrackerBinaryType)
-                .WithMany(p => p.Pretasks)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.CrackerBinaryType).WithMany(p => p.Pretasks).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<RegistrationVoucher>(entity =>
@@ -204,9 +188,7 @@ public partial class HashSlingerContext : DbContext
                 .WithMany(p => p.SupertaskPretasks)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            entity.HasOne(d => d.Supertask)
-                .WithMany(p => p.SupertaskPretasks)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.Supertask).WithMany(p => p.SupertaskPretasks).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<Task>(entity =>
@@ -220,18 +202,14 @@ public partial class HashSlingerContext : DbContext
 
         modelBuilder.Entity<TaskDebugOutput>(entity =>
         {
-            entity.HasOne(d => d.Task)
-                .WithMany(p => p.TaskDebugOutputs)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.Task).WithMany(p => p.TaskDebugOutputs).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<TaskWrapper>(entity =>
         {
             entity.HasOne(d => d.AccessGroup).WithMany(p => p.TaskWrappers);
 
-            entity.HasOne(d => d.Hashlist)
-                .WithMany(p => p.TaskWrappers)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.Hashlist).WithMany(p => p.TaskWrappers).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<User>(entity =>

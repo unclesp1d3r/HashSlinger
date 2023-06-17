@@ -16,7 +16,7 @@ internal class FileEndpointIntegrationTests
 
         using IServiceScope scope = _factory.Services.CreateScope();
         IServiceProvider scopedServices = scope.ServiceProvider;
-        var db = scopedServices.GetRequiredService<HashSlingerContext>();
+        HashSlingerContext db = scopedServices.GetRequiredService<HashSlingerContext>();
         db.Database.EnsureCreated();
         Utilities.ReinitializeDbForTests(db);
     }
@@ -26,7 +26,7 @@ internal class FileEndpointIntegrationTests
     {
         using IServiceScope scope = _factory.Services.CreateScope();
         IServiceProvider scopedServices = scope.ServiceProvider;
-        var db = scopedServices.GetRequiredService<HashSlingerContext>();
+        HashSlingerContext db = scopedServices.GetRequiredService<HashSlingerContext>();
         db.Database.EnsureDeleted();
 
         _client.Dispose();
@@ -41,12 +41,11 @@ internal class FileEndpointIntegrationTests
     {
         const string bucket = "test_bucket";
         var fileId = new Guid();
-        byte[] file = await File.ReadAllBytesAsync(Path.Combine("SupportFiles", "test_file.txt"));
+        var file = await File.ReadAllBytesAsync(Path.Combine("SupportFiles", "test_file.txt"));
         var fileContent = new ByteArrayContent(file);
         fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("text/plain");
 
-        using (HttpContent requestContent = new MultipartFormDataContent
-                   { { fileContent, "file", "test_file.txt" } })
+        using (HttpContent requestContent = new MultipartFormDataContent { { fileContent, "file", "test_file.txt" } })
         {
             HttpResponseMessage response = await _client.PostAsync(
                 $"{HashtopolisConstants.UploadEndPointPrefix}/{bucket}/{fileId}",
@@ -60,7 +59,7 @@ internal class FileEndpointIntegrationTests
         {
             response.EnsureSuccessStatusCode();
 
-            byte[] actual = await response.Content.ReadAsByteArrayAsync();
+            var actual = await response.Content.ReadAsByteArrayAsync();
 
             Assert.That(actual, Is.EqualTo(file));
         }

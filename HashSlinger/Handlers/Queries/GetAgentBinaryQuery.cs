@@ -31,9 +31,9 @@ public class GetAgentBinaryQueryHandler : IRequestHandler<GetAgentBinaryQuery, A
         Log.Debug("Getting client binary for type {Type}", request.Type);
         var satisfyingRange = new Range($">={request.CurrentVersion}");
         List<AgentBinary> getBinaries = await _dbContext.AgentBinaries.Include(a => a.File)
-                                                        .Where(b => b.Type == request.Type)
-                                                        .ToListAsync(cancellationToken)
-                                                        .ConfigureAwait(true);
+            .Where(b => b.Type == request.Type)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(true);
 
         if (getBinaries.Count == 0)
         {
@@ -42,7 +42,7 @@ public class GetAgentBinaryQueryHandler : IRequestHandler<GetAgentBinaryQuery, A
         }
 
         IEnumerable<Version> validVersions = getBinaries.Select(b => new Version(b.Version))
-                                                        .Where(v => satisfyingRange.IsSatisfied(v));
+            .Where(v => satisfyingRange.IsSatisfied(v));
         Version? latestVersion = satisfyingRange.MaxSatisfying(validVersions);
 
         AgentBinary? clientBinary = getBinaries.SingleOrDefault(b => b.Version == latestVersion?.ToString());

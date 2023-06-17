@@ -9,7 +9,6 @@ public record SendBenchmarkResponse(
     string Response,
     [property: JsonPropertyName("benchmark")]
     string Benchmark,
-    [property: JsonPropertyName("message")]
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 ) : IHashtopolisMessage;
