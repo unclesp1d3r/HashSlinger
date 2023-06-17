@@ -1,5 +1,6 @@
 namespace HashSlinger.Test;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
@@ -28,7 +29,7 @@ public class HashtopolisRequestTests
             }
             """;
 
-        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
+        HashtopolisRequest? hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
         Assert.That(hashtopolisRequest, Is.Not.Null);
 
         Assert.Pass();
@@ -39,7 +40,7 @@ public class HashtopolisRequestTests
     [Test]
     public void TestConnectionRequestDeserializeTest()
     {
-        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(TestConnectionJsonMessage);
+        HashtopolisRequest? hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(TestConnectionJsonMessage);
 
         Assert.That(hashtopolisRequest, Is.Not.Null);
         Assert.That(hashtopolisRequest?.Action, Is.EqualTo("testConnection"));
@@ -48,7 +49,7 @@ public class HashtopolisRequestTests
     }
 
     /// <summary>Tests to ensure that a bad request is not converted to a HashtopolisRequest</summary>
-    [Test]
+    [Test, SuppressMessage("ReSharper", "StringLiteralTypo")]
     public void BadRequestConvertTest()
     {
         const string jsonMessage = """
@@ -57,9 +58,8 @@ public class HashtopolisRequestTests
             }
             """;
 
-        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
-        IHashtopolisRequest? testConnectionRequest
-            = HashtopolisRequest.ToHashtopolisRequest(hashtopolisRequest);
+        HashtopolisRequest? hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
+        IHashtopolisRequest? testConnectionRequest = HashtopolisRequest.ToHashtopolisRequest(hashtopolisRequest);
         Assert.That(testConnectionRequest, Is.Null);
         Assert.Pass();
     }
@@ -69,12 +69,11 @@ public class HashtopolisRequestTests
     [Test]
     public void TestConnectionRequestConvertTest()
     {
-        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(TestConnectionJsonMessage);
+        HashtopolisRequest? hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(TestConnectionJsonMessage);
 
         Assert.That(hashtopolisRequest, Is.Not.Null);
 
-        var testConnectionRequest
-            = (TestConnectionRequest?)HashtopolisRequest.ToHashtopolisRequest(hashtopolisRequest);
+        var testConnectionRequest = (TestConnectionRequest?)HashtopolisRequest.ToHashtopolisRequest(hashtopolisRequest);
         Assert.That(testConnectionRequest, Is.Not.Null);
         Assert.That(testConnectionRequest, Is.TypeOf<TestConnectionRequest>());
         Assert.That(testConnectionRequest?.Action, Is.EqualTo("testConnection"));

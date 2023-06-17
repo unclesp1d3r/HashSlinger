@@ -20,26 +20,25 @@ public static class UserApiEndPoints
     /// <param name="routes">The routes.</param>
     public static void MapAgentEndpoints(this IEndpointRouteBuilder routes)
     {
-        RouteGroupBuilder? group = routes.MapGroup($"{ApiPrefix}/Agent").WithTags(nameof(Agent));
+        RouteGroupBuilder group = routes.MapGroup($"{ApiPrefix}/Agent").WithTags(nameof(Agent));
 
         group.MapGet("/", (HashSlingerContext db) => db.Agents.ProjectToType<AgentDto>().ToListAsync())
             .WithName("GetAllAgents")
             .WithOpenApi();
 
-        group.MapGet("/{id}",
+        group.MapGet("/{id:int}",
                 async Task<Results<Ok<AgentDto>, NotFound>> (int id, IMediator mediator) =>
                 {
                     Agent? agent = await mediator.Send(new GetAgentByIdQuery(id)).ConfigureAwait(true);
-                    if (agent is null) return TypedResults.NotFound();
-                    return TypedResults.Ok(agent.Adapt<AgentDto>());
+                    return agent is null ? TypedResults.NotFound() : TypedResults.Ok(agent.Adapt<AgentDto>());
                 })
             .WithName("GetAgentById")
             .WithOpenApi();
 
-        group.MapPut("/{id}",
+        group.MapPut("/{id:int}",
                 async Task<Results<Ok, NotFound>> (int id, AgentDto agent, HashSlingerContext db) =>
                 {
-                    int affected = await db.Agents.Where(model => model.Id == id)
+                    var affected = await db.Agents.Where(model => model.Id == id)
                         .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.Id, agent.Id)
                             .SetProperty(m => m.Name, agent.Name)
                             .SetProperty(m => m.Uid, agent.Uid)
@@ -73,9 +72,7 @@ public static class UserApiEndPoints
         group.MapDelete("/{id}",
                 async Task<Results<Ok, NotFound>> (int id, HashSlingerContext db) =>
                 {
-                    int affected = await db.Agents.Where(model => model.Id == id)
-                        .ExecuteDeleteAsync()
-                        .ConfigureAwait(true);
+                    var affected = await db.Agents.Where(model => model.Id == id).ExecuteDeleteAsync().ConfigureAwait(true);
 
                     return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
                 })
@@ -83,8 +80,7 @@ public static class UserApiEndPoints
             .WithOpenApi();
 
         // Mostly for testing. This is not part of the final API.
-        group.MapPost("/initial-setup",
-                (IMediator mediator) => { mediator.Send(new PerformInitialSetupCommand()); })
+        group.MapPost("/initial-setup", (IMediator mediator) => { mediator.Send(new PerformInitialSetupCommand()); })
             .WithOpenApi();
     }
 }

@@ -4,10 +4,14 @@ using MediatR;
 using Services;
 
 /// <summary>Represents a query to get a file by name</summary>
+
+// ReSharper disable once ClassNeverInstantiated.Global
 public record GetFileByNameQuery(string Bucket, string Name) : IRequest<Stream?>;
 
 /// <summary>Handles getting a file by name</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class GetFileByNameHandler : IRequestHandler<GetFileByNameQuery, Stream?>
 {
     private readonly IFileStorageService _fileStorageService;
@@ -23,8 +27,7 @@ public class GetFileByNameHandler : IRequestHandler<GetFileByNameQuery, Stream?>
     /// <returns>Response from the request</returns>
     public async Task<Stream?> Handle(GetFileByNameQuery request, CancellationToken cancellationToken)
     {
-        Stream? file = await _fileStorageService.GetFileAsync(request.Name, request.Bucket)
-            .ConfigureAwait(true);
+        Stream? file = await _fileStorageService.GetFileAsync(request.Name, request.Bucket).ConfigureAwait(true);
         return file;
     }
 }

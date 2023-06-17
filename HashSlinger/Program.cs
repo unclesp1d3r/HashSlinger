@@ -19,17 +19,14 @@ Log.Logger = new LoggerConfiguration().WriteTo.Console(LogEventLevel.Information
     .WriteTo.File("Log/log-.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
-
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
-
 builder.Services.AddDbContext<HashSlingerContext>(options =>
-    options.UseNpgsql(builder.Configuration["HashSlingerContext"])
-        .EnableSensitiveDataLogging()
-        .EnableDetailedErrors());
+    options.UseNpgsql(builder.Configuration["HashSlingerContext"]).EnableSensitiveDataLogging().EnableDetailedErrors());
 builder.Services.AddSingleton<IFileStorageService, LocalFileStorageService>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -46,7 +43,6 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-
 app.UseHttpsRedirection();
 app.MapHashtopolisEndpoints();
 app.MapAgentEndpoints();
@@ -57,4 +53,6 @@ app.Run();
 
 /// <summary>The main program for the minimal API.</summary>
 /// <remarks>This is required for the testing project to work</remarks>
+
+// ReSharper disable once ClassNeverInstantiated.Global
 public partial class Program { }

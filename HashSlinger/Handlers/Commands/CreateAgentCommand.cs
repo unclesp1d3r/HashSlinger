@@ -8,6 +8,8 @@ using Models;
 public record CreateAgentCommand(Agent Agent) : IRequest<int>;
 
 /// <summary>Handler for creating an agent.</summary>
+
+// ReSharper disable once UnusedType.Global
 public class CreateAgentHandler : IRequestHandler<CreateAgentCommand, int>
 {
     private readonly HashSlingerContext _dbContext;
@@ -24,7 +26,7 @@ public class CreateAgentHandler : IRequestHandler<CreateAgentCommand, int>
     {
         //await WriteLogEventAsync(LogEntry.Information($"Creating agent {newAgent}", Issuer))
         //    .ConfigureAwait(true);
-        Agent? newAgent = request.Agent;
+        Agent newAgent = request.Agent;
         await _dbContext.Agents.AddAsync(newAgent, cancellationToken).ConfigureAwait(true);
         return await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(true);
     }

@@ -10,6 +10,10 @@
 
 Hash Slinger is a purpose-built wrapper for Hashcat, designed specifically to facilitate distributed hash cracking in high-speed, secure, and centralized network environments. By leveraging the power of multiple machines, Hash Slinger adeptly manages large quantities of hashes, aiming to optimize your hash cracking operations.
 
+> :warning: **Development Status**: Please be informed that Hash Slinger is currently in an early phase of development and has not yet reached a stable release. The project is actively being developed with diligence and precision. Upon the availability of the first production-ready release, a Docker image will be published to facilitate a streamlined deployment process.
+
+
+
 ## Why Hash Slinger?
 
 Hash Slinger was conceived to provide a specialized solution for large environments where the need for effective scaling across numerous machines, extensive rule sets, and substantial volumes of hashes is critical. It is tailored for high-trust environments where all cracking clients are controlled by the user and are interconnected via high-speed connections such as Local Area Networks (LANs).
@@ -48,20 +52,20 @@ Hash Slinger, while performing functions similar to Hashtopolis, is not a reiter
 
 Hash Slinger is specifically crafted for medium to large-scale cracking infrastructure, interconnected via high-speed networks. It does not support utilization over the Internet or integration with anonymous user systems acting as cracking clients. By focusing on secure, centralized, and high-performance environments, Hash Slinger delivers tailored scalability and efficiency to meet the demands of sophisticated cracking operations.
 
-
 ## Technologies Used
 
-Hash Slinger is built using a diverse stack of modern technologies, each chosen for specific advantages:
+HashSlinger employs a variety of technologies and tools to achieve performance and scalability:
 
-- **ASP.Net Core**: This forms the backbone of our server-side technology. ASP.Net Core offers high performance, cross-platform support, and is ideal for building microservices architectures. After extensive testing and benchmarking of various options, we found ASP.Net Core to provide the highest performance for our complex, multi-tiered system. Its ability to handle large volumes of concurrent requests while maintaining fast response times made it the optimal choice for Hash Slinger.
+- **[ASP.NET Core](https://dotnet.microsoft.com/apps/aspnet)**: A high-performance, cross-platform framework for building modern, cloud-based, and internet-connected applications.
+- **[C#](https://docs.microsoft.com/en-us/dotnet/csharp/)**: The primary programming language for the backend, known for its robustness and versatility.
+- **[PostgreSQL](https://www.postgresql.org/)**: A powerful, open-source object-relational database system that uses and extends the SQL language.
+- **[Docker](https://www.docker.com/)**: Ensuring that HashSlinger is containerized, which means dividing the application into several docker containers such as the web interface, backend API, background worker processes, and the database.
+- **[Mapster](https://github.com/MapsterMapper/Mapster)**: An object-to-object mapping library, Mapster is used to parse between different data models efficiently.
+- **[MediatR](https://github.com/jbogard/MediatR)**: A library that implements the Mediator pattern, helping in creating a clean architecture by decoupling the handling of HTTP requests from the business logic.
+- **[Microsoft Visual Studio](https://visualstudio.microsoft.com/)**: A powerful integrated development environment (IDE) used for developing the application.
+- **[Entity Framework Core 7](https://docs.microsoft.com/en-us/ef/core/)**: A modern object-database mapper for .NET, it supports LINQ queries, change tracking, updates, and schema migrations.
 
-- **C#**: Our primary programming language for server-side coding. With its strong typing and modern language features, C# ensures high code quality and reliability, reinforcing the performance gains achieved with ASP.Net Core.
-
-- **Postgres**: A robust, open-source object-relational database system that delivers strong performance, high reliability, and ease of use. It efficiently handles our data needs and integrates seamlessly with our technology stack.
-
-- **Docker**: We use Docker containers to encapsulate the various components of Hash Slinger. This strategy enhances scalability and flexibility by separating the web interface, the backend API, the background worker processes, and the database into distinct containers.
-
-By leveraging a microservices architecture with Docker, we can independently scale and manage each component of Hash Slinger. This approach leads to more efficient resource usage, as well as more reliable and maintainable systems.
+After extensive testing, .NET was determined to be the most performant option for building this complex multi-tier system, thanks to its features like asynchronous programming, garbage collection, and strong integration with various libraries and tools.
 
 ## Roadmap
 

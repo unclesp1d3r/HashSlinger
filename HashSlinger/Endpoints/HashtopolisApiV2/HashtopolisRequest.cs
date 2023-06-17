@@ -1,4 +1,6 @@
-﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2;
+﻿// ReSharper disable StringLiteralTypo
+
+namespace HashSlinger.Api.Endpoints.HashtopolisApiV2;
 
 using System.Net;
 using System.Text.Json.Serialization;
@@ -65,7 +67,7 @@ public record HashtopolisRequest(
     string? Response = default
 ) : IHashtopolisMessage
 {
-    [property: JsonIgnore] internal IPAddress? IpAddress { get; set; } = default;
+    [property: JsonIgnore] internal IPAddress? IpAddress { get; set; }
 
     /// <summary>Converts to a specific IHashtopolisRequest implementation.</summary>
     /// <param name="request">The request.</param>
@@ -92,7 +94,7 @@ public record HashtopolisRequest(
             "getHealthCheck" => request.Adapt<GetHealthCheckRequest>(),
             "SendHealthCheck" => request.Adapt<SendHealthCheckRequest>(),
             "deregister" => request.Adapt<DeregisterRequest>(),
-            _ => null
+            var _ => null
         };
     }
 }

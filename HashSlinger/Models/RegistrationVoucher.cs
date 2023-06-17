@@ -10,7 +10,10 @@ public record RegistrationVoucher
     private const int TokenLength = 10;
     private static readonly Random Random = new();
 
-    public AccessGroup? AccessGroup { get; set; } = null!;
+    /// <summary>
+    ///     <para>Gets or sets the access group.</para>
+    /// </summary>
+    public AccessGroup? AccessGroup { get; set; }
 
     /// <summary>Gets or sets the expiration.</summary>
     /// <value>The time when the voucher is no longer value, if not used.</value>
@@ -35,10 +38,8 @@ public record RegistrationVoucher
     /// <returns>
     ///     <br />
     /// </returns>
-    public string GetRandomToken()
+    public static string GetRandomToken()
     {
-        return new string(Enumerable.Repeat(TokenChars, TokenLength)
-            .Select(s => s[Random.Next(s.Length)])
-            .ToArray());
+        return new string(Enumerable.Repeat(TokenChars, TokenLength).Select(s => s[Random.Next(s.Length)]).ToArray());
     }
 }

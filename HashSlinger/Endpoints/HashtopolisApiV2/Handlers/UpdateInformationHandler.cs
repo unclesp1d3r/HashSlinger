@@ -10,7 +10,9 @@ using Models.Enums;
 using Serilog;
 
 /// <summary>Handles the Hashtopolis API request to update the client information.</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest, UpdateInformationResponse>
 {
     private readonly IMediator _mediator;
@@ -42,7 +44,7 @@ public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest
         agent.LastAction = AgentActions.UpdateClientInformation;
         agent.LastSeenTime = DateTime.UtcNow;
         agent.Devices = request.Devices.Adapt<List<string>>();
-        agent.LastIp = request.IpAddress;
+        agent.LastSeenIpAddress = request.IpAddress;
         if (string.IsNullOrWhiteSpace(agent.Uid)) agent.CpuOnly = !agent.CheckForGpuDevices();
         agent.Uid = request.Uid;
 

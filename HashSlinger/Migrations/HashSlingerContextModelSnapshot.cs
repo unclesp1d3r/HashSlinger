@@ -123,7 +123,7 @@ namespace HashSlinger.Api.Migrations
                     b.Property<int>("LastAction")
                         .HasColumnType("integer");
 
-                    b.Property<IPAddress>("LastIp")
+                    b.Property<IPAddress>("LastSeenIpAddress")
                         .HasColumnType("inet");
 
                     b.Property<DateTime>("LastSeenTime")
@@ -462,6 +462,27 @@ namespace HashSlinger.Api.Migrations
                     b.HasIndex("AccessGroupId");
 
                     b.ToTable("Files");
+                });
+
+            modelBuilder.Entity("HashSlinger.Api.Models.FileDelete", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileDeletes");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.FileDownload", b =>

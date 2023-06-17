@@ -1,3 +1,5 @@
+// ReSharper disable UnusedMember.Global
+
 namespace HashSlinger.Api;
 
 /// <summary>Stores application-wide configuration values.</summary>
@@ -97,6 +99,7 @@ public static class HashSlingerConfiguration
     public static string HcErrorIgnore => "DeviceGetFanSpeed";
 
 
+    /// <summary>Gets local storage path for hashlists, rules, wordlists, and masks.</summary>
     public static string LocalStoragePath => "storage";
 
     /// <summary>Gets a value indicating whether [priority0 start].</summary>

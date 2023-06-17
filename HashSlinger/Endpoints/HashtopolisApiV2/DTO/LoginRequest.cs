@@ -9,4 +9,4 @@ public record LoginRequest(
     [property: JsonPropertyName("clientSignature")]
     string ClientSignature,
     [property: JsonPropertyName("token")] string Token
-) : IHashtopolisRequest, IRequest<LoginResponse> { }
+) : IHashtopolisRequest, IRequest<LoginResponse>;

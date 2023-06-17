@@ -1,4 +1,6 @@
-﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
+﻿// ReSharper disable StringLiteralTypo
+
+namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
 

@@ -29,18 +29,18 @@ public static class HashtopolisEndpoints
                 ) =>
                 {
                     request = request with { IpAddress = context.Connection.RemoteIpAddress };
-                    Log.Information("New request: {@request}", request);
+                    Log.Information("New request: {@Request}", request);
 
                     IHashtopolisRequest? message = HashtopolisRequest.ToHashtopolisRequest(request);
                     if (message is null)
                     {
                         HashtopolisRequest badRequest = request with { Response = "ERROR" };
-                        Log.Error("Bad API request: {@badRequest}", badRequest);
+                        Log.Error("Bad API request: {@BadRequest}", badRequest);
                         return Results.BadRequest(badRequest);
                     }
 
-                    object? result = await mediator.Send(message).ConfigureAwait(true);
-                    Log.Information("Result: {@result}", result);
+                    var result = await mediator.Send(message).ConfigureAwait(true);
+                    Log.Information("Result: {@Result}", result);
                     return Results.Ok(result);
                 })
             .Accepts<HashtopolisRequest>("application/json")

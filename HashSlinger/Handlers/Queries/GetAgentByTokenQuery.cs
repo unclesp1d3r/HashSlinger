@@ -10,7 +10,9 @@ using Serilog;
 public record GetAgentByTokenQuery(string Token) : IRequest<Agent?>;
 
 /// <summary>Handles retrieving an agent by token.</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class GetAgentByTokenHandler : IRequestHandler<GetAgentByTokenQuery, Agent?>
 {
     private readonly HashSlingerContext _dbContext;
@@ -25,7 +27,7 @@ public class GetAgentByTokenHandler : IRequestHandler<GetAgentByTokenQuery, Agen
     /// <returns>Response from the request</returns>
     public Task<Agent?> Handle(GetAgentByTokenQuery request, CancellationToken cancellationToken)
     {
-        Log.Debug("Getting agent by token {token}", request.Token);
+        Log.Debug("Getting agent by token {Token}", request.Token);
         return _dbContext.Agents.SingleOrDefaultAsync(a => a.Token == request.Token, cancellationToken);
     }
 }

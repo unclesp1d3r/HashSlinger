@@ -10,7 +10,9 @@ using Models.Enums;
 using Serilog;
 
 /// <summary>Handles Hashtopolis login requests.</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
 {
     private readonly IMediator _mediator;

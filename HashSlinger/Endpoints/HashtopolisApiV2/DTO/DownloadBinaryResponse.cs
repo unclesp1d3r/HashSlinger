@@ -13,14 +13,11 @@ public record DownloadBinaryResponse(
     string Name,
     [property: JsonPropertyName("executable"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Executable,
-    [property: JsonPropertyName("keyspaceCommand"),
-               JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("keyspaceCommand"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? KeyspaceCommand,
-    [property: JsonPropertyName("skipCommand"),
-               JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("skipCommand"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? SkipCommand,
-    [property: JsonPropertyName("limitCommand"),
-               JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("limitCommand"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? LimitCommand,
     [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null

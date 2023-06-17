@@ -5,13 +5,15 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Serilog;
-using Task = System.Threading.Tasks.Task;
+using Task = Task;
 
 /// <summary>Represents a command to delete a registration voucher.</summary>
 public record DeleteRegistrationVoucherCommand(int Id) : IRequest;
 
 /// <summary>Handles removing a registration voucher from the database.</summary>
+
 // ReSharper disable once UnusedMember.Global
+// ReSharper disable once UnusedType.Global
 public class DeleteRegistrationVoucherCommandHandler : IRequestHandler<DeleteRegistrationVoucherCommand>
 {
     private readonly HashSlingerContext _dbContext;

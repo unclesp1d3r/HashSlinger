@@ -34,6 +34,8 @@ internal static class Utilities
             UpdateAvailable = string.Empty,
             UpdateTrack = "release"
         });
+        db.FileDeletes.Add(new FileDelete { FileName = "fake_file.txt", Time = DateTime.UtcNow.AddDays(-1) });
+
         db.SaveChanges();
     }
 }

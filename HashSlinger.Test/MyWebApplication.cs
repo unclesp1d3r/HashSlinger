@@ -23,11 +23,9 @@ internal class MyWebApplicationFactory : WebApplicationFactory<Program>
 
             services.Remove(dbContextDescriptor!);
 
-            ServiceDescriptor? dbConnectionDescriptor
-                = services.SingleOrDefault(d => d.ServiceType == typeof(DbConnection));
+            ServiceDescriptor? dbConnectionDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbConnection));
 
             services.Remove(dbConnectionDescriptor!);
-
 
             services.AddDbContext<HashSlingerContext>(options =>
                 options.UseNpgsql(ConnectionString).EnableSensitiveDataLogging().EnableDetailedErrors());

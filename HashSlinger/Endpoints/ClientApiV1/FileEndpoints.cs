@@ -8,7 +8,7 @@ using Services;
 public static class FileEndpoints
 {
     /// <summary>The API prefix</summary>
-    public static string ApiPrefix = "/files";
+    public const string ApiPrefix = "/files";
 
     /// <summary>Maps the file endpoints.</summary>
     /// <param name="routes">The routes.</param>
@@ -19,9 +19,7 @@ public static class FileEndpoints
                 async (string bucket, string name, IFileStorageService fileStorageService) =>
                 {
                     Stream? file = await fileStorageService.GetFileAsync(name, bucket).ConfigureAwait(true);
-                    return file is null
-                        ? Results.NotFound()
-                        : TypedResults.File(file, "application/octet-stream");
+                    return file is null ? Results.NotFound() : TypedResults.File(file, "application/octet-stream");
                 })
             .Produces<FileContentHttpResult>()
             .Produces(StatusCodes.Status404NotFound)
@@ -31,11 +29,10 @@ public static class FileEndpoints
         routes.MapPost("/files/{bucket}/{name}",
                 async (string bucket, string name, IFormFile file, IFileStorageService fileStorageService) =>
                 {
-                    if (file is null) return Results.BadRequest();
+                    if (file.Length == 0) return Results.BadRequest();
                     Log.Information("Temp file: {TempFile}", file.Name);
                     await using Stream fileStream = file.OpenReadStream();
-                    return await fileStorageService.StoreFileAsync(name, bucket, fileStream)
-                        .ConfigureAwait(true)
+                    return await fileStorageService.StoreFileAsync(name, bucket, fileStream).ConfigureAwait(true)
                         ? Results.Ok()
                         : Results.BadRequest();
                 })

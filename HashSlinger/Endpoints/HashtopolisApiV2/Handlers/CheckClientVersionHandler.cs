@@ -11,7 +11,9 @@ using Serilog;
 
 /// <summary>Handles the Hashtopolis check client version call.</summary>
 public class
+
     // ReSharper disable once UnusedMember.Global
+    // ReSharper disable once UnusedType.Global
     CheckClientVersionHandler : IRequestHandler<CheckClientVersionRequest, CheckClientVersionResponse>
 {
     private readonly IMediator _mediator;
@@ -26,31 +28,27 @@ public class
         CancellationToken cancellationToken
     )
     {
-        Log.Debug("Processing request {request}", this);
-        Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
-            .ConfigureAwait(false);
-        if (agent == null)
-        {
-            Log.Information("Agent not found");
+        Log.Debug("Processing request {@Request}", this);
+        var validAgent = await _mediator.Send(new ValidateAgentTokenQuery(request.Token), cancellationToken)
+            .ConfigureAwait(true);
+        if (!validAgent)
             return request.Adapt<CheckClientVersionResponse>() with
             {
                 Response = HashtopolisConstants.ErrorResponse,
-                Message = "Agent not found."
+                Message = "Invalid token"
             };
-        }
 
-        agent.LastAction = AgentActions.CheckClientVersion;
-        agent.LastSeenTime = DateTime.UtcNow;
+        await _mediator.Send(new TouchAgentCommand(request.Token, AgentActions.CheckClientVersion), cancellationToken)
+            .ConfigureAwait(false);
 
-        await _mediator.Send(new UpdateAgentCommand(agent), cancellationToken).ConfigureAwait(true);
+
         AgentBinary? clientBinary = await _mediator
             .Send(new GetAgentBinaryQuery(request.Version, request.Type), cancellationToken)
             .ConfigureAwait(false);
 
-
         if (clientBinary is null)
         {
-            Log.Information("No client binary found for type {type}", request.Type);
+            Log.Information("No client binary found for type {Type}", request.Type);
             return request.Adapt<CheckClientVersionResponse>() with
             {
                 Response = HashtopolisConstants.ErrorResponse,
@@ -60,9 +58,7 @@ public class
 
         if (clientBinary.Version != request.Version)
         {
-            Log.Information("Client update available: {version} -> {newVersion}",
-                request.Version,
-                clientBinary.Version);
+            Log.Information("Client update available: {Version} -> {NewVersion}", request.Version, clientBinary.Version);
             return request.Adapt<CheckClientVersionResponse>() with
             {
                 Response = HashtopolisConstants.SuccessResponse,
