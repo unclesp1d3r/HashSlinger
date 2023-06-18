@@ -22,7 +22,11 @@ public static class UserApiEndPoints
     {
         RouteGroupBuilder group = routes.MapGroup($"{ApiPrefix}/Agent").WithTags(nameof(Agent));
 
-        group.MapGet("/", (HashSlingerContext db) => db.Agents.ProjectToType<AgentDto>().ToListAsync())
+        group.MapGet("/",
+                (HashSlingerContext db) => db.Agents.Include(a => a.HealthCheckAgents)
+                    .Include(x => x.Assignments)
+                    .ProjectToType<AgentDto>()
+                    .ToListAsync())
             .WithName("GetAllAgents")
             .WithOpenApi();
 
@@ -81,6 +85,11 @@ public static class UserApiEndPoints
 
         // Mostly for testing. This is not part of the final API.
         group.MapPost("/initial-setup", (IMediator mediator) => { mediator.Send(new PerformInitialSetupCommand()); })
+            .WithOpenApi();
+
+        // Mostly for testing. This is not part of the final API.
+        group.MapPost("/create-health-check",
+                (IMediator mediator) => { mediator.Send(new AssignAllAgentsHealthCheckCommand()); })
             .WithOpenApi();
     }
 }

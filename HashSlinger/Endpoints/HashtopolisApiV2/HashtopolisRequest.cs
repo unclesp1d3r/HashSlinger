@@ -2,7 +2,6 @@
 
 namespace HashSlinger.Api.Endpoints.HashtopolisApiV2;
 
-using System.Net;
 using System.Text.Json.Serialization;
 using DTO;
 using Mapster;
@@ -20,7 +19,7 @@ public record HashtopolisRequest(
     [property: JsonPropertyName("name")] string? Name = default,
     [property: JsonPropertyName("token")] string? Token = default,
     [property: JsonPropertyName("uid")] string? Uid = default,
-    [property: JsonPropertyName("os")] int? Os = default,
+    [property: JsonPropertyName("os")] int? OperatingSystem = default,
     [property: JsonPropertyName("devices")]
     ICollection<string>? Devices = default,
     [property: JsonPropertyName("clientSignature")]
@@ -54,8 +53,8 @@ public record HashtopolisRequest(
     ICollection<int>? GpuUtil = default,
     [property: JsonPropertyName("numCracked")]
     int? NumCracked = default,
-    [property: JsonPropertyName("start")] int? Start = default,
-    [property: JsonPropertyName("end")] int? End = default,
+    [property: JsonPropertyName("start")] ulong? Start = default,
+    [property: JsonPropertyName("end")] ulong? End = default,
     [property: JsonPropertyName("numGpus")]
     int? NumGpus = default,
     [property: JsonPropertyName("errors")] ICollection<string>? Errors = default,
@@ -67,32 +66,30 @@ public record HashtopolisRequest(
     string? Response = default
 ) : IHashtopolisMessage
 {
-    [property: JsonIgnore] internal IPAddress? IpAddress { get; set; }
-
     /// <summary>Converts to a specific IHashtopolisRequest implementation.</summary>
     /// <param name="request">The request.</param>
     public static IHashtopolisRequest? ToHashtopolisRequest(HashtopolisRequest? request)
     {
         if (request == null) return null;
-        return request.Action switch
+        return request.Action?.ToLower() switch
         {
-            "testConnection" => request.Adapt<TestConnectionRequest>(),
+            "testconnection" => request.Adapt<TestConnectionRequest>(),
             "register" => request.Adapt<RegisterRequest>(),
-            "updateInformation" => request.Adapt<UpdateInformationRequest>(),
+            "updateinformation" => request.Adapt<UpdateInformationRequest>(),
             "login" => request.Adapt<LoginRequest>(),
-            "checkClientVersion" => request.Adapt<CheckClientVersionRequest>(),
-            "downloadBinary" => request.Adapt<DownloadBinaryRequest>(),
-            "clientError" => request.Adapt<ClientErrorRequest>(),
-            "getFile" => request.Adapt<GetFileRequest>(),
-            "getHashlist" => request.Adapt<GetHashlistRequest>(),
-            "getTask" => request.Adapt<GetTaskRequest>(),
-            "getChunk" => request.Adapt<GetChunkRequest>(),
-            "sendKeyspace" => request.Adapt<SendKeyspaceRequest>(),
-            "sendBenchmark" => request.Adapt<SendBenchmarkRequest>(),
-            "sendProgress" => request.Adapt<SendProgressRequest>(),
-            "getFileStatus" => request.Adapt<GetFileStatusRequest>(),
-            "getHealthCheck" => request.Adapt<GetHealthCheckRequest>(),
-            "SendHealthCheck" => request.Adapt<SendHealthCheckRequest>(),
+            "checkclientversion" => request.Adapt<CheckClientVersionRequest>(),
+            "downloadbinary" => request.Adapt<DownloadBinaryRequest>(),
+            "clienterror" => request.Adapt<ClientErrorRequest>(),
+            "getfile" => request.Adapt<GetFileRequest>(),
+            "gethashlist" => request.Adapt<GetHashlistRequest>(),
+            "gettask" => request.Adapt<GetTaskRequest>(),
+            "getchunk" => request.Adapt<GetChunkRequest>(),
+            "sendkeyspace" => request.Adapt<SendKeyspaceRequest>(),
+            "sendbenchmark" => request.Adapt<SendBenchmarkRequest>(),
+            "sendprogress" => request.Adapt<SendProgressRequest>(),
+            "getfilestatus" => request.Adapt<GetFileStatusRequest>(),
+            "gethealthcheck" => request.Adapt<GetHealthCheckRequest>(),
+            "sendhealthcheck" => request.Adapt<SendHealthCheckRequest>(),
             "deregister" => request.Adapt<DeregisterRequest>(),
             var _ => null
         };

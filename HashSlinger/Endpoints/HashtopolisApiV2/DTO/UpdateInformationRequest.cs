@@ -9,7 +9,7 @@ public record UpdateInformationRequest(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("token")] string Token,
     [property: JsonPropertyName("uid")] string Uid,
-    [property: JsonPropertyName("os")] int? OperatingSystem,
+    [property: JsonPropertyName("os")] int OperatingSystem,
     [property: JsonPropertyName("devices")]
     ICollection<string> Devices,
     [property: JsonIgnore] IPAddress? IpAddress

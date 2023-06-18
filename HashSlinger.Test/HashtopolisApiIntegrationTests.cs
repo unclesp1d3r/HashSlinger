@@ -235,4 +235,31 @@ internal class HashtopolisApiIntegrationTests
 
         Assert.Pass();
     }
+
+    [Test]
+    public async Task GetTaskIntegrationTest()
+    {
+        var request = new GetTaskRequest("getTask", Utilities.TestToken, null);
+        var data = JsonSerializer.Serialize(request);
+
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix, requestContent);
+
+            response.EnsureSuccessStatusCode();
+
+            var actualJsonString = await response.Content.ReadAsStringAsync();
+
+            GetTaskResponse? actual = JsonSerializer.Deserialize<GetTaskResponse>(actualJsonString);
+            Assert.Multiple(() =>
+            {
+                Assert.That(actual, Is.Not.Null);
+                Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+                Assert.That(actual!.Message, Is.EqualTo(HashtopolisConstants.NoTaskAvailableMessage));
+                Assert.That(actual!.TaskId, Is.Null);
+            });
+        }
+
+        Assert.Pass();
+    }
 }

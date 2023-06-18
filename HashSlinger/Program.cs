@@ -23,7 +23,10 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
 builder.Services.AddDbContext<HashSlingerContext>(options =>
-    options.UseNpgsql(builder.Configuration["HashSlingerContext"]).EnableSensitiveDataLogging().EnableDetailedErrors());
+    options.UseNpgsql(builder.Configuration["HashSlingerContext"])
+        .EnableSensitiveDataLogging()
+        .UseLazyLoadingProxies()
+        .EnableDetailedErrors());
 builder.Services.AddSingleton<IFileStorageService, LocalFileStorageService>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 builder.Services.AddHttpContextAccessor();

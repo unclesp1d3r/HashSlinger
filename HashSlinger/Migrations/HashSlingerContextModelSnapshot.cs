@@ -19,7 +19,10 @@ namespace HashSlinger.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "7.0.7")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -36,7 +39,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("AgentsId");
 
-                    b.ToTable("AccessGroupAgent");
+                    b.ToTable("AccessGroupAgent", (string)null);
                 });
 
             modelBuilder.Entity("AccessGroupUser", b =>
@@ -51,7 +54,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("AccessGroupUser");
+                    b.ToTable("AccessGroupUser", (string)null);
                 });
 
             modelBuilder.Entity("FilePreconfiguredTask", b =>
@@ -66,7 +69,22 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("PreconfiguredTasksId");
 
-                    b.ToTable("FilePreconfiguredTask");
+                    b.ToTable("FilePreconfiguredTask", (string)null);
+                });
+
+            modelBuilder.Entity("FileTask", b =>
+                {
+                    b.Property<int>("FilesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TasksId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("FilesId", "TasksId");
+
+                    b.HasIndex("TasksId");
+
+                    b.ToTable("FileTask", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AccessGroup", b =>
@@ -84,7 +102,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccessGroups");
+                    b.ToTable("AccessGroups", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Agent", b =>
@@ -154,7 +172,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Agents");
+                    b.ToTable("Agents", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AgentError", b =>
@@ -187,7 +205,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("AgentError");
+                    b.ToTable("AgentError", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AgentStat", b =>
@@ -216,7 +234,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("AgentId");
 
-                    b.ToTable("AgentStat");
+                    b.ToTable("AgentStat", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.ApiGroup", b =>
@@ -238,7 +256,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApiGroup");
+                    b.ToTable("ApiGroup", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.ApiKey", b =>
@@ -275,7 +293,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ApiKey");
+                    b.ToTable("ApiKey", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Assignment", b =>
@@ -302,7 +320,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Assignment");
+                    b.ToTable("Assignment", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Chunk", b =>
@@ -352,7 +370,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Chunk");
+                    b.ToTable("Chunk", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinaryType", b =>
@@ -373,7 +391,15 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CrackerBinaryType");
+                    b.ToTable("CrackerBinaryTypes", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsChunkingAvailable = true,
+                            TypeName = "hashcat"
+                        });
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.DownloadableBinary", b =>
@@ -419,11 +445,22 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("FileId");
 
-                    b.ToTable("DownloadableBinaries");
+                    b.ToTable("DownloadableBinaries", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("DownloadableBinary");
 
                     b.UseTphMappingStrategy();
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 2,
+                            DownloadUrl = "https://github.com/hashtopolis/server/raw/master/src/static/7zr",
+                            Executable = "7zr.exe",
+                            Name = "7zr",
+                            OperatingSystems = new List<string> { "Windows" },
+                            Version = "1.0.0"
+                        });
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.File", b =>
@@ -461,7 +498,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("AccessGroupId");
 
-                    b.ToTable("Files");
+                    b.ToTable("Files", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.FileDelete", b =>
@@ -482,7 +519,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FileDeletes");
+                    b.ToTable("FileDeletes", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.FileDownload", b =>
@@ -506,30 +543,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("FileId");
 
-                    b.ToTable("FileDownload");
-                });
-
-            modelBuilder.Entity("HashSlinger.Api.Models.FileTask", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("FileId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FileId");
-
-                    b.HasIndex("TaskId");
-
-                    b.ToTable("FileTask");
+                    b.ToTable("FileDownload", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Hash", b =>
@@ -573,7 +587,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HashlistId");
 
-                    b.ToTable("Hash");
+                    b.ToTable("Hash", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.HashBinary", b =>
@@ -618,21 +632,22 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HashlistId");
 
-                    b.ToTable("HashBinary");
+                    b.ToTable("HashBinary", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.HashType", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
+
+                    b.Property<int>("HashcatId")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsSalted")
                         .HasColumnType("boolean");
@@ -642,7 +657,10 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HashType");
+                    b.HasIndex("HashcatId")
+                        .IsUnique();
+
+                    b.ToTable("HashTypes", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Hashlist", b =>
@@ -671,8 +689,8 @@ namespace HashSlinger.Api.Migrations
                     b.Property<int>("HashCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("HashTypeId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("HashTypeId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("HexSalt")
                         .HasColumnType("boolean");
@@ -705,7 +723,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HashTypeId");
 
-                    b.ToTable("Hashlist");
+                    b.ToTable("Hashlist", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.HealthCheck", b =>
@@ -730,11 +748,19 @@ namespace HashSlinger.Api.Migrations
                     b.Property<int>("ExpectedCracks")
                         .HasColumnType("integer");
 
-                    b.Property<int>("HashtypeId")
-                        .HasColumnType("integer");
+                    b.Property<string>("HashListAlias")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("HashTypeId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
+
+                    b.Property<List<string>>("TestHashes")
+                        .IsRequired()
+                        .HasColumnType("text[]");
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("timestamp with time zone");
@@ -743,7 +769,9 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("CrackerBinaryId");
 
-                    b.ToTable("HealthCheck");
+                    b.HasIndex("HashTypeId");
+
+                    b.ToTable("HealthChecks", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.HealthCheckAgent", b =>
@@ -757,24 +785,24 @@ namespace HashSlinger.Api.Migrations
                     b.Property<int>("AgentId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Cracked")
+                    b.Property<int?>("Cracked")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("End")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<decimal?>("End")
+                        .HasColumnType("numeric(20,0)");
 
-                    b.Property<string>("Errors")
+                    b.Property<List<string>>("Errors")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text[]");
 
                     b.Property<int>("HealthCheckId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("NumGpus")
+                    b.Property<int?>("NumGpus")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<decimal?>("Start")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -785,7 +813,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HealthCheckId");
 
-                    b.ToTable("HealthCheckAgent");
+                    b.ToTable("HealthCheckAgent", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.LogEntry", b =>
@@ -810,7 +838,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LogEntries");
+                    b.ToTable("LogEntries", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.NotificationSetting", b =>
@@ -849,7 +877,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NotificationSetting");
+                    b.ToTable("NotificationSetting", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.PreconfiguredTask", b =>
@@ -905,7 +933,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("CrackerBinaryTypeId");
 
-                    b.ToTable("PreconfiguredTask");
+                    b.ToTable("PreconfiguredTask", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.RegistrationVoucher", b =>
@@ -931,7 +959,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("AccessGroupId");
 
-                    b.ToTable("RegistrationVouchers");
+                    b.ToTable("RegistrationVouchers", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Session", b =>
@@ -966,7 +994,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Session");
+                    b.ToTable("Session", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Speed", b =>
@@ -995,7 +1023,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Speed");
+                    b.ToTable("Speed", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Supertask", b =>
@@ -1013,7 +1041,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Supertask");
+                    b.ToTable("Supertask", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.SupertaskPretask", b =>
@@ -1039,7 +1067,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("SupertaskId");
 
-                    b.ToTable("SupertaskPretask");
+                    b.ToTable("SupertaskPretask", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Task", b =>
@@ -1071,7 +1099,7 @@ namespace HashSlinger.Api.Migrations
                     b.Property<int?>("CrackerBinaryTypeId")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("ForcePipe")
+                    b.Property<bool>("EnforcePipe")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsArchived")
@@ -1106,6 +1134,9 @@ namespace HashSlinger.Api.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<int?>("PreprocessorId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Priority")
                         .HasColumnType("integer");
 
@@ -1133,9 +1164,11 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("CrackerBinaryTypeId");
 
+                    b.HasIndex("PreprocessorId");
+
                     b.HasIndex("TaskWrapperId");
 
-                    b.ToTable("Task");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.TaskDebugOutput", b =>
@@ -1158,7 +1191,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("TaskDebugOutput");
+                    b.ToTable("TaskDebugOutput", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.TaskWrapper", b =>
@@ -1198,7 +1231,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HashlistId");
 
-                    b.ToTable("TaskWrapper");
+                    b.ToTable("TaskWrapper", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.User", b =>
@@ -1239,7 +1272,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Zap", b =>
@@ -1269,7 +1302,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HashlistId");
 
-                    b.ToTable("Zap");
+                    b.ToTable("Zap", (string)null);
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.AgentBinary", b =>
@@ -1292,6 +1325,20 @@ namespace HashSlinger.Api.Migrations
                         .HasColumnType("character varying(20)");
 
                     b.HasDiscriminator().HasValue("AgentBinary");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DownloadUrl = "https://archive.hashtopolis.org/agent/python/stable/0.7.1.zip",
+                            Executable = "https://archive.hashtopolis.org/agent/python/stable/0.7.1.zip",
+                            Name = "hashtopolis.zip",
+                            OperatingSystems = new List<string> { "Windows", "Linux", "MacOS" },
+                            Version = "0.7.1",
+                            Type = "python",
+                            UpdateAvailable = "",
+                            UpdateTrack = "stable"
+                        });
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinary", b =>
@@ -1304,6 +1351,25 @@ namespace HashSlinger.Api.Migrations
                     b.HasIndex("CrackerBinaryTypeId");
 
                     b.HasDiscriminator().HasValue("CrackerBinary");
+                });
+
+            modelBuilder.Entity("HashSlinger.Api.Models.Preprocessor", b =>
+                {
+                    b.HasBaseType("HashSlinger.Api.Models.DownloadableBinary");
+
+                    b.Property<string>("KeyspaceCommand")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("LimitCommand")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("SkipCommand")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasDiscriminator().HasValue("Preprocessor");
                 });
 
             modelBuilder.Entity("AccessGroupAgent", b =>
@@ -1347,6 +1413,21 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Api.Models.PreconfiguredTask", null)
                         .WithMany()
                         .HasForeignKey("PreconfiguredTasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FileTask", b =>
+                {
+                    b.HasOne("HashSlinger.Api.Models.File", null)
+                        .WithMany()
+                        .HasForeignKey("FilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HashSlinger.Api.Models.Task", null)
+                        .WithMany()
+                        .HasForeignKey("TasksId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1468,23 +1549,6 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("File");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.FileTask", b =>
-                {
-                    b.HasOne("HashSlinger.Api.Models.File", "File")
-                        .WithMany("FileTasks")
-                        .HasForeignKey("FileId")
-                        .IsRequired();
-
-                    b.HasOne("HashSlinger.Api.Models.Task", "Task")
-                        .WithMany("FileTasks")
-                        .HasForeignKey("TaskId")
-                        .IsRequired();
-
-                    b.Navigation("File");
-
-                    b.Navigation("Task");
-                });
-
             modelBuilder.Entity("HashSlinger.Api.Models.Hash", b =>
                 {
                     b.HasOne("HashSlinger.Api.Models.Chunk", "Chunk")
@@ -1541,7 +1605,14 @@ namespace HashSlinger.Api.Migrations
                         .HasForeignKey("CrackerBinaryId")
                         .IsRequired();
 
+                    b.HasOne("HashSlinger.Api.Models.HashType", "HashType")
+                        .WithMany("HealthChecks")
+                        .HasForeignKey("HashTypeId")
+                        .IsRequired();
+
                     b.Navigation("CrackerBinary");
+
+                    b.Navigation("HashType");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.HealthCheckAgent", b =>
@@ -1640,20 +1711,29 @@ namespace HashSlinger.Api.Migrations
                 {
                     b.HasOne("HashSlinger.Api.Models.CrackerBinary", "CrackerBinary")
                         .WithMany("Tasks")
-                        .HasForeignKey("CrackerBinaryId");
+                        .HasForeignKey("CrackerBinaryId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("HashSlinger.Api.Models.CrackerBinaryType", "CrackerBinaryType")
                         .WithMany("Tasks")
                         .HasForeignKey("CrackerBinaryTypeId");
 
+                    b.HasOne("HashSlinger.Api.Models.Preprocessor", "Preprocessor")
+                        .WithMany("Tasks")
+                        .HasForeignKey("PreprocessorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("HashSlinger.Api.Models.TaskWrapper", "TaskWrapper")
                         .WithMany("Tasks")
                         .HasForeignKey("TaskWrapperId")
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("CrackerBinary");
 
                     b.Navigation("CrackerBinaryType");
+
+                    b.Navigation("Preprocessor");
 
                     b.Navigation("TaskWrapper");
                 });
@@ -1763,13 +1843,13 @@ namespace HashSlinger.Api.Migrations
             modelBuilder.Entity("HashSlinger.Api.Models.File", b =>
                 {
                     b.Navigation("FileDownloads");
-
-                    b.Navigation("FileTasks");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.HashType", b =>
                 {
                     b.Navigation("Hashlists");
+
+                    b.Navigation("HealthChecks");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.Hashlist", b =>
@@ -1806,8 +1886,6 @@ namespace HashSlinger.Api.Migrations
 
                     b.Navigation("Chunks");
 
-                    b.Navigation("FileTasks");
-
                     b.Navigation("Speeds");
 
                     b.Navigation("TaskDebugOutputs");
@@ -1833,6 +1911,11 @@ namespace HashSlinger.Api.Migrations
                 {
                     b.Navigation("HealthChecks");
 
+                    b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("HashSlinger.Api.Models.Preprocessor", b =>
+                {
                     b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618

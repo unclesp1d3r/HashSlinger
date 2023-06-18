@@ -28,7 +28,6 @@ public static class HashtopolisEndpoints
                     HttpContext context
                 ) =>
                 {
-                    request = request with { IpAddress = context.Connection.RemoteIpAddress };
                     Log.Information("New request: {@Request}", request);
 
                     IHashtopolisRequest? message = HashtopolisRequest.ToHashtopolisRequest(request);

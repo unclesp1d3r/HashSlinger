@@ -4,11 +4,10 @@ using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Models;
-using SemanticVersioning;
 using Serilog;
 
 /// <summary>Represents a query to get the cracker binary for the specified version.</summary>
-public record GetCrackerBinaryQuery(int? CurrentVersion) : IRequest<CrackerBinary?>;
+public record GetCrackerBinaryQuery(int? BinaryVersionId) : IRequest<CrackerBinary?>;
 
 /// <summary>Handles getting the cracker binary for the specified version.</summary>
 
@@ -27,23 +26,17 @@ public class GetCrackerBinaryHandler : IRequestHandler<GetCrackerBinaryQuery, Cr
     /// <returns>Response from the request</returns>
     public async Task<CrackerBinary?> Handle(GetCrackerBinaryQuery request, CancellationToken cancellationToken)
     {
-        Log.Information("Getting cracker binary for version {Version}", request.CurrentVersion);
-        var satisfyingRange = new Range($">={request.CurrentVersion}");
-        List<CrackerBinary> getBinaries = await _dbContext.CrackerBinaries.Include(a => a.File)
-            .ToListAsync(cancellationToken)
+        Log.Information("Getting cracker binary for version {Version}", request.BinaryVersionId);
+        CrackerBinary? crackerBinary = await _dbContext.CrackerBinaries.Include(a => a.File)
+            .SingleOrDefaultAsync(c => c.Id == request.BinaryVersionId, cancellationToken)
             .ConfigureAwait(true);
 
-        if (getBinaries.Count == 0)
+        if (crackerBinary is null)
         {
             Log.Warning("No cracker binaries found");
             return null;
         }
 
-        IEnumerable<Version> validVersions = getBinaries.Select(b => new Version(b.Version))
-            .Where(v => satisfyingRange.IsSatisfied(v));
-        Version? latestVersion = satisfyingRange.MaxSatisfying(validVersions);
-
-        CrackerBinary? crackerBinary = getBinaries.SingleOrDefault(b => b.Version == latestVersion?.ToString());
         Log.Information("The latest cracker binary is {Version}", crackerBinary!.Version);
         return crackerBinary;
     }

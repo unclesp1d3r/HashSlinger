@@ -62,7 +62,8 @@ public class RegisterHandler : IRequestHandler<RegisterRequest, RegisterResponse
             LastAction = AgentActions.Register,
             LastSeenTime = DateTime.UtcNow,
             Token = RegistrationVoucher.GetRandomToken(),
-            User = user
+            User = user,
+            IsActive = true
         };
         if (voucher.AccessGroup != null) newAgent.AccessGroups.Add(voucher.AccessGroup);
 

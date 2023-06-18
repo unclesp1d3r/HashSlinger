@@ -19,7 +19,7 @@ public record DownloadableBinary
 
     /// <summary>Gets or sets the file.</summary>
     /// <value>The file.</value>
-    public File? File { get; set; }
+    public virtual File? File { get; set; }
 
     /// <summary>Gets or sets the identifier.</summary>
     /// <value>The identifier.</value>
