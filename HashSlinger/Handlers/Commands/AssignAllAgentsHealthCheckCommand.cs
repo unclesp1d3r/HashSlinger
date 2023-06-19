@@ -5,7 +5,7 @@ using MediatR;
 using Models;
 using Models.Enums;
 using Serilog;
-using Task = Task;
+using Task = System.Threading.Tasks.Task;
 
 /// <summary>Represents a command to assign a health check to all agents.</summary>
 /// <seealso cref="MediatR.IRequest" />

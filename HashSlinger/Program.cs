@@ -22,11 +22,9 @@ Log.Logger = new LoggerConfiguration().WriteTo.Console(LogEventLevel.Information
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
+var connectionString = builder.Configuration.GetConnectionString("HashSlingerContext");
 builder.Services.AddDbContext<HashSlingerContext>(options =>
-    options.UseNpgsql(builder.Configuration["HashSlingerContext"])
-        .EnableSensitiveDataLogging()
-        .UseLazyLoadingProxies()
-        .EnableDetailedErrors());
+    options.UseNpgsql(connectionString).EnableSensitiveDataLogging().UseLazyLoadingProxies().EnableDetailedErrors());
 builder.Services.AddSingleton<IFileStorageService, LocalFileStorageService>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 builder.Services.AddHttpContextAccessor();
@@ -46,11 +44,17 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.MapHashtopolisEndpoints();
 app.MapAgentEndpoints();
 
 app.MapFileEndpoints();
+
+await using (AsyncServiceScope scope = app.Services.CreateAsyncScope())
+{
+    HashSlingerContext dbContext = scope.ServiceProvider.GetRequiredService<HashSlingerContext>();
+    await dbContext.Database.EnsureCreatedAsync().ConfigureAwait(true);
+}
 
 app.Run();
 

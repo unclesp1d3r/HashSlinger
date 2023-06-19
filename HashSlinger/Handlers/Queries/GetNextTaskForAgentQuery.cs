@@ -6,14 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using Serilog;
 
-/// <summary>
-/// Represents a query to get the next task for an agent.
-/// </summary>
+/// <summary>Represents a query to get the next task for an agent.</summary>
 public record GetNextTaskForAgentQuery(string Token) : IRequest<Task?>;
 
-/// <summary>
-/// Handles getting the next task for an agent.
-/// </summary>
+/// <summary>Handles getting the next task for an agent.</summary>
 /// <remarks>This ugly beast needs to be refined. It's a mess.</remarks>
 public class GetNextTaskForAgentHandler : IRequestHandler<GetNextTaskForAgentQuery, Task?>
 {

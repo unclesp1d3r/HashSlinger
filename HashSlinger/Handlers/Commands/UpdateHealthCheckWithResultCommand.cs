@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.Enums;
-using Task = Task;
+using Task = System.Threading.Tasks.Task;
 
 /// <summary>Represents the command to update the health check agent with the results of the health check.</summary>
 public record UpdateHealthCheckWithResultCommand(
