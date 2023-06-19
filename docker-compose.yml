@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  hashslinger.api:
+    image: ${DOCKER_REGISTRY-}hashslingerapi
+    build:
+      context: .
+      dockerfile: HashSlinger/Dockerfile
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://+:80
+        - ConnectionStrings__HashSlingerContext=Server=db;Database=hashslinger;User Id=postgres;Password=postgres;
+    ports:
+    - "5000:80"
+    depends_on: 
+    - db
+    networks:
+    - hashslinger
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: hashslinger
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+    - hashslinger
+volumes:
+  db-data:
+networks:
+  hashslinger:
+    driver: bridge

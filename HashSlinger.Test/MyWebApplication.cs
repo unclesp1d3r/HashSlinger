@@ -34,6 +34,6 @@ internal class MyWebApplicationFactory : WebApplicationFactory<Program>
                     .EnableDetailedErrors());
         });
 
-        builder.UseEnvironment("Development");
+        builder.UseEnvironment("Test");
     }
 }

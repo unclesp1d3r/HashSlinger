@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Serilog;
-using Task = Task;
+using Task = System.Threading.Tasks.Task;
 
 /// <summary>Represents a command to delete a registration voucher.</summary>
 public record DeleteRegistrationVoucherCommand(int Id) : IRequest;

@@ -10,31 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 internal class HashtopolisApiIntegrationTests
 {
-    [SetUp]
-    public void Setup()
-    {
-        _factory = new MyWebApplicationFactory();
-        _client = _factory.CreateClient();
-
-        using IServiceScope scope = _factory.Services.CreateScope();
-        IServiceProvider scopedServices = scope.ServiceProvider;
-        HashSlingerContext db = scopedServices.GetRequiredService<HashSlingerContext>();
-        db.Database.EnsureCreated();
-        Utilities.ReinitializeDbForTests(db);
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        using IServiceScope scope = _factory.Services.CreateScope();
-        IServiceProvider scopedServices = scope.ServiceProvider;
-        HashSlingerContext db = scopedServices.GetRequiredService<HashSlingerContext>();
-        db.Database.EnsureDeleted();
-
-        _client.Dispose();
-        _factory.Dispose();
-    }
-
     private HttpClient _client = null!;
     private MyWebApplicationFactory _factory = null!;
 
@@ -52,105 +27,6 @@ internal class HashtopolisApiIntegrationTests
 
             HashtopolisRequest? actual = JsonSerializer.Deserialize<HashtopolisRequest>(actualJsonString);
             Assert.That(actual, Is.EqualTo(expected));
-        }
-
-        Assert.Pass();
-    }
-
-    [Test]
-    public async Task TestConnectionIntegrationTest()
-    {
-        var request = new TestConnectionRequest("testConnection");
-        var data = JsonSerializer.Serialize(request);
-
-        var expected = new TestConnectionResponse("testConnection", HashtopolisConstants.SuccessResponse);
-
-        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
-        {
-            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix, requestContent);
-
-            response.EnsureSuccessStatusCode();
-
-            var actualJsonString = await response.Content.ReadAsStringAsync();
-
-            TestConnectionResponse? actual = JsonSerializer.Deserialize<TestConnectionResponse>(actualJsonString);
-
-            Assert.That(actual, Is.EqualTo(expected));
-        }
-
-        Assert.Pass();
-    }
-
-    [Test]
-    public async Task RegisterIntegrationTest()
-    {
-        var request = new RegisterRequest("register", Utilities.TestVoucher, "Test Client");
-        var data = JsonSerializer.Serialize(request);
-
-        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
-        {
-            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix, requestContent);
-
-            response.EnsureSuccessStatusCode();
-
-            var actualJsonString = await response.Content.ReadAsStringAsync();
-
-            RegisterResponse? actual = JsonSerializer.Deserialize<RegisterResponse>(actualJsonString);
-            Assert.That(actual, Is.Not.Null);
-
-            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
-        }
-
-        Assert.Pass();
-    }
-
-    [Test]
-    public async Task UpdateInformationIntegrationTest()
-    {
-        var request = new UpdateInformationRequest("updateInformation",
-            Utilities.TestToken,
-            "Test Client",
-            (int)AgentOperatingSystems.Windows,
-            new List<string> { "nvidia" },
-            null);
-        var data = JsonSerializer.Serialize(request);
-
-        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
-        {
-            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix, requestContent);
-
-            response.EnsureSuccessStatusCode();
-
-            var actualJsonString = await response.Content.ReadAsStringAsync();
-
-            UpdateInformationResponse? actual = JsonSerializer.Deserialize<UpdateInformationResponse>(actualJsonString);
-            Assert.That(actual, Is.Not.Null);
-
-            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
-        }
-
-        Assert.Pass();
-    }
-
-
-    [Test]
-    public async Task LoginIntegrationTest()
-    {
-        var request = new LoginRequest("login", "test-client-1.0", Utilities.TestToken);
-        var data = JsonSerializer.Serialize(request);
-
-        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
-        {
-            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix, requestContent);
-
-            response.EnsureSuccessStatusCode();
-
-            var actualJsonString = await response.Content.ReadAsStringAsync();
-
-            LoginResponse? actual = JsonSerializer.Deserialize<LoginResponse>(actualJsonString);
-            Assert.That(actual, Is.Not.Null);
-
-            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
         }
 
         Assert.Pass();
@@ -256,6 +132,130 @@ internal class HashtopolisApiIntegrationTests
                 Assert.That(actual!.Message, Is.EqualTo(HashtopolisConstants.NoTaskAvailableMessage));
                 Assert.That(actual!.TaskId, Is.Null);
             });
+        }
+
+        Assert.Pass();
+    }
+
+
+    [Test]
+    public async Task LoginIntegrationTest()
+    {
+        var request = new LoginRequest("login", "test-client-1.0", Utilities.TestToken);
+        var data = JsonSerializer.Serialize(request);
+
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix, requestContent);
+
+            response.EnsureSuccessStatusCode();
+
+            var actualJsonString = await response.Content.ReadAsStringAsync();
+
+            LoginResponse? actual = JsonSerializer.Deserialize<LoginResponse>(actualJsonString);
+            Assert.That(actual, Is.Not.Null);
+
+            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+        }
+
+        Assert.Pass();
+    }
+
+    [Test]
+    public async Task RegisterIntegrationTest()
+    {
+        var request = new RegisterRequest("register", Utilities.TestVoucher, "Test Client");
+        var data = JsonSerializer.Serialize(request);
+
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix, requestContent);
+
+            response.EnsureSuccessStatusCode();
+
+            var actualJsonString = await response.Content.ReadAsStringAsync();
+
+            RegisterResponse? actual = JsonSerializer.Deserialize<RegisterResponse>(actualJsonString);
+            Assert.That(actual, Is.Not.Null);
+
+            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+        }
+
+        Assert.Pass();
+    }
+
+    [SetUp]
+    public void Setup()
+    {
+        _factory = new MyWebApplicationFactory();
+        _client = _factory.CreateClient();
+
+        using IServiceScope scope = _factory.Services.CreateScope();
+        IServiceProvider scopedServices = scope.ServiceProvider;
+        HashSlingerContext db = scopedServices.GetRequiredService<HashSlingerContext>();
+        db.Database.EnsureCreated();
+        Utilities.ReinitializeDbForTests(db);
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        using IServiceScope scope = _factory.Services.CreateScope();
+        IServiceProvider scopedServices = scope.ServiceProvider;
+        HashSlingerContext db = scopedServices.GetRequiredService<HashSlingerContext>();
+        db.Database.EnsureDeleted();
+
+        _client.Dispose();
+        _factory.Dispose();
+    }
+
+    [Test]
+    public async Task TestConnectionIntegrationTest()
+    {
+        var request = new TestConnectionRequest("testConnection");
+        var data = JsonSerializer.Serialize(request);
+
+        var expected = new TestConnectionResponse("testConnection", HashtopolisConstants.SuccessResponse);
+
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix, requestContent);
+
+            response.EnsureSuccessStatusCode();
+
+            var actualJsonString = await response.Content.ReadAsStringAsync();
+
+            TestConnectionResponse? actual = JsonSerializer.Deserialize<TestConnectionResponse>(actualJsonString);
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        Assert.Pass();
+    }
+
+    [Test]
+    public async Task UpdateInformationIntegrationTest()
+    {
+        var request = new UpdateInformationRequest("updateInformation",
+            Utilities.TestToken,
+            "Test Client",
+            (int)AgentOperatingSystems.Windows,
+            new List<string> { "nvidia" },
+            null);
+        var data = JsonSerializer.Serialize(request);
+
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix, requestContent);
+
+            response.EnsureSuccessStatusCode();
+
+            var actualJsonString = await response.Content.ReadAsStringAsync();
+
+            UpdateInformationResponse? actual = JsonSerializer.Deserialize<UpdateInformationResponse>(actualJsonString);
+            Assert.That(actual, Is.Not.Null);
+
+            Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
         }
 
         Assert.Pass();
