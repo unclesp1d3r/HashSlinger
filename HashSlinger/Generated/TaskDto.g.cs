@@ -7,11 +7,11 @@ namespace HashSlinger.Api.Generated
     {
         public ICollection<AgentErrorDto> AgentErrors { get; set; }
         public ICollection<AssignmentDto> Assignments { get; set; }
-        public PreprocessorDto? Preprocessor { get; set; }
         public ICollection<ChunkDto> Chunks { get; set; }
         public CrackerBinaryDto? CrackerBinary { get; set; }
         public CrackerBinaryTypeDto? CrackerBinaryType { get; set; }
         public ICollection<FileDto> Files { get; set; }
+        public PreprocessorDto? Preprocessor { get; set; }
         public ICollection<SpeedDto> Speeds { get; set; }
         public ICollection<TaskDebugOutputDto> TaskDebugOutputs { get; set; }
         public TaskWrapperDto TaskWrapper { get; set; }

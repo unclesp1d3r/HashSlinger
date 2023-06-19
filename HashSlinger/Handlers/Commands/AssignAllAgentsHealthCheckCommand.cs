@@ -32,34 +32,29 @@ public class AssignAllAgentsHealthCheckHandler : IRequestHandler<AssignAllAgents
         CrackerBinary? hashcat = _dbContext.CrackerBinaries.FirstOrDefault(x => x.Name == "hashcat")!;
         HashType? hashType = _dbContext.HashTypes.SingleOrDefault(x => x.HashcatId == 0)!;
 
-        var healthCheck = new HealthCheck
-        {
-            Id = 1,
-            AttackCmd = $"--hash-type {hashType.HashcatId} #HL# -a 3 -1 ?l?u?d ?1?1?1?1?1",
-            ExpectedCracks = 2,
-            HashType = hashType,
-            Status = HealthCheckStatus.Pending,
-            CheckType = 0,
-            CrackerBinary = hashcat,
-            TestHashes = new List<string>
+        HealthCheck? healthCheck = _dbContext.HealthChecks.Any()
+            ? _dbContext.HealthChecks.First()
+            : new HealthCheck
             {
-                "9f650d4ef70eead895e7a03ce0f83e88",
-                "24a7bdfd14bca7f9d14154c0800a833d"
-            },
-            HashListAlias = "#HL#"
-        };
-        if (_dbContext.HealthChecks.Count() != 1)
-        {
-            _dbContext.HealthChecks.RemoveRange(_dbContext.HealthChecks);
+                AttackCmd = $"--hash-type {hashType.HashcatId} #HL# -a 3 -1 ?l?u?d ?1?1?1?1?1",
+                ExpectedCracks = 2,
+                HashType = hashType,
+                Status = HealthCheckStatus.Pending,
+                CheckType = 0,
+                CrackerBinary = hashcat,
+                TestHashes = new List<string>
+                {
+                    "9f650d4ef70eead895e7a03ce0f83e88",
+                    "24a7bdfd14bca7f9d14154c0800a833d"
+                },
+                HashListAlias = "#HL#"
+            };
+
+        healthCheck.Status = HealthCheckStatus.Pending;
+        if (!_dbContext.HealthChecks.Any())
             _dbContext.HealthChecks.Add(healthCheck);
-        }
         else
-        {
             _dbContext.HealthChecks.Update(healthCheck);
-        }
-
-        _dbContext.HealthChecks.Update(healthCheck);
-
 
         foreach (Agent? agent in _dbContext.Agents.AsEnumerable())
         {
