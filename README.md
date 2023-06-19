@@ -124,8 +124,8 @@ After extensive testing, .NET was determined to be the most performant option fo
 - [	] SendBenchmark
 - [ ] SendProgress
 - [X] GetFileStatus
-- [ ] GetHealthCheck
-- [ ] SendHealthCheck
+- [X] GetHealthCheck
+- [X] SendHealthCheck
 - [ ] Deregister
 
 
