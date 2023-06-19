@@ -1,6 +1,6 @@
 ﻿namespace HashSlinger.Api.Utilities;
 
-using Models;
+using Shared.Models;
 
 /// <summary>
 /// Contains methods to seed the database with data.

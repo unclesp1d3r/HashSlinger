@@ -3,7 +3,7 @@
 using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
+using Shared.Models;
 
 /// <summary>Represents a query to retrieve all deleted files from the database.</summary>
 public record GetDeletedFilesQuery : IRequest<List<FileDelete>>;

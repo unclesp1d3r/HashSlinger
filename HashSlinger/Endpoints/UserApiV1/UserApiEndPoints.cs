@@ -1,9 +1,9 @@
 ﻿namespace HashSlinger.Api.Endpoints.UserApiV1;
 
-using Generated;
 using Handlers.Commands;
 using MediatR;
-using Models;
+using Shared.Generated;
+using Shared.Models;
 
 /// <summary>Contains the version 1 API for user interface functionality.</summary>
 public static class UserApiEndPoints

@@ -5,8 +5,8 @@ using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
-using Models;
-using Models.Enums;
+using Shared.Models;
+using Shared.Models.Enums;
 
 /// <summary>Handles the Hashtopolis API v2 GetFileStatus endpoint.</summary>
 // ReSharper disable once UnusedMember.Global

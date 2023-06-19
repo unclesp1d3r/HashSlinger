@@ -2,7 +2,7 @@
 
 using Data;
 using MediatR;
-using Models;
+using Shared.Models;
 
 /// <summary>Command for creating an agent.</summary>
 public record CreateAgentCommand(Agent Agent) : IRequest<int>;

@@ -3,8 +3,8 @@
 using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
 using Serilog;
+using Shared.Models;
 using Task = System.Threading.Tasks.Task;
 
 /// <summary>Represents a command to delete a registration voucher.</summary>

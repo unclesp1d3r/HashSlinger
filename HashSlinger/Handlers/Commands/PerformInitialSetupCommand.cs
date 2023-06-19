@@ -2,7 +2,7 @@
 
 using Data;
 using MediatR;
-using Models;
+using Shared.Models;
 using Utilities;
 using Task = System.Threading.Tasks.Task;
 

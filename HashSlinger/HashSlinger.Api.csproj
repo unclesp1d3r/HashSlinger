@@ -47,21 +47,5 @@
     <ItemGroup>
         <ProjectReference Include="..\HashSlinger.Shared\HashSlinger.Shared.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-        <Generated Include="**\*.g.cs" />
-    </ItemGroup>
-
-    <Target Name="CleanGenerated">
-        <Delete Files="@(Generated)" />
-    </Target>
-
-    <Target Name="Mapster">
-        <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet build" />
-        <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet tool restore" />
-        <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster model -a &quot;$(TargetDir)$(ProjectName).dll&quot; -n HashSlinger.Api.Generated -o Generated -r" />
-        <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster extension -a &quot;$(TargetDir)$(ProjectName).dll&quot;  -n HashSlinger.Api.Generated -o Generated" />
-        <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster mapper -a &quot;$(TargetDir)$(ProjectName).dll&quot;  -n HashSlinger.Api.Generated -o Generated" />
-    </Target>
-
+    
 </Project>

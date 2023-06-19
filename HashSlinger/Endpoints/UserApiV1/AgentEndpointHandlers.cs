@@ -1,35 +1,18 @@
 ﻿namespace HashSlinger.Api.Endpoints.UserApiV1;
 
 using Data;
-using Generated;
 using Handlers.Queries;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using Models;
+using Shared.Generated;
+using Shared.Models;
 
-/// <summary>
-///   Holds the handlers for the agent endpoints.
-/// </summary>
+/// <summary>Holds the handlers for the agent endpoints.</summary>
 public static class AgentEndpointHandlers
 {
-    /// <summary>Handles deleting an agent.</summary>
-    /// <param name="id">The agent identifier.</param>
-    /// <param name="db">The database.</param>
-    /// <returns>
-    ///   A result indicating whether the agent was deleted or not.
-    /// </returns>
-    public async static Task<Results<Ok, NotFound>> DeleteAgentHandlerAsync(int id, HashSlingerContext db)
-    {
-        var affected = await db.Agents.Where(model => model.Id == id).ExecuteDeleteAsync().ConfigureAwait(true);
-
-        return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
-    }
-
-    /// <summary>
-    /// Handles creating an agent.
-    /// </summary>
+    /// <summary>Handles creating an agent.</summary>
     /// <param name="agent">The agent.</param>
     /// <param name="db">The database.</param>
     /// <returns></returns>
@@ -40,9 +23,41 @@ public static class AgentEndpointHandlers
         return TypedResults.Created($"{UserApiEndPoints.ApiPrefix}/Agent/{agent.Id}", agent);
     }
 
-    /// <summary>
-    /// Handles updating an agent.
-    /// </summary>
+    /// <summary>Handles deleting an agent.</summary>
+    /// <param name="id">The agent identifier.</param>
+    /// <param name="db">The database.</param>
+    /// <returns>A result indicating whether the agent was deleted or not.</returns>
+    public async static Task<Results<Ok, NotFound>> DeleteAgentHandlerAsync(int id, HashSlingerContext db)
+    {
+        var affected = await db.Agents.Where(model => model.Id == id).ExecuteDeleteAsync().ConfigureAwait(true);
+
+        return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+    }
+
+    /// <summary>Gets the agent by identifier.</summary>
+    /// <param name="id">The identifier.</param>
+    /// <param name="mediator">The mediator.</param>
+    /// <returns></returns>
+    public async static Task<Results<Ok<AgentDto>, NotFound>> GetAgentByIdHandlerAsync(int id, IMediator mediator)
+    {
+        Agent? agent = await mediator.Send(new GetAgentByIdQuery(id)).ConfigureAwait(true);
+        return agent is null ? TypedResults.NotFound() : TypedResults.Ok(agent.Adapt<AgentDto>());
+    }
+
+    /// <summary>Gets all agents.</summary>
+    /// <param name="db">The database.</param>
+    /// <returns>
+    ///     <br />
+    /// </returns>
+    public static Task<List<AgentDto>> GetAllAgentsHandlerAsync(HashSlingerContext db)
+    {
+        return db.Agents.Include(a => a.HealthCheckAgents)
+            .Include(x => x.Assignments)
+            .ProjectToType<AgentDto>()
+            .ToListAsync();
+    }
+
+    /// <summary>Handles updating an agent.</summary>
     /// <param name="id">The identifier.</param>
     /// <param name="agent">The agent.</param>
     /// <param name="db">The database.</param>
@@ -66,30 +81,5 @@ public static class AgentEndpointHandlers
             .ConfigureAwait(true);
 
         return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
-    }
-
-    /// <summary>
-    /// Gets the agent by identifier.
-    /// </summary>
-    /// <param name="id">The identifier.</param>
-    /// <param name="mediator">The mediator.</param>
-    /// <returns></returns>
-    public async static Task<Results<Ok<AgentDto>, NotFound>> GetAgentByIdHandlerAsync(int id, IMediator mediator)
-    {
-        Agent? agent = await mediator.Send(new GetAgentByIdQuery(id)).ConfigureAwait(true);
-        return agent is null ? TypedResults.NotFound() : TypedResults.Ok(agent.Adapt<AgentDto>());
-    }
-
-    /// <summary>Gets all agents.</summary>
-    /// <param name="db">The database.</param>
-    /// <returns>
-    ///   <br />
-    /// </returns>
-    public static Task<List<AgentDto>> GetAllAgentsHandlerAsync(HashSlingerContext db)
-    {
-        return db.Agents.Include(a => a.HealthCheckAgents)
-            .Include(x => x.Assignments)
-            .ProjectToType<AgentDto>()
-            .ToListAsync();
     }
 }

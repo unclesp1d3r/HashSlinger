@@ -3,8 +3,8 @@
 using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
 using Serilog;
+using Shared.Models;
 
 /// <summary>Represents a query to retrieve the default user.</summary>
 public record GetDefaultUserQuery : IRequest<User>;

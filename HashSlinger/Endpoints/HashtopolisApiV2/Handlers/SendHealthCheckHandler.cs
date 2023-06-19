@@ -5,7 +5,7 @@ using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
-using Models.Enums;
+using Shared.Models.Enums;
 
 public class SendHealthCheckHandler : IRequestHandler<SendHealthCheckRequest, SendHealthCheckResponse>
 {

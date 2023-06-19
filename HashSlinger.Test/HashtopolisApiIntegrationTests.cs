@@ -5,8 +5,8 @@ using System.Text.Json;
 using Api.Data;
 using Api.Endpoints.HashtopolisApiV2;
 using Api.Endpoints.HashtopolisApiV2.DTO;
-using Api.Models.Enums;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Models.Enums;
 
 internal class HashtopolisApiIntegrationTests
 {

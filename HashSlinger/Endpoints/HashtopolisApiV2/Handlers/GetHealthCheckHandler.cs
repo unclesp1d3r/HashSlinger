@@ -5,13 +5,11 @@ using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
-using Models;
-using Models.Enums;
 using Serilog;
+using Shared.Models;
+using Shared.Models.Enums;
 
 /// <summary>Handles the Hashtopolis API v2 GetHealthCheck endpoint.</summary>
-/// <seealso
-///     cref="MediatR.IRequestHandler&lt;HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO.GetHealthCheckRequest, HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO.GetHealthCheckResponse&gt;" />
 public class GetHealthCheckHandler : IRequestHandler<GetHealthCheckRequest, GetHealthCheckResponse>
 {
     private readonly IMediator _mediator;

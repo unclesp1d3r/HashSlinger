@@ -3,9 +3,9 @@
 using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
-using Models.Enums;
 using Serilog;
+using Shared.Models;
+using Shared.Models.Enums;
 
 /// <summary>Represents a query to get the HealthChecks for an Agent.</summary>
 /// <seealso cref="MediatR.IBaseRequest" />

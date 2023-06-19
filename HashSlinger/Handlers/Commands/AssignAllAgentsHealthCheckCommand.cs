@@ -2,9 +2,9 @@
 
 using Data;
 using MediatR;
-using Models;
-using Models.Enums;
 using Serilog;
+using Shared.Models;
+using Shared.Models.Enums;
 using Task = System.Threading.Tasks.Task;
 
 /// <summary>Represents a command to assign a health check to all agents.</summary>

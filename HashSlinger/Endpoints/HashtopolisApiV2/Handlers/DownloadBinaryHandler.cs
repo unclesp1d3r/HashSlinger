@@ -5,8 +5,8 @@ using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
-using Models;
-using Models.Enums;
+using Shared.Models;
+using Shared.Models.Enums;
 using Utilities;
 
 /// <summary>Handles the Hashtopolis API v2 downloadBinary endpoint.</summary>

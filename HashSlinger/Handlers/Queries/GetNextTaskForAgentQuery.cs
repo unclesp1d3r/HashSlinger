@@ -3,8 +3,8 @@
 using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
 using Serilog;
+using Shared.Models;
 
 /// <summary>Represents a query to get the next task for an agent.</summary>
 public record GetNextTaskForAgentQuery(string Token) : IRequest<Task?>;

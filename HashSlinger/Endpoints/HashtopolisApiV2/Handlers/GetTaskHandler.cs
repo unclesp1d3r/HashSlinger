@@ -5,9 +5,9 @@ using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
-using Models;
-using Models.Enums;
 using Serilog;
+using Shared.Models;
+using Shared.Models.Enums;
 
 /// <summary>Handles the Hashtopolis API v2 GetTask endpoint.</summary>
 public class GetTaskHandler : IRequestHandler<GetTaskRequest, GetTaskResponse>
