@@ -1,9 +1,6 @@
 ﻿namespace HashSlinger.Api.Models.Enums;
 
-using System.Diagnostics.CodeAnalysis;
-
 /// <summary>Possible operating system values for agents.</summary>
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public enum AgentOperatingSystems
 {
     /// <summary>Unknown Operating System</summary>

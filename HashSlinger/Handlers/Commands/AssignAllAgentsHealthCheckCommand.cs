@@ -1,6 +1,5 @@
 ﻿namespace HashSlinger.Api.Handlers.Commands;
 
-using System.Collections.Generic;
 using Data;
 using MediatR;
 using Models;
@@ -8,23 +7,31 @@ using Models.Enums;
 using Serilog;
 using Task = Task;
 
+/// <summary>Represents a command to assign a health check to all agents.</summary>
+/// <seealso cref="MediatR.IRequest" />
+/// <seealso cref="MediatR.IBaseRequest" />
 public record AssignAllAgentsHealthCheckCommand : IRequest;
 
+/// <summary>Creates a new health check and assigns it to all agents.</summary>
+/// <remarks>This is just for testing and development.</remarks>
 public class AssignAllAgentsHealthCheckHandler : IRequestHandler<AssignAllAgentsHealthCheckCommand>
 {
     private readonly HashSlingerContext _dbContext;
+
+    /// <summary>Initializes a new instance of the <see cref="AssignAllAgentsHealthCheckHandler" /> class.</summary>
+    /// <param name="dbContext">The database context.</param>
     public AssignAllAgentsHealthCheckHandler(HashSlingerContext dbContext) => _dbContext = dbContext;
 
 
     /// <inheritdoc />
-    public async Task Handle(AssignAllAgentsHealthCheckCommand request, CancellationToken cancellationToken)
+    public Task Handle(AssignAllAgentsHealthCheckCommand request, CancellationToken cancellationToken)
     {
         Log.Information("Assigning HealthCheck to all Agents");
 
 
-        Agent agent = _dbContext.Agents.OrderBy(a => a.Id).FirstOrDefault()!;
         CrackerBinary? hashcat = _dbContext.CrackerBinaries.FirstOrDefault(x => x.Name == "hashcat")!;
         HashType? hashType = _dbContext.HashTypes.SingleOrDefault(x => x.HashcatId == 0)!;
+
         var healthCheck = new HealthCheck
         {
             Id = 1,
@@ -46,19 +53,26 @@ public class AssignAllAgentsHealthCheckHandler : IRequestHandler<AssignAllAgents
             _dbContext.HealthChecks.RemoveRange(_dbContext.HealthChecks);
             _dbContext.HealthChecks.Add(healthCheck);
         }
-
-        _dbContext.HealthChecks.Update(healthCheck);
-
-        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(true);
-
-        var healthCheckAssignment = new HealthCheckAgent
+        else
         {
-            Agent = agent,
-            HealthCheck = healthCheck,
-            Status = HealthCheckStatus.Pending
-        };
-        healthCheck.HealthCheckAgents.Add(healthCheckAssignment);
+            _dbContext.HealthChecks.Update(healthCheck);
+        }
+
         _dbContext.HealthChecks.Update(healthCheck);
-        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(true);
+
+
+        foreach (Agent? agent in _dbContext.Agents.AsEnumerable())
+        {
+            _dbContext.HealthCheckAgents.Add(new HealthCheckAgent
+            {
+                Agent = agent,
+                HealthCheck = healthCheck,
+                Status = HealthCheckStatus.Pending,
+                Errors = new List<string>()
+            });
+        }
+
+
+        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

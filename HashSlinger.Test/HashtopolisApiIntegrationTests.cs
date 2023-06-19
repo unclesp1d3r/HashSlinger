@@ -1,6 +1,5 @@
 ﻿namespace HashSlinger.Test;
 
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 using Api.Data;
@@ -9,7 +8,6 @@ using Api.Endpoints.HashtopolisApiV2.DTO;
 using Api.Models.Enums;
 using Microsoft.Extensions.DependencyInjection;
 
-[TestFixture, SuppressMessage("ReSharper", "StringLiteralTypo")]
 internal class HashtopolisApiIntegrationTests
 {
     [SetUp]
@@ -229,7 +227,7 @@ internal class HashtopolisApiIntegrationTests
             {
                 Assert.That(actual, Is.Not.Null);
                 Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
-                Assert.That(actual.FileNames.Count, Is.EqualTo(1));
+                Assert.That(actual.FileNames, Has.Count.EqualTo(1));
             });
         }
 

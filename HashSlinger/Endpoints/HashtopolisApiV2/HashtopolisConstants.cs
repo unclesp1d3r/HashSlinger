@@ -18,17 +18,15 @@ public static class HashtopolisConstants
     /// <summary>The error response</summary>
     public const string ErrorResponse = "ERROR";
 
+    /// <summary>The no task available message</summary>
+    public const string NoTaskAvailableMessage = "No task available!";
+
+    /// <summary>The ok response</summary>
+    public const string OkResponse = "OK";
+
     /// <summary>The success response</summary>
     public const string SuccessResponse = "SUCCESS";
 
-    /// <summary>
-    /// The ok response
-    /// </summary>
-    public const string OkResponse = "OK";
-
     /// <summary>The upload end point prefix</summary>
     public const string UploadEndPointPrefix = "/files";
-
-    /// <summary>The no task available message</summary>
-    public const string NoTaskAvailableMessage = "No task available!";
 }

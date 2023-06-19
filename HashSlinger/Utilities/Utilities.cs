@@ -2,9 +2,7 @@
 
 using Models.Enums;
 
-/// <summary>
-/// General utilities.
-/// </summary>
+/// <summary>General utilities.</summary>
 public static class Utilities
 {
     /// <summary>Gets the correct file extension for the agent operating system.</summary>

@@ -1,18 +1,17 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
 
+using Api.Handlers.Commands;
+using Api.Handlers.Queries;
 using DTO;
-using HashSlinger.Api.Handlers.Commands;
-using HashSlinger.Api.Handlers.Queries;
 using Mapster;
 using MediatR;
 using Models;
 using Models.Enums;
 using Serilog;
 
-/// <summary>
-/// Handles the Hashtopolis API v2 GetHealthCheck endpoint.
-/// </summary>
-/// <seealso cref="MediatR.IRequestHandler&lt;HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO.GetHealthCheckRequest, HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO.GetHealthCheckResponse&gt;" />
+/// <summary>Handles the Hashtopolis API v2 GetHealthCheck endpoint.</summary>
+/// <seealso
+///     cref="MediatR.IRequestHandler&lt;HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO.GetHealthCheckRequest, HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO.GetHealthCheckResponse&gt;" />
 public class GetHealthCheckHandler : IRequestHandler<GetHealthCheckRequest, GetHealthCheckResponse>
 {
     private readonly IMediator _mediator;

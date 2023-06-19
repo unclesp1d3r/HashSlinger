@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using Serilog;
 
+/// <summary>
+/// Represents a query to get the next task for an agent.
+/// </summary>
 public record GetNextTaskForAgentQuery(string Token) : IRequest<Task?>;
 
+/// <summary>
+/// Handles getting the next task for an agent.
+/// </summary>
+/// <remarks>This ugly beast needs to be refined. It's a mess.</remarks>
 public class GetNextTaskForAgentHandler : IRequestHandler<GetNextTaskForAgentQuery, Task?>
 {
     private readonly HashSlingerContext _dbContext;
@@ -32,6 +39,7 @@ public class GetNextTaskForAgentHandler : IRequestHandler<GetNextTaskForAgentQue
             .Include(a => a.Assignments)
             .ThenInclude(a => a.Task)
             .ThenInclude(t => t.CrackerBinary)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(a => a.Token == request.Token, cancellationToken)
             .ConfigureAwait(true);
 

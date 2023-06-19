@@ -14,7 +14,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HashSlinger.Api.Migrations
 {
     [DbContext(typeof(HashSlingerContext))]
-    [Migration("20230618214352_InitialSetup")]
+    [Migration("20230619001940_InitialSetup")]
     partial class InitialSetup
     {
         /// <inheritdoc />
@@ -23,6 +23,9 @@ namespace HashSlinger.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.7")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -458,7 +461,7 @@ namespace HashSlinger.Api.Migrations
                             DownloadUrl = "https://github.com/hashtopolis/server/raw/master/src/static/7zr",
                             Executable = "7zr.exe",
                             Name = "7zr",
-                            OperatingSystems = new List<string> { "windows" },
+                            OperatingSystems = new List<string> { "Windows" },
                             Version = "1.0.0"
                         });
                 });
@@ -606,8 +609,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.Property<string>("Essid")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Hash")
                         .IsRequired()
@@ -813,7 +815,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HealthCheckId");
 
-                    b.ToTable("HealthCheckAgent");
+                    b.ToTable("HealthCheckAgents");
                 });
 
             modelBuilder.Entity("HashSlinger.Api.Models.LogEntry", b =>
@@ -1333,7 +1335,7 @@ namespace HashSlinger.Api.Migrations
                             DownloadUrl = "https://archive.hashtopolis.org/agent/python/stable/0.7.1.zip",
                             Executable = "https://archive.hashtopolis.org/agent/python/stable/0.7.1.zip",
                             Name = "hashtopolis.zip",
-                            OperatingSystems = new List<string> { "Windows", "Linux", "OS X" },
+                            OperatingSystems = new List<string> { "Windows", "Linux", "MacOS" },
                             Version = "0.7.1",
                             Type = "python",
                             UpdateAvailable = "",

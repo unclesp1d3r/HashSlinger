@@ -379,9 +379,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FileId = table.Column<int>(type: "integer", nullable: true),
                     DownloadUrl = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     Executable = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    FileId = table.Column<int>(type: "integer", nullable: true),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     OperatingSystems = table.Column<List<string>>(type: "text[]", nullable: false),
                     Version = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
@@ -586,14 +586,14 @@ namespace HashSlinger.Api.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CrackerBinaryId = table.Column<int>(type: "integer", nullable: false),
+                    HashTypeId = table.Column<Guid>(type: "uuid", nullable: false),
                     AttackCmd = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     CheckType = table.Column<int>(type: "integer", nullable: false),
                     ExpectedCracks = table.Column<int>(type: "integer", nullable: false),
-                    HashTypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    HashListAlias = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
-                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     TestHashes = table.Column<List<string>>(type: "text[]", nullable: false),
-                    HashListAlias = table.Column<string>(type: "text", nullable: false)
+                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -616,9 +616,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PreprocessorId = table.Column<int>(type: "integer", nullable: true),
                     CrackerBinaryId = table.Column<int>(type: "integer", nullable: true),
                     CrackerBinaryTypeId = table.Column<int>(type: "integer", nullable: true),
+                    PreprocessorId = table.Column<int>(type: "integer", nullable: true),
                     AttackCommand = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     ChunkSize = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     ChunkTime = table.Column<int>(type: "integer", nullable: false),
@@ -670,7 +670,7 @@ namespace HashSlinger.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HealthCheckAgent",
+                name: "HealthCheckAgents",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -686,14 +686,14 @@ namespace HashSlinger.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HealthCheckAgent", x => x.Id);
+                    table.PrimaryKey("PK_HealthCheckAgents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HealthCheckAgent_Agents_AgentId",
+                        name: "FK_HealthCheckAgents_Agents_AgentId",
                         column: x => x.AgentId,
                         principalTable: "Agents",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_HealthCheckAgent_HealthChecks_HealthCheckId",
+                        name: "FK_HealthCheckAgents_HealthChecks_HealthCheckId",
                         column: x => x.HealthCheckId,
                         principalTable: "HealthChecks",
                         principalColumn: "Id");
@@ -706,9 +706,9 @@ namespace HashSlinger.Api.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AgentId = table.Column<int>(type: "integer", nullable: false),
+                    TaskId = table.Column<int>(type: "integer", nullable: true),
                     ChunkId = table.Column<int>(type: "integer", nullable: true),
                     Error = table.Column<string>(type: "text", nullable: false),
-                    TaskId = table.Column<int>(type: "integer", nullable: true),
                     Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -893,7 +893,7 @@ namespace HashSlinger.Api.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ChunkId = table.Column<int>(type: "integer", nullable: true),
                     CrackPos = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    Essid = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Essid = table.Column<string>(type: "text", nullable: false),
                     Hash = table.Column<string>(type: "text", nullable: false),
                     HashlistId = table.Column<int>(type: "integer", nullable: false),
                     IsCracked = table.Column<bool>(type: "boolean", nullable: false),
@@ -923,12 +923,12 @@ namespace HashSlinger.Api.Migrations
             migrationBuilder.InsertData(
                 table: "DownloadableBinaries",
                 columns: new[] { "Id", "Discriminator", "DownloadUrl", "Executable", "FileId", "Name", "OperatingSystems", "Type", "UpdateAvailable", "UpdateTrack", "Version" },
-                values: new object[] { 1, "AgentBinary", "https://archive.hashtopolis.org/agent/python/stable/0.7.1.zip", "https://archive.hashtopolis.org/agent/python/stable/0.7.1.zip", null, "hashtopolis.zip", new List<string> { "Windows", "Linux", "OS X" }, "python", "", "stable", "0.7.1" });
+                values: new object[] { 1, "AgentBinary", "https://archive.hashtopolis.org/agent/python/stable/0.7.1.zip", "https://archive.hashtopolis.org/agent/python/stable/0.7.1.zip", null, "hashtopolis.zip", new List<string> { "Windows", "Linux", "MacOS" }, "python", "", "stable", "0.7.1" });
 
             migrationBuilder.InsertData(
                 table: "DownloadableBinaries",
                 columns: new[] { "Id", "Discriminator", "DownloadUrl", "Executable", "FileId", "Name", "OperatingSystems", "Version" },
-                values: new object[] { 2, "DownloadableBinary", "https://github.com/hashtopolis/server/raw/master/src/static/7zr", "7zr.exe", null, "7zr", new List<string> { "windows" }, "1.0.0" });
+                values: new object[] { 2, "DownloadableBinary", "https://github.com/hashtopolis/server/raw/master/src/static/7zr", "7zr.exe", null, "7zr", new List<string> { "Windows" }, "1.0.0" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccessGroupAgent_AgentsId",
@@ -1057,13 +1057,13 @@ namespace HashSlinger.Api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_HealthCheckAgent_AgentId",
-                table: "HealthCheckAgent",
+                name: "IX_HealthCheckAgents_AgentId",
+                table: "HealthCheckAgents",
                 column: "AgentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HealthCheckAgent_HealthCheckId",
-                table: "HealthCheckAgent",
+                name: "IX_HealthCheckAgents_HealthCheckId",
+                table: "HealthCheckAgents",
                 column: "HealthCheckId");
 
             migrationBuilder.CreateIndex(
@@ -1202,7 +1202,7 @@ namespace HashSlinger.Api.Migrations
                 name: "HashBinary");
 
             migrationBuilder.DropTable(
-                name: "HealthCheckAgent");
+                name: "HealthCheckAgents");
 
             migrationBuilder.DropTable(
                 name: "LogEntries");

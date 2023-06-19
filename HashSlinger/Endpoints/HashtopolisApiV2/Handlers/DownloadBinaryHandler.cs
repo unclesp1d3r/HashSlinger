@@ -7,6 +7,7 @@ using Mapster;
 using MediatR;
 using Models;
 using Models.Enums;
+using Utilities;
 
 /// <summary>Handles the Hashtopolis API v2 downloadBinary endpoint.</summary>
 
@@ -30,7 +31,7 @@ public class DownloadBinaryHandler : IRequestHandler<DownloadBinaryRequest, Down
                 Response = HashtopolisConstants.ErrorResponse,
                 Message = "Invalid token"
             };
-        var extension = Utilities.Utilities.GetFileExtension(agent.OperatingSystem);
+        var extension = Utilities.GetFileExtension(agent.OperatingSystem);
         await _mediator.Send(new TouchAgentCommand(request.Token, AgentActions.DownloadBinary), cancellationToken)
             .ConfigureAwait(false);
 
@@ -58,26 +59,6 @@ public class DownloadBinaryHandler : IRequestHandler<DownloadBinaryRequest, Down
         };
     }
 
-    private async Task<DownloadBinaryResponse> GetExtractorResponseAsync(DownloadBinaryRequest request, string extension)
-    {
-        // The hashtopolis python agent doesn't actually follow the documented APIs.
-        // The documentation says that the 7zr binary is downloaded from the URL value in the
-        // response, but the python agent actually downloads the binary from the Executable value.
-
-        DownloadableBinary? sevenZipBinary = await _mediator.Send(new GetBinaryByNameQuery("7zr")).ConfigureAwait(true);
-        if (sevenZipBinary == null)
-            return request.Adapt<DownloadBinaryResponse>() with
-            {
-                Response = HashtopolisConstants.ErrorResponse,
-                Message = "7zr binary not found"
-            };
-        return request.Adapt<DownloadBinaryResponse>() with
-        {
-            Response = HashtopolisConstants.SuccessResponse,
-            Executable = $"{sevenZipBinary.DownloadUrl}{extension}"
-        };
-    }
-
     private async Task<DownloadBinaryResponse> GetCrackerResponseAsync(DownloadBinaryRequest request, string extension)
     {
         DownloadableBinary? crackerBinary = await _mediator
@@ -95,6 +76,26 @@ public class DownloadBinaryHandler : IRequestHandler<DownloadBinaryRequest, Down
             Url = crackerBinary.DownloadUrl,
             Executable = $"{crackerBinary.Executable}{extension}",
             Name = crackerBinary.Name
+        };
+    }
+
+    private async Task<DownloadBinaryResponse> GetExtractorResponseAsync(DownloadBinaryRequest request, string extension)
+    {
+        // The hashtopolis python agent doesn't actually follow the documented APIs.
+        // The documentation says that the 7zr binary is downloaded from the URL value in the
+        // response, but the python agent actually downloads the binary from the Executable value.
+
+        DownloadableBinary? sevenZipBinary = await _mediator.Send(new GetBinaryByNameQuery("7zr")).ConfigureAwait(true);
+        if (sevenZipBinary == null)
+            return request.Adapt<DownloadBinaryResponse>() with
+            {
+                Response = HashtopolisConstants.ErrorResponse,
+                Message = "7zr binary not found"
+            };
+        return request.Adapt<DownloadBinaryResponse>() with
+        {
+            Response = HashtopolisConstants.SuccessResponse,
+            Executable = $"{sevenZipBinary.DownloadUrl}{extension}"
         };
     }
 }

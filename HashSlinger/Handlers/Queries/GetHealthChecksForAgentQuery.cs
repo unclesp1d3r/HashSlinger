@@ -7,15 +7,11 @@ using Models;
 using Models.Enums;
 using Serilog;
 
-/// <summary>
-/// Represents a query to get the HealthChecks for an Agent.
-/// </summary>
+/// <summary>Represents a query to get the HealthChecks for an Agent.</summary>
 /// <seealso cref="MediatR.IBaseRequest" />
 public record GetHealthChecksForAgentQuery(int AgentId) : IRequest<HealthCheck?>;
 
-/// <summary>
-/// Handles getting the HealthChecks for an Agent.
-/// </summary>
+/// <summary>Handles getting the HealthChecks for an Agent.</summary>
 public class GetHealthChecksForAgentHandler : IRequestHandler<GetHealthChecksForAgentQuery, HealthCheck?>
 {
     private readonly HashSlingerContext _dbContext;

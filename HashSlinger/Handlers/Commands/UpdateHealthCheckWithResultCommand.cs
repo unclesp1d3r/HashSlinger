@@ -7,9 +7,7 @@ using Models;
 using Models.Enums;
 using Task = Task;
 
-/// <summary>
-/// Represents the command to update the health check agent with the results of the health check.
-/// </summary>
+/// <summary>Represents the command to update the health check agent with the results of the health check.</summary>
 public record UpdateHealthCheckWithResultCommand(
     string AgentToken,
     int NumberCracked,
@@ -20,9 +18,7 @@ public record UpdateHealthCheckWithResultCommand(
     int CheckId
 ) : IRequest;
 
-/// <summary>
-/// Handles updating the health check agent with the results of the health check.
-/// </summary>
+/// <summary>Handles updating the health check agent with the results of the health check.</summary>
 public class UpdateHealthCheckWithResultHandler : IRequestHandler<UpdateHealthCheckWithResultCommand>
 {
     private readonly HashSlingerContext _dbContext;
@@ -34,12 +30,10 @@ public class UpdateHealthCheckWithResultHandler : IRequestHandler<UpdateHealthCh
     /// <inheritdoc />
     public async Task Handle(UpdateHealthCheckWithResultCommand request, CancellationToken cancellationToken)
     {
-        Agent? agent = await _dbContext.Agents.Include(x => x.HealthCheckAgents)
-            .ThenInclude(h => h.HealthCheck)
-            .FirstOrDefaultAsync(x => x.Token == request.AgentToken, cancellationToken)
+        HealthCheckAgent? healthCheckAgent = await _dbContext.HealthCheckAgents
+            .FirstOrDefaultAsync(x => x.HealthCheck.Id == request.CheckId && x.Agent.Token == request.AgentToken,
+                cancellationToken)
             .ConfigureAwait(false);
-        HealthCheckAgent? healthCheckAgent
-            = agent?.HealthCheckAgents.FirstOrDefault(x => x.HealthCheck.Id == request.CheckId);
 
         if (healthCheckAgent is null)
             throw new InvalidOperationException("HealthCheckAgent is null");

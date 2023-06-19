@@ -1,17 +1,15 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
 
+using Api.Handlers.Commands;
+using Api.Handlers.Queries;
 using DTO;
-using HashSlinger.Api.Handlers.Commands;
-using HashSlinger.Api.Handlers.Queries;
 using Mapster;
 using MediatR;
 using Models;
 using Models.Enums;
 using Serilog;
 
-/// <summary>
-/// Handles the Hashtopolis API v2 GetTask endpoint.
-/// </summary>
+/// <summary>Handles the Hashtopolis API v2 GetTask endpoint.</summary>
 public class GetTaskHandler : IRequestHandler<GetTaskRequest, GetTaskResponse>
 {
     private readonly IMediator _mediator;
@@ -43,10 +41,10 @@ public class GetTaskHandler : IRequestHandler<GetTaskRequest, GetTaskResponse>
 
 
         // Check for HealthChecks
-        HealthCheck? healthChecks = await _mediator.Send(new GetHealthChecksForAgentQuery(agent.Id), cancellationToken)
+        var healthChecks = await _mediator.Send(new GetPendingHealthCheckForAgentQuery(agent.Id), cancellationToken)
             .ConfigureAwait(true);
 
-        if (healthChecks is not null)
+        if (healthChecks)
         {
             Log.Information("HealthChecks found for Agent {AgentId}", agent.Id);
             return request.Adapt<GetTaskResponse>() with
