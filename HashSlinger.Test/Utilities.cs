@@ -3,6 +3,7 @@
 using Api.Data;
 using Api.Models;
 using Api.Models.Enums;
+using Api.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 internal static class Utilities
@@ -24,7 +25,11 @@ internal static class Utilities
         {
             Voucher = TestVoucher, Expiration = DateTime.UtcNow.AddDays(1)
         });
-        db.Agents.Add(new Agent { Name = "Test Client", Token = TestToken });
+        db.Agents.Add(new Agent
+        {
+            Name = "Test Client", Token = TestToken,
+            IsActive = true, LastAction = AgentActions.Register
+        });
         db.AgentBinaries.Add(new AgentBinary
         {
             Version = "1.0.1", DownloadUrl = "http://example.com",
@@ -35,6 +40,8 @@ internal static class Utilities
             UpdateTrack = "release"
         });
         db.FileDeletes.Add(new FileDelete { FileName = "fake_file.txt", Time = DateTime.UtcNow.AddDays(-1) });
+
+        db.HashTypes.AddRange(SeedTool.GetHashTypeSeeds());
 
         db.SaveChanges();
     }

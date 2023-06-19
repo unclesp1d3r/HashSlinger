@@ -1,6 +1,5 @@
 ﻿namespace HashSlinger.Test;
 
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 using Api.Data;
@@ -9,7 +8,6 @@ using Api.Endpoints.HashtopolisApiV2.DTO;
 using Api.Models.Enums;
 using Microsoft.Extensions.DependencyInjection;
 
-[TestFixture, SuppressMessage("ReSharper", "StringLiteralTypo")]
 internal class HashtopolisApiIntegrationTests
 {
     [SetUp]
@@ -229,7 +227,34 @@ internal class HashtopolisApiIntegrationTests
             {
                 Assert.That(actual, Is.Not.Null);
                 Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
-                Assert.That(actual.FileNames.Count, Is.EqualTo(1));
+                Assert.That(actual.FileNames, Has.Count.EqualTo(1));
+            });
+        }
+
+        Assert.Pass();
+    }
+
+    [Test]
+    public async Task GetTaskIntegrationTest()
+    {
+        var request = new GetTaskRequest("getTask", Utilities.TestToken, null);
+        var data = JsonSerializer.Serialize(request);
+
+        using (HttpContent requestContent = new StringContent(data, Encoding.UTF8, "application/json"))
+        {
+            HttpResponseMessage response = await _client.PostAsync(HashtopolisConstants.EndPointPrefix, requestContent);
+
+            response.EnsureSuccessStatusCode();
+
+            var actualJsonString = await response.Content.ReadAsStringAsync();
+
+            GetTaskResponse? actual = JsonSerializer.Deserialize<GetTaskResponse>(actualJsonString);
+            Assert.Multiple(() =>
+            {
+                Assert.That(actual, Is.Not.Null);
+                Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
+                Assert.That(actual!.Message, Is.EqualTo(HashtopolisConstants.NoTaskAvailableMessage));
+                Assert.That(actual!.TaskId, Is.Null);
             });
         }
 

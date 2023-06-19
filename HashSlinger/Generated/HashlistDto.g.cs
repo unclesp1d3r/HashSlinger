@@ -11,13 +11,11 @@ namespace HashSlinger.Api.Generated
         public HashTypeDto HashType { get; set; }
         public ICollection<TaskWrapperDto> TaskWrappers { get; set; }
         public ICollection<ZapDto> Zaps { get; set; }
-        public int AccessGroupId { get; set; }
         public short BrainFeatures { get; set; }
         public int BrainId { get; set; }
         public int Cracked { get; set; }
         public int Format { get; set; }
         public int HashCount { get; set; }
-        public int HashTypeId { get; set; }
         public bool HexSalt { get; set; }
         public int Id { get; set; }
         public bool IsArchived { get; set; }

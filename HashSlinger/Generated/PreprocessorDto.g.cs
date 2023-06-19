@@ -8,6 +8,7 @@ namespace HashSlinger.Api.Generated
         public string? KeyspaceCommand { get; set; }
         public string? LimitCommand { get; set; }
         public string? SkipCommand { get; set; }
+        public ICollection<TaskDto> Tasks { get; set; }
         public string? DownloadUrl { get; set; }
         public string? Executable { get; set; }
         public FileDto? File { get; set; }

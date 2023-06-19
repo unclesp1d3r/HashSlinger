@@ -8,7 +8,7 @@ namespace HashSlinger.Api.Generated
     {
         public AccessGroupDto AccessGroup { get; set; }
         public ICollection<FileDownloadDto> FileDownloads { get; set; }
-        public ICollection<FileTaskDto> FileTasks { get; set; }
+        public ICollection<TaskDto> Tasks { get; set; }
         public ICollection<PreconfiguredTaskDto> PreconfiguredTasks { get; set; }
         public int AccessGroupId { get; set; }
         public Guid? FileGuid { get; set; }

@@ -13,7 +13,7 @@ public record RegistrationVoucher
     /// <summary>
     ///     <para>Gets or sets the access group.</para>
     /// </summary>
-    public AccessGroup? AccessGroup { get; set; }
+    public virtual AccessGroup? AccessGroup { get; set; }
 
     /// <summary>Gets or sets the expiration.</summary>
     /// <value>The time when the voucher is no longer value, if not used.</value>

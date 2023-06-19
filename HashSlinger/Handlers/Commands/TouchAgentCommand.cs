@@ -33,7 +33,11 @@ public class TouchAgentHandler : IRequestHandler<TouchAgentCommand>
     {
         IPAddress? clientIp = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress;
 
-        Log.Information("Agent {Token} touched from {ClientIp}", request.Token, clientIp);
+        Log.Information("Agent {Token} touched from {ClientIp} for action {LastAction}",
+            request.Token,
+            clientIp,
+            request.LastAction);
+
         return _dbContext.Agents.Where(x => x.Token == request.Token)
             .ForEachAsync(x =>
                 {
