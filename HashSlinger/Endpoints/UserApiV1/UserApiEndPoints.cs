@@ -8,6 +8,9 @@ using Shared.Models;
 /// <summary>Contains the version 1 API for user interface functionality.</summary>
 public static class UserApiEndPoints
 {
+    /// <summary>
+    /// The API prefix
+    /// </summary>
     public const string ApiPrefix = "/api/v1";
 
     /// <summary>Maps the user API endpoints.</summary>
@@ -17,6 +20,7 @@ public static class UserApiEndPoints
         routes.MapAgentEndpoints();
         routes.MapRegistrationVoucherEndpoints();
         routes.MapUtilityEndpoints();
+        routes.MapTaskEndpoints();
     }
 
     /// <summary>Maps the utility endpoints.</summary>
@@ -25,12 +29,12 @@ public static class UserApiEndPoints
     {
         RouteGroupBuilder group = routes.MapGroup($"{ApiPrefix}/Utils").WithTags("Utils");
         // Mostly for testing. This is not part of the final API.
-        group.MapPost("/initial-setup", (IMediator mediator) => { mediator.Send(new PerformInitialSetupCommand()); })
+        group.MapPost("/initial-setup", void (IMediator mediator) => mediator.Send(new PerformInitialSetupCommand()))
             .WithOpenApi();
 
         // Mostly for testing. This is not part of the final API.
         group.MapPost("/create-health-check",
-                (IMediator mediator) => { mediator.Send(new AssignAllAgentsHealthCheckCommand()); })
+                void (IMediator mediator) => mediator.Send(new AssignAllAgentsHealthCheckCommand()))
             .WithOpenApi();
     }
 
@@ -93,6 +97,49 @@ public static class UserApiEndPoints
 
         group.MapDelete("/{id:int}", RegistrationVoucherEndpointHandlers.DeleteRegistrationVoucherHandlerAsync)
             .WithName("DeleteRegistrationVoucher")
+            .WithOpenApi();
+    }
+
+    /// <summary>
+    /// Maps the task endpoints.
+    /// </summary>
+    /// <param name="routes">The routes.</param>
+    public static void MapTaskEndpoints(this IEndpointRouteBuilder routes)
+    {
+        RouteGroupBuilder? group = routes.MapGroup($"{ApiPrefix}/Task").WithTags(nameof(Task));
+
+        group.MapGet("/", TaskEndpointHandlers.GetAllTasksHandlerAsync)
+            .Produces<List<TaskDto>>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .WithName("GetAllTasks")
+            .WithOpenApi();
+
+        group.MapGet("/{id:int}", TaskEndpointHandlers.GetTaskByIdHandlerAsync)
+            .Produces<TaskDto>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<int>(false, "application/json")
+            .WithName("GetTaskById")
+            .WithOpenApi();
+
+        group.MapPut("/{id:int}", TaskEndpointHandlers.UpdateTaskHandlerAsync)
+            .Produces<TaskDto>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<int>(false, "application/json")
+            .WithName("UpdateTask")
+            .WithOpenApi();
+
+        group.MapPost("/", TaskEndpointHandlers.CreateTaskHandlerAsync)
+            .Produces<TaskDto>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<TaskDto>(false, "application/json")
+            .WithName("CreateTask")
+            .WithOpenApi();
+
+        group.MapDelete("/{id:int}", TaskEndpointHandlers.DeleteTaskHandlerAsync)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<int>(false, "application/json")
+            .WithName("DeleteTask")
             .WithOpenApi();
     }
 }

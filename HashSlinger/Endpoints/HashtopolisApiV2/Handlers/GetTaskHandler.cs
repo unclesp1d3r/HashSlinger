@@ -1,5 +1,6 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.Handlers;
 
+using System.Threading.Tasks;
 using Api.Handlers.Commands;
 using Api.Handlers.Queries;
 using DTO;
@@ -67,26 +68,17 @@ public class GetTaskHandler : IRequestHandler<GetTaskRequest, GetTaskResponse>
         }
 
         // Check for Assigned Task
-        Task? nextTask = await _mediator.Send(new GetNextTaskForAgentQuery(request.Token), cancellationToken)
+        GetNextTaskForAgentProjectionResponse? nextTask = await _mediator
+            .Send(new GetNextTaskForAgentProjectionQuery(agent.Id), cancellationToken)
             .ConfigureAwait(true);
 
         if (nextTask is not null)
             return request.Adapt<GetTaskResponse>() with
             {
                 Response = HashtopolisConstants.SuccessResponse,
-                TaskId = nextTask.Id,
-                HashlistId = nextTask.TaskWrapper.HashlistId,
                 Bench = HashSlingerConfiguration.BenchmarkTime,
                 StatusTimer = HashSlingerConfiguration.StatusTimer,
-                BenchType = nextTask.UseNewBenchmark ? "speed" : "run",
-                CrackerId = nextTask.CrackerBinary?.Id,
                 HashlistAlias = HashSlingerConfiguration.HashlistAlias,
-                Files = nextTask.Files.Select(f => f.FileName).ToList(),
-                Keyspace = nextTask.Keyspace,
-                UsePreprocessor = nextTask.UsePreprocessor,
-                PreprocessorId = nextTask.Preprocessor?.Id,
-                PreprocessorCommand = nextTask.PreprocessorCommand,
-                EnforcePipe = nextTask.EnforcePipe,
                 UseBrain = HashSlingerConfiguration.HashcatBrainEnable,
                 BrainHost = HashSlingerConfiguration.HashcatBrainHost,
                 BrainPort = HashSlingerConfiguration.HashcatBrainPort,

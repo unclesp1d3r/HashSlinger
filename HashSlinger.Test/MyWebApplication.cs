@@ -28,10 +28,7 @@ internal class MyWebApplicationFactory : WebApplicationFactory<Program>
             services.Remove(dbConnectionDescriptor!);
 
             services.AddDbContext<HashSlingerContext>(options =>
-                options.UseNpgsql(ConnectionString)
-                    .EnableSensitiveDataLogging()
-                    .UseLazyLoadingProxies()
-                    .EnableDetailedErrors());
+                options.UseNpgsql(ConnectionString).EnableSensitiveDataLogging().EnableDetailedErrors());
         });
 
         builder.UseEnvironment("Test");
