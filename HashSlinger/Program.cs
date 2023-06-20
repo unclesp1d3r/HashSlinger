@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using HashSlinger.Api.Data;
 using HashSlinger.Api.Endpoints.ClientApiV1;
 using HashSlinger.Api.Endpoints.HashtopolisApiV2;
@@ -24,7 +24,7 @@ builder.Host.UseSerilog();
 
 var connectionString = builder.Configuration.GetConnectionString("HashSlingerContext");
 builder.Services.AddDbContext<HashSlingerContext>(options =>
-    options.UseNpgsql(connectionString).EnableSensitiveDataLogging().UseLazyLoadingProxies().EnableDetailedErrors());
+    options.UseNpgsql(connectionString).EnableSensitiveDataLogging().EnableDetailedErrors());
 builder.Services.AddSingleton<IFileStorageService, LocalFileStorageService>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 builder.Services.AddHttpContextAccessor();
@@ -55,6 +55,7 @@ await using (AsyncServiceScope scope = app.Services.CreateAsyncScope())
     HashSlingerContext dbContext = scope.ServiceProvider.GetRequiredService<HashSlingerContext>();
     await dbContext.Database.EnsureCreatedAsync().ConfigureAwait(true);
 }
+
 
 app.Run();
 

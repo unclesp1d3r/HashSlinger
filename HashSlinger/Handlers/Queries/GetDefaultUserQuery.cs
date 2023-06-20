@@ -27,6 +27,8 @@ public record GetDefaultUserHandler : IRequestHandler<GetDefaultUserQuery, User?
     public Task<User?> Handle(GetDefaultUserQuery request, CancellationToken cancellationToken)
     {
         Log.Debug("Getting default user");
-        return _dbContext.Users.OrderBy(u => u.RegisteredSince).FirstOrDefaultAsync(cancellationToken);
+        return _dbContext.Users.Include(u => u.AccessGroups)
+            .OrderBy(u => u.RegisteredSince)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

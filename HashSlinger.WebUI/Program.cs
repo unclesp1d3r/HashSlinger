@@ -1,13 +1,16 @@
 using HashSlinger.WebUI.Data;
 using MudBlazor.Services;
+using Refit;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
+builder.Services.AddHttpClient();
+builder.Services.AddRefitClient<IHashSlingerApi>()
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://localhost:5090"));
 
 WebApplication? app = builder.Build();
 

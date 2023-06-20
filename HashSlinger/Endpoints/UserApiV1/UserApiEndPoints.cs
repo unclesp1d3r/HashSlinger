@@ -15,6 +15,7 @@ public static class UserApiEndPoints
     public static void MapUserApiEndpoints(this IEndpointRouteBuilder routes)
     {
         routes.MapAgentEndpoints();
+        routes.MapRegistrationVoucherEndpoints();
         routes.MapUtilityEndpoints();
     }
 
@@ -43,22 +44,55 @@ public static class UserApiEndPoints
 
         group.MapGet("/{id:int}", AgentEndpointHandlers.GetAgentByIdHandlerAsync)
             .WithName("GetAgentById")
-            .Accepts<int>(false, "The agent identifier.")
+            .Accepts<int>(false, "application/json")
             .WithOpenApi();
 
         group.MapPut("/{id:int}", AgentEndpointHandlers.UpdateAgentHandlerAsync)
-            .Accepts<int>(false, "The agent identifier.")
+            .Accepts<int>(false, "application/json")
             .WithName("UpdateAgent")
             .WithOpenApi();
 
         group.MapPost("/", AgentEndpointHandlers.CreateAgentHandlerAsync)
-            .Accepts<AgentDto>(false, "The agent.")
+            .Accepts<AgentDto>(false, "application/json")
             .WithName("CreateAgent")
             .WithOpenApi();
 
         group.MapDelete("/{id}", AgentEndpointHandlers.DeleteAgentHandlerAsync)
-            .Accepts<int>(false, "The agent identifier.")
+            .Accepts<int>(false, "application/json")
             .WithName("DeleteAgent")
+            .WithOpenApi();
+    }
+
+
+    /// <summary>Maps the registration voucher endpoints.</summary>
+    /// <param name="routes">The routes.</param>
+    internal static void MapRegistrationVoucherEndpoints(this IEndpointRouteBuilder routes)
+    {
+        RouteGroupBuilder? group = routes.MapGroup($"{ApiPrefix}/RegistrationVoucher").WithTags(nameof(RegistrationVoucher));
+
+        group.MapGet("/", RegistrationVoucherEndpointHandlers.GetAllRegistrationVouchersHandlerAsync)
+            .WithName("GetAllRegistrationVouchers")
+            .Produces<List<RegistrationVoucherDto>>(StatusCodes.Status200OK)
+            .WithOpenApi();
+
+        group.MapGet("/{id:int}", RegistrationVoucherEndpointHandlers.GetRegistrationVoucherByIdHandlerAsync)
+            .WithName("GetRegistrationVoucherById")
+            .Produces<RegistrationVoucherDto>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+
+        group.MapPut("/{id:int}", RegistrationVoucherEndpointHandlers.UpdateRegistrationVoucherHandlerAsync)
+            .Accepts<RegistrationVoucherDto>(false, "application/json")
+            .WithName("UpdateRegistrationVoucher")
+            .WithOpenApi();
+
+        group.MapPost("/", RegistrationVoucherEndpointHandlers.CreateRegistrationVoucherHandlerAsync)
+            .Accepts<RegistrationVoucherDto>(false, "application/json")
+            .WithName("CreateRegistrationVoucher")
+            .WithOpenApi();
+
+        group.MapDelete("/{id:int}", RegistrationVoucherEndpointHandlers.DeleteRegistrationVoucherHandlerAsync)
+            .WithName("DeleteRegistrationVoucher")
             .WithOpenApi();
     }
 }

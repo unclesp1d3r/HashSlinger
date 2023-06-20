@@ -1,0 +1,97 @@
+﻿@page "/agents/"
+@using Humanizer
+@using HashSlinger.Shared.Generated
+@using HashSlinger.WebUI.Data
+@inject IHashSlingerApi HashSlingerApi
+<PageTitle>View Agents</PageTitle>
+
+@if (_agents == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <MudIconButton Icon="@Icons.Material.Filled.Refresh" Color="Color.Primary" Variant="Variant.Filled" OnClick="@(RefreshAgentsAsync)" />
+    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/agents/new" />
+    <MudDataGrid Items="@_agents" Virtualize="true">
+        <Columns>
+            <PropertyColumn Property="x => x.Id" Title="Id" />
+            <TemplateColumn Title="Is Active">
+                <CellTemplate>
+                    <MudIconButton Icon="@(context.Item.IsActive ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Circle)" Color="Color.Primary" Variant="Variant.Filled" OnClick="@(() => ToggleAgent(context.Item))" />
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.Name" Title="Name" />
+            <TemplateColumn Title="Operating System">
+                <CellTemplate>
+                    <MudStack>
+                        <MudChip Color="Color.Primary">@context.Item.OperatingSystem.Humanize()</MudChip>
+                        @context.Item.ClientSignature.Humanize()
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.AccessGroups.Select(a => a.Name).Humanize()" Title="Access Groups" />
+            <TemplateColumn Title="Last Action">
+                <CellTemplate>
+                    <MudTooltip Text="@context.Item.LastSeenTime.ToString()">
+                        @context.Item.LastAction.Humanize() on @context.Item.LastSeenTime.Humanize() @(context.Item.LastSeenIpAddress is not null ? $"from {context.Item.LastSeenIpAddress?.Humanize()}" : string.Empty)
+                    </MudTooltip>
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Title="Devices" Property="x => x.Devices.Humanize()" />
+
+            <TemplateColumn>
+                <CellTemplate>
+                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="@(() => DeleteAgent(context.Item))">
+                        <MudIcon Icon="@Icons.Material.Filled.Delete" />
+                    </MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+
+    </MudDataGrid>
+}
+
+
+@code {
+    private List<AgentDto>? _agents;
+
+    protected override Task OnInitializedAsync()
+    {
+        return RefreshAgentsAsync();
+    }
+
+    protected async void DeleteAgent(AgentDto agent)
+    {
+        Console.WriteLine($"Trying to delete {agent.Id} for {agent.Name.Humanize()}");
+    // ReSharper disable once AsyncConverter.AsyncAwaitMayBeElidedHighlighting
+        await HashSlingerApi.DeleteAgentAsync(agent.Id).ConfigureAwait(true);
+        var index = _agents!.FindIndex(a => a.Id == agent.Id);
+        if (index != -1)
+        {
+            _agents!.RemoveAt(index);
+        }
+        await RefreshAgentsAsync().ConfigureAwait(true);
+    }
+
+    protected async void ToggleAgent(AgentDto agent)
+    {
+        agent.IsActive = !agent.IsActive;
+        Console.WriteLine($"Trying to toggle {agent.Id}");
+        await HashSlingerApi.UpdateAgentAsync(agent.Id, agent).ConfigureAwait(true);
+        AgentDto updatedAgent = await HashSlingerApi.GetAgentAsync(agent.Id).ConfigureAwait(true);
+        var index = _agents!.FindIndex(a => a.Id == agent.Id);
+        if (index != -1)
+        {
+            _agents![index] = updatedAgent;
+        }
+    }
+
+    private async Task RefreshAgentsAsync()
+    {
+        _agents = await HashSlingerApi.GetAllAgentsAsync().ConfigureAwait(true);
+    }
+
+}

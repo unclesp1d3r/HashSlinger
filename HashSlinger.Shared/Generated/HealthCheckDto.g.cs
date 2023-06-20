@@ -14,7 +14,7 @@ namespace HashSlinger.Shared.Generated
         public int ExpectedCracks { get; set; }
         public string HashListAlias { get; set; }
         public int Id { get; set; }
-        public HealthCheckStatusDto Status { get; set; }
+        public string Status { get; set; }
         public List<string> TestHashes { get; set; }
         public DateTime Time { get; set; }
     }

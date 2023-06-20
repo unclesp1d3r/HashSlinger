@@ -23,10 +23,11 @@ namespace HashSlinger.Shared.Generated
         public bool IgnoreErrors { get; set; }
         public bool IsActive { get; set; }
         public bool IsTrusted { get; set; }
-        public AgentActionsDto LastAction { get; set; }
+        public string LastAction { get; set; }
+        public string? LastSeenIpAddress { get; set; }
         public DateTime LastSeenTime { get; set; }
         public string Name { get; set; }
-        public AgentOperatingSystemsDto OperatingSystem { get; set; }
+        public string OperatingSystem { get; set; }
         public string Token { get; set; }
         public string Uid { get; set; }
         public int? UserId { get; set; }

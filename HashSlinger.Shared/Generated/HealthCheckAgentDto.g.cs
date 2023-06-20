@@ -13,6 +13,6 @@ namespace HashSlinger.Shared.Generated
         public int Id { get; set; }
         public int? NumGpus { get; set; }
         public ulong? Start { get; set; }
-        public HealthCheckStatusDto Status { get; set; }
+        public string Status { get; set; }
     }
 }
