@@ -9,6 +9,7 @@ namespace HashSlinger.Shared.Generated
         public ICollection<AssignmentDto> Assignments { get; set; }
         public ICollection<ChunkDto> Chunks { get; set; }
         public CrackerBinaryDto? CrackerBinary { get; set; }
+        public int? CrackerBinaryId { get; set; }
         public CrackerBinaryTypeDto? CrackerBinaryType { get; set; }
         public ICollection<FileDto> Files { get; set; }
         public PreprocessorDto? Preprocessor { get; set; }
@@ -16,7 +17,7 @@ namespace HashSlinger.Shared.Generated
         public ICollection<TaskDebugOutputDto> TaskDebugOutputs { get; set; }
         public TaskWrapperDto TaskWrapper { get; set; }
         public string AttackCommand { get; set; }
-        public ulong ChunkSize { get; set; }
+        public int ChunkSize { get; set; }
         public int ChunkTime { get; set; }
         public string? Color { get; set; }
         public bool EnforcePipe { get; set; }
@@ -29,7 +30,7 @@ namespace HashSlinger.Shared.Generated
         public int MaxAgents { get; set; }
         public string Name { get; set; }
         public string Notes { get; set; }
-        public string PreprocessorCommand { get; set; }
+        public string? PreprocessorCommand { get; set; }
         public int Priority { get; set; }
         public ulong SkipKeyspace { get; set; }
         public int StaticChunks { get; set; }

@@ -5,6 +5,7 @@ using System.Net;
 using HashSlinger.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HashSlinger.Api.Migrations
 {
     [DbContext(typeof(HashSlingerContext))]
-    partial class HashSlingerContextModelSnapshot : ModelSnapshot
+    [Migration("20230627233329_InitialSetup")]
+    partial class InitialSetup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -546,6 +549,9 @@ namespace HashSlinger.Api.Migrations
                     b.Property<decimal>("CrackPos")
                         .HasColumnType("numeric(20,0)");
 
+                    b.Property<string>("Essid")
+                        .HasColumnType("text");
+
                     b.Property<string>("HashValue")
                         .IsRequired()
                         .HasColumnType("text");
@@ -573,8 +579,6 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HashlistId");
 
-                    b.HasIndex("IsCracked");
-
                     b.ToTable("Hash");
                 });
 
@@ -596,7 +600,7 @@ namespace HashSlinger.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("HashBytes")
+                    b.Property<byte[]>("Hash")
                         .IsRequired()
                         .HasColumnType("bytea");
 
@@ -607,8 +611,7 @@ namespace HashSlinger.Api.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Plaintext")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("TimeCracked")
                         .HasColumnType("timestamp with time zone");
@@ -1547,7 +1550,6 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.Hashlist", "Hashlist")
                         .WithMany("HashBinaries")
                         .HasForeignKey("HashlistId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Chunk");

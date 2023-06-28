@@ -28,6 +28,7 @@ public class GetAgentByTokenHandler : IRequestHandler<GetAgentByTokenQuery, Agen
     public Task<Agent?> Handle(GetAgentByTokenQuery request, CancellationToken cancellationToken)
     {
         Log.Debug("Getting agent by token {Token}", request.Token);
-        return _dbContext.Agents.SingleOrDefaultAsync(a => a.Token == request.Token, cancellationToken);
+        return _dbContext.Agents.Include(a => a.AccessGroups)
+            .SingleOrDefaultAsync(a => a.Token == request.Token, cancellationToken);
     }
 }

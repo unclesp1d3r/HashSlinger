@@ -13,9 +13,10 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddRefitClient<IHashSlingerApi>()
     .ConfigureHttpClient(c =>
     {
-        c.BaseAddress = new Uri("http://localhost:5090/api/v1");
+        c.BaseAddress
+            = new Uri(builder.Configuration.GetValue<string>("ApiBaseAddress") ?? throw new InvalidOperationException());
         c.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrHigher;
     });
 builder.Services.AddMudServices();
 
-await builder.Build().RunAsync();
+await builder.Build().RunAsync().ConfigureAwait(true);

@@ -18,7 +18,8 @@ public static class RegistrationVoucherEndpointHandlers
     {
         db.RegistrationVouchers.Add(registrationVoucherDto.Adapt<RegistrationVoucher>());
         await db.SaveChangesAsync().ConfigureAwait(true);
-        return TypedResults.Created($"/api/RegistrationVoucher/{registrationVoucherDto.Id}", registrationVoucherDto);
+        return TypedResults.Created($"{UserApiEndPoints.ApiPrefix}/RegistrationVoucher/{registrationVoucherDto.Id}",
+            registrationVoucherDto);
     }
 
     /// <summary>Handles deleting a RegistrationVoucher DELETE /api/v1/RegistrationVoucher/{id}</summary>
@@ -34,7 +35,7 @@ public static class RegistrationVoucherEndpointHandlers
     /// <summary>Gets all registration vouchers. GET /api/v1/RegistrationVoucher</summary>
     public static Task<List<RegistrationVoucherDto>> GetAllRegistrationVouchersHandlerAsync(HashSlingerContext db)
     {
-        return db.RegistrationVouchers.ProjectToType<RegistrationVoucherDto>().ToListAsync();
+        return db.RegistrationVouchers.ProjectToType<RegistrationVoucherDto>().AsSplitQuery().ToListAsync();
     }
 
     /// <summary>Gets the registration voucher by identifier. GET /api/v1/RegistrationVoucher/{id}</summary>
@@ -45,6 +46,7 @@ public static class RegistrationVoucherEndpointHandlers
     {
         return await db.RegistrationVouchers.ProjectToType<RegistrationVoucherDto>()
             .AsNoTracking()
+            .AsSplitQuery()
             .FirstOrDefaultAsync(model => model.Id == id)
             .ConfigureAwait(true) is RegistrationVoucherDto model
             ? TypedResults.Ok(model)

@@ -11,10 +11,11 @@ namespace HashSlinger.Shared.Generated
         public HashTypeDto HashType { get; set; }
         public ICollection<TaskWrapperDto> TaskWrappers { get; set; }
         public ICollection<ZapDto> Zaps { get; set; }
+        public int AccessGroupId { get; set; }
         public short BrainFeatures { get; set; }
         public int BrainId { get; set; }
         public int Cracked { get; set; }
-        public int Format { get; set; }
+        public string Format { get; set; }
         public int HashCount { get; set; }
         public bool HexSalt { get; set; }
         public int Id { get; set; }

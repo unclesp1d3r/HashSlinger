@@ -1,8 +1,12 @@
 ﻿@page "/agents/"
 @using Humanizer
+@using Mapster
 @using HashSlinger.Shared.Generated
 @using HashSlinger.WebUI.Data
+@using HashSlinger.WebUI.Components.Agents
+@using HashSlinger.WebUI.Components.Agents.View
 @inject IHashSlingerApi HashSlingerApi
+@inject IDialogService DialogService
 <PageTitle>View Agents</PageTitle>
 
 @if (_agents == null)
@@ -14,7 +18,7 @@
 else
 {
     <MudIconButton Icon="@Icons.Material.Filled.Refresh" Color="Color.Primary" Variant="Variant.Filled" OnClick="@(RefreshAgentsAsync)" />
-    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/agents/new" />
+    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" OnClick="OnAddVoucher" />
     <MudDataGrid Items="@_agents" Virtualize="true">
         <Columns>
             <PropertyColumn Property="x => x.Id" Title="Id" />
@@ -26,18 +30,13 @@ else
             <PropertyColumn Property="x => x.Name" Title="Name" />
             <TemplateColumn Title="Operating System">
                 <CellTemplate>
-                    <MudStack>
-                        <MudChip Color="Color.Primary">@context.Item.OperatingSystem.Humanize()</MudChip>
-                        @context.Item.ClientSignature.Humanize()
-                    </MudStack>
+                    <OperatingSystemCell Agent="@context.Item" />
                 </CellTemplate>
             </TemplateColumn>
             <PropertyColumn Property="x => x.AccessGroups.Select(a => a.Name).Humanize()" Title="Access Groups" />
             <TemplateColumn Title="Last Action">
                 <CellTemplate>
-                    <MudTooltip Text="@context.Item.LastSeenTime.ToString()">
-                        @context.Item.LastAction.Humanize() on @context.Item.LastSeenTime.Humanize() @(context.Item.LastSeenIpAddress is not null ? $"from {context.Item.LastSeenIpAddress?.Humanize()}" : string.Empty)
-                    </MudTooltip>
+                    <LastActionCell Agent="context.Item" />
                 </CellTemplate>
             </TemplateColumn>
             <PropertyColumn Title="Devices" Property="x => x.Devices.Humanize()" />
@@ -92,6 +91,25 @@ else
     private async Task RefreshAgentsAsync()
     {
         _agents = await HashSlingerApi.GetAllAgentsAsync().ConfigureAwait(true);
+    }
+
+    async void OnAddVoucher()
+    {
+        var registrationVoucher = new RegistrationVoucherDto();
+        var parameters = new DialogParameters
+        {
+            ["RegistrationVoucher"] = registrationVoucher
+        };
+
+        IDialogReference? dialog = await DialogService.ShowAsync<CreateRegistrationVoucherDialog>("Create Registration Voucher", parameters).ConfigureAwait(true);
+
+        DialogResult? result = await dialog.Result.ConfigureAwait(true);
+        if (result.Canceled) return;
+        if (result.Data is not RegistrationVoucherDto) throw new Exception("Expected RegistrationVoucherDto");
+        RegistrationVoucherDto newVoucher = result.Data.Adapt<RegistrationVoucherDto>();
+        if (newVoucher == null) throw new Exception("Expected RegistrationVoucherDto");
+        if (string.IsNullOrEmpty(newVoucher.Voucher)) throw new Exception("Expected Voucher");
+        await HashSlingerApi.CreateRegistrationVoucherAsync(newVoucher).ConfigureAwait(true);
     }
 
 }

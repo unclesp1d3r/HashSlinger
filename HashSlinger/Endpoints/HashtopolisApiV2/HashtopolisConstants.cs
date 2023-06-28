@@ -18,6 +18,9 @@ public static class HashtopolisConstants
     /// <summary>The error response</summary>
     public const string ErrorResponse = "ERROR";
 
+    /// <summary>The URL prefix for the Hashtopolis API endpoint for downloading a hashlist.</summary>
+    public const string HashlistDownloadUrl = "/getHashlist";
+
     /// <summary>The no task available message</summary>
     public const string NoTaskAvailableMessage = "No task available!";
 

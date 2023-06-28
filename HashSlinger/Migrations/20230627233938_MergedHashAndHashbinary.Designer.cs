@@ -14,8 +14,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HashSlinger.Api.Migrations
 {
     [DbContext(typeof(HashSlingerContext))]
-    [Migration("20230619001940_InitialSetup")]
-    partial class InitialSetup
+    [Migration("20230627233938_MergedHashAndHashbinary")]
+    partial class MergedHashAndHashbinary
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,9 +23,6 @@ namespace HashSlinger.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.7")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -90,7 +87,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("FileTask");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.AccessGroup", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.AccessGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -108,7 +105,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("AccessGroups");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Agent", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Agent", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -178,7 +175,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Agents");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.AgentError", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.AgentError", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -211,7 +208,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("AgentError");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.AgentStat", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.AgentStat", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -240,7 +237,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("AgentStat");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.ApiGroup", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.ApiGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -262,7 +259,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("ApiGroup");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.ApiKey", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.ApiKey", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -299,7 +296,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("ApiKey");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Assignment", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Assignment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -326,7 +323,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Assignment");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Chunk", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Chunk", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -376,7 +373,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Chunk");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinaryType", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.CrackerBinaryType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -405,7 +402,7 @@ namespace HashSlinger.Api.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.DownloadableBinary", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.DownloadableBinary", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -453,20 +450,9 @@ namespace HashSlinger.Api.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("DownloadableBinary");
 
                     b.UseTphMappingStrategy();
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 2,
-                            DownloadUrl = "https://github.com/hashtopolis/server/raw/master/src/static/7zr",
-                            Executable = "7zr.exe",
-                            Name = "7zr",
-                            OperatingSystems = new List<string> { "Windows" },
-                            Version = "1.0.0"
-                        });
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.File", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.File", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -504,7 +490,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Files");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.FileDelete", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.FileDelete", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -525,7 +511,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("FileDeletes");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.FileDownload", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.FileDownload", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -549,7 +535,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("FileDownload");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Hash", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Hash", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -593,7 +579,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Hash");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.HashBinary", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.HashBinary", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -611,9 +597,9 @@ namespace HashSlinger.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Hash")
+                    b.Property<byte[]>("HashBytes")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("bytea");
 
                     b.Property<int>("HashlistId")
                         .HasColumnType("integer");
@@ -622,8 +608,8 @@ namespace HashSlinger.Api.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Plaintext")
-                        .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<DateTime?>("TimeCracked")
                         .HasColumnType("timestamp with time zone");
@@ -637,7 +623,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("HashBinary");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.HashType", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.HashType", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -665,7 +651,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("HashTypes");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Hashlist", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Hashlist", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -725,10 +711,10 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("HashTypeId");
 
-                    b.ToTable("Hashlist");
+                    b.ToTable("Hashlists");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.HealthCheck", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.HealthCheck", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -776,7 +762,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("HealthChecks");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.HealthCheckAgent", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.HealthCheckAgent", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -818,7 +804,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("HealthCheckAgents");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.LogEntry", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.LogEntry", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -843,7 +829,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("LogEntries");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.NotificationSetting", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.NotificationSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -882,7 +868,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("NotificationSetting");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.PreconfiguredTask", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.PreconfiguredTask", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -938,7 +924,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("PreconfiguredTask");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.RegistrationVoucher", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.RegistrationVoucher", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -964,7 +950,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("RegistrationVouchers");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Session", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Session", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -999,7 +985,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Session");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Speed", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Speed", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1028,7 +1014,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Speed");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Supertask", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Supertask", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1046,7 +1032,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Supertask");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.SupertaskPretask", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.SupertaskPretask", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1072,7 +1058,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("SupertaskPretask");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Task", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Task", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1085,8 +1071,8 @@ namespace HashSlinger.Api.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<decimal>("ChunkSize")
-                        .HasColumnType("numeric(20,0)");
+                    b.Property<int>("ChunkSize")
+                        .HasColumnType("integer");
 
                     b.Property<int>("ChunkTime")
                         .HasColumnType("integer");
@@ -1132,7 +1118,6 @@ namespace HashSlinger.Api.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PreprocessorCommand")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -1173,7 +1158,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.TaskDebugOutput", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.TaskDebugOutput", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1196,7 +1181,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("TaskDebugOutput");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.TaskWrapper", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.TaskWrapper", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1236,7 +1221,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("TaskWrapper");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.User", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1277,7 +1262,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Zap", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Zap", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1307,9 +1292,9 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("Zap");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.AgentBinary", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.AgentBinary", b =>
                 {
-                    b.HasBaseType("HashSlinger.Api.Models.DownloadableBinary");
+                    b.HasBaseType("HashSlinger.Shared.Models.DownloadableBinary");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -1327,25 +1312,11 @@ namespace HashSlinger.Api.Migrations
                         .HasColumnType("character varying(20)");
 
                     b.HasDiscriminator().HasValue("AgentBinary");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DownloadUrl = "https://archive.hashtopolis.org/agent/python/stable/0.7.1.zip",
-                            Executable = "https://archive.hashtopolis.org/agent/python/stable/0.7.1.zip",
-                            Name = "hashtopolis.zip",
-                            OperatingSystems = new List<string> { "Windows", "Linux", "MacOS" },
-                            Version = "0.7.1",
-                            Type = "python",
-                            UpdateAvailable = "",
-                            UpdateTrack = "stable"
-                        });
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinary", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.CrackerBinary", b =>
                 {
-                    b.HasBaseType("HashSlinger.Api.Models.DownloadableBinary");
+                    b.HasBaseType("HashSlinger.Shared.Models.DownloadableBinary");
 
                     b.Property<int>("CrackerBinaryTypeId")
                         .HasColumnType("integer");
@@ -1355,9 +1326,9 @@ namespace HashSlinger.Api.Migrations
                     b.HasDiscriminator().HasValue("CrackerBinary");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Preprocessor", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Preprocessor", b =>
                 {
-                    b.HasBaseType("HashSlinger.Api.Models.DownloadableBinary");
+                    b.HasBaseType("HashSlinger.Shared.Models.DownloadableBinary");
 
                     b.Property<string>("KeyspaceCommand")
                         .HasMaxLength(256)
@@ -1376,13 +1347,13 @@ namespace HashSlinger.Api.Migrations
 
             modelBuilder.Entity("AccessGroupAgent", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.AccessGroup", null)
+                    b.HasOne("HashSlinger.Shared.Models.AccessGroup", null)
                         .WithMany()
                         .HasForeignKey("AccessGroupsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HashSlinger.Api.Models.Agent", null)
+                    b.HasOne("HashSlinger.Shared.Models.Agent", null)
                         .WithMany()
                         .HasForeignKey("AgentsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1391,13 +1362,13 @@ namespace HashSlinger.Api.Migrations
 
             modelBuilder.Entity("AccessGroupUser", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.AccessGroup", null)
+                    b.HasOne("HashSlinger.Shared.Models.AccessGroup", null)
                         .WithMany()
                         .HasForeignKey("AccessGroupsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HashSlinger.Api.Models.User", null)
+                    b.HasOne("HashSlinger.Shared.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1406,13 +1377,13 @@ namespace HashSlinger.Api.Migrations
 
             modelBuilder.Entity("FilePreconfiguredTask", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.File", null)
+                    b.HasOne("HashSlinger.Shared.Models.File", null)
                         .WithMany()
                         .HasForeignKey("FilesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HashSlinger.Api.Models.PreconfiguredTask", null)
+                    b.HasOne("HashSlinger.Shared.Models.PreconfiguredTask", null)
                         .WithMany()
                         .HasForeignKey("PreconfiguredTasksId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1421,37 +1392,37 @@ namespace HashSlinger.Api.Migrations
 
             modelBuilder.Entity("FileTask", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.File", null)
+                    b.HasOne("HashSlinger.Shared.Models.File", null)
                         .WithMany()
                         .HasForeignKey("FilesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HashSlinger.Api.Models.Task", null)
+                    b.HasOne("HashSlinger.Shared.Models.Task", null)
                         .WithMany()
                         .HasForeignKey("TasksId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Agent", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Agent", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.User", "User")
+                    b.HasOne("HashSlinger.Shared.Models.User", "User")
                         .WithMany("Agents")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.AgentError", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.AgentError", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.Agent", "Agent")
+                    b.HasOne("HashSlinger.Shared.Models.Agent", "Agent")
                         .WithMany("Errors")
                         .HasForeignKey("AgentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HashSlinger.Api.Models.Task", "Task")
+                    b.HasOne("HashSlinger.Shared.Models.Task", "Task")
                         .WithMany("AgentErrors")
                         .HasForeignKey("TaskId");
 
@@ -1460,9 +1431,9 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.AgentStat", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.AgentStat", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.Agent", "Agent")
+                    b.HasOne("HashSlinger.Shared.Models.Agent", "Agent")
                         .WithMany("Stats")
                         .HasForeignKey("AgentId")
                         .IsRequired();
@@ -1470,14 +1441,14 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Agent");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.ApiKey", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.ApiKey", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.ApiGroup", "ApiGroup")
+                    b.HasOne("HashSlinger.Shared.Models.ApiGroup", "ApiGroup")
                         .WithMany("ApiKeys")
                         .HasForeignKey("ApiGroupId")
                         .IsRequired();
 
-                    b.HasOne("HashSlinger.Api.Models.User", "User")
+                    b.HasOne("HashSlinger.Shared.Models.User", "User")
                         .WithMany("ApiKeys")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1488,14 +1459,14 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Assignment", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Assignment", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.Agent", "Agent")
+                    b.HasOne("HashSlinger.Shared.Models.Agent", "Agent")
                         .WithMany("Assignments")
                         .HasForeignKey("AgentId")
                         .IsRequired();
 
-                    b.HasOne("HashSlinger.Api.Models.Task", "Task")
+                    b.HasOne("HashSlinger.Shared.Models.Task", "Task")
                         .WithMany("Assignments")
                         .HasForeignKey("TaskId")
                         .IsRequired();
@@ -1505,14 +1476,14 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Chunk", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Chunk", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.Agent", "Agent")
+                    b.HasOne("HashSlinger.Shared.Models.Agent", "Agent")
                         .WithMany("Chunks")
                         .HasForeignKey("AgentId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("HashSlinger.Api.Models.Task", "Task")
+                    b.HasOne("HashSlinger.Shared.Models.Task", "Task")
                         .WithMany("Chunks")
                         .HasForeignKey("TaskId")
                         .IsRequired();
@@ -1522,18 +1493,18 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.DownloadableBinary", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.DownloadableBinary", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.File", "File")
+                    b.HasOne("HashSlinger.Shared.Models.File", "File")
                         .WithMany()
                         .HasForeignKey("FileId");
 
                     b.Navigation("File");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.File", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.File", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.AccessGroup", "AccessGroup")
+                    b.HasOne("HashSlinger.Shared.Models.AccessGroup", "AccessGroup")
                         .WithMany("Files")
                         .HasForeignKey("AccessGroupId")
                         .IsRequired();
@@ -1541,9 +1512,9 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("AccessGroup");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.FileDownload", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.FileDownload", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.File", "File")
+                    b.HasOne("HashSlinger.Shared.Models.File", "File")
                         .WithMany("FileDownloads")
                         .HasForeignKey("FileId")
                         .IsRequired();
@@ -1551,14 +1522,31 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("File");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Hash", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Hash", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.Chunk", "Chunk")
+                    b.HasOne("HashSlinger.Shared.Models.Chunk", "Chunk")
                         .WithMany("Hashes")
                         .HasForeignKey("ChunkId");
 
-                    b.HasOne("HashSlinger.Api.Models.Hashlist", "Hashlist")
+                    b.HasOne("HashSlinger.Shared.Models.Hashlist", "Hashlist")
                         .WithMany("Hashes")
+                        .HasForeignKey("HashlistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chunk");
+
+                    b.Navigation("Hashlist");
+                });
+
+            modelBuilder.Entity("HashSlinger.Shared.Models.HashBinary", b =>
+                {
+                    b.HasOne("HashSlinger.Shared.Models.Chunk", "Chunk")
+                        .WithMany("HashBinaries")
+                        .HasForeignKey("ChunkId");
+
+                    b.HasOne("HashSlinger.Shared.Models.Hashlist", "Hashlist")
+                        .WithMany("HashBinaries")
                         .HasForeignKey("HashlistId")
                         .IsRequired();
 
@@ -1567,30 +1555,14 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Hashlist");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.HashBinary", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Hashlist", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.Chunk", "Chunk")
-                        .WithMany("HashBinaries")
-                        .HasForeignKey("ChunkId");
-
-                    b.HasOne("HashSlinger.Api.Models.Hashlist", "Hashlist")
-                        .WithMany("HashBinaries")
-                        .HasForeignKey("HashlistId")
-                        .IsRequired();
-
-                    b.Navigation("Chunk");
-
-                    b.Navigation("Hashlist");
-                });
-
-            modelBuilder.Entity("HashSlinger.Api.Models.Hashlist", b =>
-                {
-                    b.HasOne("HashSlinger.Api.Models.AccessGroup", "AccessGroup")
+                    b.HasOne("HashSlinger.Shared.Models.AccessGroup", "AccessGroup")
                         .WithMany("Hashlists")
                         .HasForeignKey("AccessGroupId")
                         .IsRequired();
 
-                    b.HasOne("HashSlinger.Api.Models.HashType", "HashType")
+                    b.HasOne("HashSlinger.Shared.Models.HashType", "HashType")
                         .WithMany("Hashlists")
                         .HasForeignKey("HashTypeId")
                         .IsRequired();
@@ -1600,14 +1572,14 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("HashType");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.HealthCheck", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.HealthCheck", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.CrackerBinary", "CrackerBinary")
+                    b.HasOne("HashSlinger.Shared.Models.CrackerBinary", "CrackerBinary")
                         .WithMany("HealthChecks")
                         .HasForeignKey("CrackerBinaryId")
                         .IsRequired();
 
-                    b.HasOne("HashSlinger.Api.Models.HashType", "HashType")
+                    b.HasOne("HashSlinger.Shared.Models.HashType", "HashType")
                         .WithMany("HealthChecks")
                         .HasForeignKey("HashTypeId")
                         .IsRequired();
@@ -1617,14 +1589,14 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("HashType");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.HealthCheckAgent", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.HealthCheckAgent", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.Agent", "Agent")
+                    b.HasOne("HashSlinger.Shared.Models.Agent", "Agent")
                         .WithMany("HealthCheckAgents")
                         .HasForeignKey("AgentId")
                         .IsRequired();
 
-                    b.HasOne("HashSlinger.Api.Models.HealthCheck", "HealthCheck")
+                    b.HasOne("HashSlinger.Shared.Models.HealthCheck", "HealthCheck")
                         .WithMany("HealthCheckAgents")
                         .HasForeignKey("HealthCheckId")
                         .IsRequired();
@@ -1634,9 +1606,9 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("HealthCheck");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.NotificationSetting", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.NotificationSetting", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.User", "User")
+                    b.HasOne("HashSlinger.Shared.Models.User", "User")
                         .WithMany("NotificationSettings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1645,9 +1617,9 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.PreconfiguredTask", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.PreconfiguredTask", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.CrackerBinaryType", "CrackerBinaryType")
+                    b.HasOne("HashSlinger.Shared.Models.CrackerBinaryType", "CrackerBinaryType")
                         .WithMany("Pretasks")
                         .HasForeignKey("CrackerBinaryTypeId")
                         .IsRequired();
@@ -1655,18 +1627,18 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("CrackerBinaryType");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.RegistrationVoucher", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.RegistrationVoucher", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.AccessGroup", "AccessGroup")
+                    b.HasOne("HashSlinger.Shared.Models.AccessGroup", "AccessGroup")
                         .WithMany("RegistrationVouchers")
                         .HasForeignKey("AccessGroupId");
 
                     b.Navigation("AccessGroup");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Session", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Session", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.User", "User")
+                    b.HasOne("HashSlinger.Shared.Models.User", "User")
                         .WithMany("Sessions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1675,14 +1647,14 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Speed", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Speed", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.Agent", "Agent")
+                    b.HasOne("HashSlinger.Shared.Models.Agent", "Agent")
                         .WithMany("Speeds")
                         .HasForeignKey("AgentId")
                         .IsRequired();
 
-                    b.HasOne("HashSlinger.Api.Models.Task", "Task")
+                    b.HasOne("HashSlinger.Shared.Models.Task", "Task")
                         .WithMany("Speeds")
                         .HasForeignKey("TaskId")
                         .IsRequired();
@@ -1692,14 +1664,14 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.SupertaskPretask", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.SupertaskPretask", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.PreconfiguredTask", "PreconfiguredTask")
+                    b.HasOne("HashSlinger.Shared.Models.PreconfiguredTask", "PreconfiguredTask")
                         .WithMany("SupertaskPretasks")
                         .HasForeignKey("PreconfiguredTaskId")
                         .IsRequired();
 
-                    b.HasOne("HashSlinger.Api.Models.Supertask", "Supertask")
+                    b.HasOne("HashSlinger.Shared.Models.Supertask", "Supertask")
                         .WithMany("SupertaskPretasks")
                         .HasForeignKey("SupertaskId")
                         .IsRequired();
@@ -1709,23 +1681,23 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Supertask");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Task", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Task", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.CrackerBinary", "CrackerBinary")
+                    b.HasOne("HashSlinger.Shared.Models.CrackerBinary", "CrackerBinary")
                         .WithMany("Tasks")
                         .HasForeignKey("CrackerBinaryId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("HashSlinger.Api.Models.CrackerBinaryType", "CrackerBinaryType")
+                    b.HasOne("HashSlinger.Shared.Models.CrackerBinaryType", "CrackerBinaryType")
                         .WithMany("Tasks")
                         .HasForeignKey("CrackerBinaryTypeId");
 
-                    b.HasOne("HashSlinger.Api.Models.Preprocessor", "Preprocessor")
+                    b.HasOne("HashSlinger.Shared.Models.Preprocessor", "Preprocessor")
                         .WithMany("Tasks")
                         .HasForeignKey("PreprocessorId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("HashSlinger.Api.Models.TaskWrapper", "TaskWrapper")
+                    b.HasOne("HashSlinger.Shared.Models.TaskWrapper", "TaskWrapper")
                         .WithMany("Tasks")
                         .HasForeignKey("TaskWrapperId")
                         .OnDelete(DeleteBehavior.SetNull)
@@ -1740,9 +1712,9 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("TaskWrapper");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.TaskDebugOutput", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.TaskDebugOutput", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.Task", "Task")
+                    b.HasOne("HashSlinger.Shared.Models.Task", "Task")
                         .WithMany("TaskDebugOutputs")
                         .HasForeignKey("TaskId")
                         .IsRequired();
@@ -1750,13 +1722,13 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.TaskWrapper", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.TaskWrapper", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.AccessGroup", "AccessGroup")
+                    b.HasOne("HashSlinger.Shared.Models.AccessGroup", "AccessGroup")
                         .WithMany("TaskWrappers")
                         .HasForeignKey("AccessGroupId");
 
-                    b.HasOne("HashSlinger.Api.Models.Hashlist", "Hashlist")
+                    b.HasOne("HashSlinger.Shared.Models.Hashlist", "Hashlist")
                         .WithMany("TaskWrappers")
                         .HasForeignKey("HashlistId")
                         .IsRequired();
@@ -1766,14 +1738,14 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Hashlist");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Zap", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Zap", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.Agent", "Agent")
+                    b.HasOne("HashSlinger.Shared.Models.Agent", "Agent")
                         .WithMany("Zaps")
                         .HasForeignKey("AgentId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("HashSlinger.Api.Models.Hashlist", "Hashlist")
+                    b.HasOne("HashSlinger.Shared.Models.Hashlist", "Hashlist")
                         .WithMany("Zaps")
                         .HasForeignKey("HashlistId")
                         .IsRequired();
@@ -1783,9 +1755,9 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Hashlist");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinary", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.CrackerBinary", b =>
                 {
-                    b.HasOne("HashSlinger.Api.Models.CrackerBinaryType", "CrackerBinaryType")
+                    b.HasOne("HashSlinger.Shared.Models.CrackerBinaryType", "CrackerBinaryType")
                         .WithMany("CrackerBinaries")
                         .HasForeignKey("CrackerBinaryTypeId")
                         .IsRequired();
@@ -1793,7 +1765,7 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("CrackerBinaryType");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.AccessGroup", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.AccessGroup", b =>
                 {
                     b.Navigation("Files");
 
@@ -1804,7 +1776,7 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("TaskWrappers");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Agent", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Agent", b =>
                 {
                     b.Navigation("Assignments");
 
@@ -1821,19 +1793,19 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Zaps");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.ApiGroup", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.ApiGroup", b =>
                 {
                     b.Navigation("ApiKeys");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Chunk", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Chunk", b =>
                 {
                     b.Navigation("HashBinaries");
 
                     b.Navigation("Hashes");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinaryType", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.CrackerBinaryType", b =>
                 {
                     b.Navigation("CrackerBinaries");
 
@@ -1842,19 +1814,19 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Tasks");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.File", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.File", b =>
                 {
                     b.Navigation("FileDownloads");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.HashType", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.HashType", b =>
                 {
                     b.Navigation("Hashlists");
 
                     b.Navigation("HealthChecks");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Hashlist", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Hashlist", b =>
                 {
                     b.Navigation("HashBinaries");
 
@@ -1865,22 +1837,22 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Zaps");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.HealthCheck", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.HealthCheck", b =>
                 {
                     b.Navigation("HealthCheckAgents");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.PreconfiguredTask", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.PreconfiguredTask", b =>
                 {
                     b.Navigation("SupertaskPretasks");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Supertask", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Supertask", b =>
                 {
                     b.Navigation("SupertaskPretasks");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Task", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Task", b =>
                 {
                     b.Navigation("AgentErrors");
 
@@ -1893,12 +1865,12 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("TaskDebugOutputs");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.TaskWrapper", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.TaskWrapper", b =>
                 {
                     b.Navigation("Tasks");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.User", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.User", b =>
                 {
                     b.Navigation("Agents");
 
@@ -1909,14 +1881,14 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("Sessions");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.CrackerBinary", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.CrackerBinary", b =>
                 {
                     b.Navigation("HealthChecks");
 
                     b.Navigation("Tasks");
                 });
 
-            modelBuilder.Entity("HashSlinger.Api.Models.Preprocessor", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.Preprocessor", b =>
                 {
                     b.Navigation("Tasks");
                 });

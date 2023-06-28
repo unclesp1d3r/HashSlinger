@@ -1,9 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.UserApiV1;
 
 using Data;
-using Handlers.Queries;
 using Mapster;
-using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Shared.Generated;
@@ -36,12 +34,17 @@ public static class AgentEndpointHandlers
 
     /// <summary>Gets the agent by identifier.</summary>
     /// <param name="id">The identifier.</param>
-    /// <param name="mediator">The mediator.</param>
-    /// <returns></returns>
-    public async static Task<Results<Ok<AgentDto>, NotFound>> GetAgentByIdHandlerAsync(int id, IMediator mediator)
+    /// <param name="db">The database.</param>
+    /// <returns> The agent with the specified identifier.</returns>
+    public async static Task<Results<Ok<AgentDto>, NotFound>> GetAgentByIdHandlerAsync(int id, HashSlingerContext db)
     {
-        Agent? agent = await mediator.Send(new GetAgentByIdQuery(id)).ConfigureAwait(true);
-        return agent is null ? TypedResults.NotFound() : TypedResults.Ok(agent.Adapt<AgentDto>());
+        return await db.Agents.AsNoTracking()
+            .ProjectToType<AgentDto>()
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(model => model.Id == id)
+            .ConfigureAwait(true) is AgentDto model
+            ? TypedResults.Ok(model)
+            : TypedResults.NotFound();
     }
 
     /// <summary>Gets all agents.</summary>
@@ -51,10 +54,7 @@ public static class AgentEndpointHandlers
     /// </returns>
     public static Task<List<AgentDto>> GetAllAgentsHandlerAsync(HashSlingerContext db)
     {
-        return db.Agents.Include(a => a.HealthCheckAgents)
-            .Include(x => x.Assignments)
-            .ProjectToType<AgentDto>()
-            .ToListAsync();
+        return db.Agents.ProjectToType<AgentDto>().AsSplitQuery().ToListAsync();
     }
 
     /// <summary>Handles updating an agent.</summary>

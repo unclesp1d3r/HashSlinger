@@ -1,0 +1,40 @@
+﻿@using HashSlinger.Shared.Generated
+@inject ISnackbar Snackbar
+
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            Create Registration Voucher
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <DataAnnotationsValidator />
+        <MudTextField Value="@RegistrationVoucher.Voucher" Required="true" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="OnValidSubmit">Delete Server</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public RegistrationVoucherDto RegistrationVoucher { get; set; } = new();
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private void OnValidSubmit()
+    {
+        Snackbar.Add("Voucher added!", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(RegistrationVoucher));
+    }
+
+}

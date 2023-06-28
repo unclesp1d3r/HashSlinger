@@ -1,0 +1,88 @@
+﻿@using HashSlinger.Shared.Generated
+@using HashSlinger.WebUI.Data
+@inject IHashSlingerApi HashSlingerApi
+
+<EditForm Model="@Task">
+    <DataAnnotationsValidator />
+    <MudPaper Elevation="2" Class="pa-4">
+        <MudTextField Label="Name" @bind-Value="@Task.Name" />
+        <MudTextField Label="Notes" @bind-Value="@Task.Notes" Lines="5" />
+        <MudTextField Label="Attack Command" @bind-Value="@Task.AttackCommand" />
+        <MudSelect T="HashlistDto" @bind-value="@Task.TaskWrapper.Hashlist" Label="Hashlist"
+                   ToStringFunc="@_hashlistTextSelector" AnchorOrigin="Origin.BottomCenter">
+            @if (_hashlists is not null && _hashlists.Any())
+            {
+                @foreach (HashlistDto hashlist in _hashlists)
+                {
+                    <MudSelectItem T="HashlistDto" Value="@hashlist" />
+                }
+            }
+        </MudSelect>
+        <MudSelect T="CrackerBinaryDto" @bind-value="@Task.CrackerBinary" Label="Cracker To Run"
+                   ToStringFunc="@_crackerBinaryTextSelector" AnchorOrigin="Origin.BottomCenter">
+            @if (_crackerBinaries is not null && _crackerBinaries.Any())
+            {
+                @foreach (CrackerBinaryDto binary in _crackerBinaries)
+                {
+                    <MudSelectItem T="CrackerBinaryDto" Value="@binary" />
+                }
+            }
+        </MudSelect>
+        <MudNumericField Label="Chunk Size" @bind-Value="@Task.ChunkSize" Min="0" Adornment="Adornment.End"
+                         AdornmentText="seconds" />
+        <MudNumericField Label="Chunk Time" @bind-Value="@Task.ChunkTime" Min="0" />
+        <MudTextField Label="Color" @bind-Value="@Task.Color" />
+        <MudSwitch Label="Is Archived" @bind-Checked="@Task.IsArchived" Color="Color.Primary" />
+        <MudSwitch Label="Is CPU Task" @bind-Checked="@Task.IsCpuTask" Color="Color.Primary" />
+        <MudSwitch Label="Is Small" @bind-Checked="@Task.IsSmall" Color="Color.Primary" />
+        <MudNumericField Label="Max Agents" @bind-Value="@Task.MaxAgents" Min="0" />
+        <MudNumericField Label="Priority" @bind-Value="@Task.Priority" />
+        <MudTextField Label="Status Timer" @bind-Value="@Task.StatusTimer" Adornment="Adornment.End"
+                      AdornmentText="seconds" />
+        <MudSwitch Label="Use Speed Benchmark" @bind-Checked="@Task.UseNewBenchmark" Color="Color.Primary" />
+        <MudExpansionPanel Text="Advanced Options">
+            <MudSwitch Label="Use Preprocessor" @bind-Checked="@Task.UsePreprocessor" Color="Color.Primary" />
+
+            <MudTextField Label="Preprocessor Command" @bind-Value="@Task.PreprocessorCommand" ReadOnly="@(!Task.UsePreprocessor)" />
+            <MudTextField Label="Skip Keyspace" @bind-Value="@Task.SkipKeyspace" />
+            <MudTextField Label="Static Chunks" @bind-Value="@Task.StaticChunks" />
+            <MudSwitch Label="Enforce Pipe" @bind-Checked="@Task.EnforcePipe" Color="Color.Primary" />
+
+        </MudExpansionPanel>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@UpdateTaskAsync">Save</MudButton>
+    </MudPaper>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public TaskDto Task { get; set; } = null!;
+
+    private List<HashlistDto> _hashlists = null!;
+
+    private List<CrackerBinaryDto> _crackerBinaries = null!;
+
+    private List<PreprocessorDto> _preprocessors = null!;
+
+    [Parameter]
+    public EventCallback<TaskDto?> OnTaskUpdate { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync().ConfigureAwait(true);
+        _hashlists = await HashSlingerApi.GetAllHashlistsAsync().ConfigureAwait(true);
+        _crackerBinaries = await HashSlingerApi.GetAllCrackerBinariesAsync().ConfigureAwait(true);
+    //_preprocessors = await HashSlingerApi.PreprocessorsGetAsync();
+        _preprocessors = new List<PreprocessorDto>();
+        StateHasChanged();
+    }
+
+    private Task UpdateTaskAsync()
+    {
+        return OnTaskUpdate.InvokeAsync(Task);
+    }
+
+    Func<HashlistDto, string> _hashlistTextSelector = hashlist => hashlist.Name;
+    Func<CrackerBinaryDto, string> _crackerBinaryTextSelector = crackerBinary => $"{crackerBinary.Name} - {crackerBinary.Version}";
+}

@@ -17,7 +17,7 @@ public static class TaskEndpointHandlers
     {
         db.Tasks.Add(task.Adapt<Task>());
         await db.SaveChangesAsync().ConfigureAwait(true);
-        return TypedResults.Created($"/api/Task/{task.Id}", task);
+        return TypedResults.Created($"{UserApiEndPoints.ApiPrefix}/Task/{task.Id}", task);
     }
 
     /// <summary>Handles deleting a task.</summary>
@@ -34,7 +34,7 @@ public static class TaskEndpointHandlers
     /// <param name="db">The database.</param>
     public static Task<List<TaskDto>> GetAllTasksHandlerAsync(HashSlingerContext db)
     {
-        return db.Tasks.ProjectToType<TaskDto>().ToListAsync();
+        return db.Tasks.Include(t => t.TaskWrapper).ProjectToType<TaskDto>().AsSplitQuery().ToListAsync();
     }
 
     /// <summary>Handles getting a task by its identifier.</summary>
@@ -42,7 +42,12 @@ public static class TaskEndpointHandlers
     /// <param name="db">The database.</param>
     public async static Task<Results<Ok<TaskDto>, NotFound>> GetTaskByIdHandlerAsync(int id, HashSlingerContext db)
     {
-        return await db.Tasks.ProjectToType<TaskDto>()
+        return await db.Tasks.Include(t => t.TaskWrapper)
+            .ThenInclude(t => t.Hashlist)
+            .Include(t => t.CrackerBinary)
+            .Include(t => t.CrackerBinaryType)
+            .ProjectToType<TaskDto>()
+            .AsSplitQuery()
             .AsNoTracking()
             .FirstOrDefaultAsync(model => model.Id == id)
             .ConfigureAwait(true) is TaskDto model
@@ -81,6 +86,17 @@ public static class TaskEndpointHandlers
                 .SetProperty(m => m.UsePreprocessor, task.UsePreprocessor))
             .ConfigureAwait(true);
 
-        return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+        if (affected != 1) return TypedResults.NotFound();
+
+        Task? modifiedTask = await db.Tasks.Include(t => t.TaskWrapper)
+            .Where(model => model.Id == id)
+            .SingleOrDefaultAsync()
+            .ConfigureAwait(true);
+        if (task.TaskWrapper is not null) modifiedTask!.TaskWrapper.HashlistId = task.TaskWrapper.HashlistId;
+        if (task.CrackerBinary is not null) modifiedTask!.CrackerBinaryId = task.CrackerBinary.Id;
+        db.Tasks.Update(modifiedTask!);
+        await db.SaveChangesAsync().ConfigureAwait(true);
+
+        return TypedResults.Ok();
     }
 }

@@ -1,7 +1,10 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2;
 
+using Api.Handlers.Queries;
 using Data;
+using DTO;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -21,12 +24,7 @@ public static class HashtopolisEndpoints
         RouteGroupBuilder group = routes.MapGroup(HashtopolisConstants.EndPointPrefix);
 
         group.MapPost("/",
-                async (
-                    HashtopolisRequest request,
-                    [FromServices] HashSlingerContext dbContext,
-                    IMediator mediator,
-                    HttpContext context
-                ) =>
+                async (HashtopolisRequest request, [FromServices] HashSlingerContext dbContext, IMediator mediator) =>
                 {
                     Log.Information("New request: {@Request}", request);
 
@@ -42,9 +40,33 @@ public static class HashtopolisEndpoints
                     Log.Information("Result: {@Result}", result);
                     return Results.Ok(result);
                 })
-            .Accepts<HashtopolisRequest>("application/json")
-            .Produces<IHashtopolisMessage>()
-            .Produces(400)
-            .Produces(401);
+            .Accepts<HashtopolisRequest>(false, "application/json")
+            .Produces<CheckClientVersionResponse>()
+            .Produces<ClientErrorResponse>()
+            .Produces<DeregisterResponse>()
+            .Produces<DownloadBinaryResponse>()
+            .Produces<GetChunkResponse>()
+            .Produces<GetFileResponse>()
+            .Produces<GetFileStatusResponse>()
+            .Produces<GetHashlistResponse>()
+            .Produces<GetHealthCheckResponse>()
+            .Produces<GetTaskResponse>()
+            .Produces<LoginResponse>()
+            .Produces<RegisterResponse>()
+            .Produces<SendBenchmarkResponse>()
+            .Produces<SendHealthCheckResponse>()
+            .Produces<SendKeyspaceResponse>()
+            .Produces<SendProgressResponse>()
+            .Produces<TestConnectionResponse>()
+            .Produces<UpdateInformationResponse>()
+            .Produces(StatusCodes.Status400BadRequest);
+
+        group.MapGet("/getHashlist/{id:int}",
+                (int id, [FromQuery] string token, IMediator mediator) =>
+                    mediator.Send(new GetHashlistDownloadQuery(id, token)))
+            .Produces<FileContentHttpResult>()
+            .Produces(StatusCodes.Status404NotFound)
+            .WithName("DownloadHashlist")
+            .WithOpenApi();
     }
 }

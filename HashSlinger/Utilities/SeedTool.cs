@@ -7,6 +7,9 @@ using Shared.Models;
 /// </summary>
 public static class SeedTool
 {
+    /// <summary>
+    /// Seeds the database with a list of hash types.
+    /// </summary>
     public static List<HashType> GetHashTypeSeeds()
     {
         return new List<HashType>()

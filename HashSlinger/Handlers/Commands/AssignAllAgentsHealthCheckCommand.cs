@@ -24,17 +24,16 @@ public class AssignAllAgentsHealthCheckHandler : IRequestHandler<AssignAllAgents
 
 
     /// <inheritdoc />
-    public Task Handle(AssignAllAgentsHealthCheckCommand request, CancellationToken cancellationToken)
+    public async Task Handle(AssignAllAgentsHealthCheckCommand request, CancellationToken cancellationToken)
     {
         Log.Information("Assigning HealthCheck to all Agents");
 
 
         CrackerBinary? hashcat = _dbContext.CrackerBinaries.FirstOrDefault(x => x.Name == "hashcat")!;
         HashType? hashType = _dbContext.HashTypes.SingleOrDefault(x => x.HashcatId == 0)!;
-
-        HealthCheck? healthCheck = _dbContext.HealthChecks.Any()
-            ? _dbContext.HealthChecks.First()
-            : new HealthCheck
+        try
+        {
+            var healthCheck = new HealthCheck
             {
                 AttackCmd = $"--hash-type {hashType.HashcatId} #HL# -a 3 -1 ?l?u?d ?1?1?1?1?1",
                 ExpectedCracks = 2,
@@ -47,27 +46,35 @@ public class AssignAllAgentsHealthCheckHandler : IRequestHandler<AssignAllAgents
                     "9f650d4ef70eead895e7a03ce0f83e88",
                     "24a7bdfd14bca7f9d14154c0800a833d"
                 },
+
                 HashListAlias = "#HL#"
             };
 
-        healthCheck.Status = HealthCheckStatus.Pending;
-        if (!_dbContext.HealthChecks.Any())
-            _dbContext.HealthChecks.Add(healthCheck);
-        else
-            _dbContext.HealthChecks.Update(healthCheck);
+            await _dbContext.HealthChecks.AddAsync(healthCheck, cancellationToken).ConfigureAwait(true);
+            await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(true);
 
-        foreach (Agent? agent in _dbContext.Agents.AsEnumerable())
-        {
-            _dbContext.HealthCheckAgents.Add(new HealthCheckAgent
+
+            foreach (Agent? agent in _dbContext.Agents.AsEnumerable())
             {
-                Agent = agent,
-                HealthCheck = healthCheck,
-                Status = HealthCheckStatus.Pending,
-                Errors = new List<string>()
-            });
+                await _dbContext.HealthCheckAgents.AddAsync(new HealthCheckAgent
+                        {
+                            Agent = agent,
+                            HealthCheck = healthCheck,
+                            Status = HealthCheckStatus.Pending,
+                            Errors = new List<string>()
+                        },
+                        cancellationToken)
+                    .ConfigureAwait(true);
+            }
+
+
+            await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(true);
         }
-
-
-        return _dbContext.SaveChangesAsync(cancellationToken);
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Log.Error(e, "Error assigning HealthCheck to all Agents");
+            throw;
+        }
     }
 }
