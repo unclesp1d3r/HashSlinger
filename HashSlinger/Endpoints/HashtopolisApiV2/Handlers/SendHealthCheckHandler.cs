@@ -5,8 +5,9 @@ using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
-using Models.Enums;
+using Shared.Models.Enums;
 
+/// <summary>Handles the Hashtopolis API v2 SendHealthCheck endpoint.</summary>
 public class SendHealthCheckHandler : IRequestHandler<SendHealthCheckRequest, SendHealthCheckResponse>
 {
     private readonly IMediator _mediator;

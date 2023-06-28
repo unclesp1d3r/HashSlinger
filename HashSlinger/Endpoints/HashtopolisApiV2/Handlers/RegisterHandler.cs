@@ -5,9 +5,9 @@ using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
-using Models;
-using Models.Enums;
 using Serilog;
+using Shared.Models;
+using Shared.Models.Enums;
 
 /// <summary>Handles the Hashtopolis register call.</summary>
 
@@ -24,8 +24,8 @@ public class RegisterHandler : IRequestHandler<RegisterRequest, RegisterResponse
     public async Task<RegisterResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
     {
         RegistrationVoucher? voucher = await _mediator
-            .Send(new GetRegistrationVoucherQuery(request.Voucher), cancellationToken)
-            .ConfigureAwait(true);
+                                             .Send(new GetRegistrationVoucherQuery(request.Voucher), cancellationToken)
+                                             .ConfigureAwait(true);
         if (voucher == null)
         {
             Log.Error("Voucher not found");

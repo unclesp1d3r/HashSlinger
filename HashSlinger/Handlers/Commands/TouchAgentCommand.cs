@@ -4,8 +4,8 @@ using System.Net;
 using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models.Enums;
 using Serilog;
+using Shared.Models.Enums;
 
 /// <summary>Represents a command to update the last seen time and IP address of an agent.</summary>
 /// <seealso cref="MediatR.IRequest" />

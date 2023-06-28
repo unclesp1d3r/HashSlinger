@@ -1,0 +1,12 @@
+﻿@using Humanizer
+@using HashSlinger.Shared.Generated
+<MudTooltip Text="@Agent.LastSeenTime.ToString()">
+    @Agent.LastAction.Humanize() on @Agent.LastSeenTime.Humanize() @(Agent.LastSeenIpAddress is not null ? $"from {Agent.LastSeenIpAddress?.Humanize()}" : string.Empty)
+</MudTooltip>
+
+@code {
+
+    [Parameter]
+    public AgentDto Agent { get; set; } = null!;
+
+}

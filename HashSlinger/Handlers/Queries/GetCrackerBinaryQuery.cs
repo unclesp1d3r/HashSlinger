@@ -3,8 +3,8 @@
 using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
 using Serilog;
+using Shared.Models;
 
 /// <summary>Represents a query to get the cracker binary for the specified version.</summary>
 public record GetCrackerBinaryQuery(int? BinaryVersionId) : IRequest<CrackerBinary?>;

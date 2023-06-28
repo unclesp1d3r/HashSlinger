@@ -3,8 +3,8 @@
 using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
-using Models.Enums;
+using Shared.Models;
+using Shared.Models.Enums;
 using Task = System.Threading.Tasks.Task;
 
 /// <summary>Represents the command to update the health check agent with the results of the health check.</summary>

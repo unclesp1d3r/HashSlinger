@@ -3,7 +3,7 @@
 using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
+using Shared.Models;
 
 /// <summary>Represents a query to get a binary by name</summary>
 public record GetBinaryByNameQuery(string Name) : IRequest<DownloadableBinary?>;

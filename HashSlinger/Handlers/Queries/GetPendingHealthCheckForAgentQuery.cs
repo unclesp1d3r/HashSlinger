@@ -2,8 +2,8 @@
 
 using Data;
 using MediatR;
-using Models;
-using Models.Enums;
+using Shared.Models;
+using Shared.Models.Enums;
 using Task = System.Threading.Tasks.Task;
 
 /// <summary>Represents a query to check if there is a pending health check for an agent.</summary>

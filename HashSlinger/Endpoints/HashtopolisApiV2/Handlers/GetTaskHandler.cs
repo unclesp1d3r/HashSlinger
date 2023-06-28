@@ -5,9 +5,9 @@ using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
-using Models;
-using Models.Enums;
 using Serilog;
+using Shared.Models;
+using Shared.Models.Enums;
 
 /// <summary>Handles the Hashtopolis API v2 GetTask endpoint.</summary>
 public class GetTaskHandler : IRequestHandler<GetTaskRequest, GetTaskResponse>
@@ -67,26 +67,18 @@ public class GetTaskHandler : IRequestHandler<GetTaskRequest, GetTaskResponse>
         }
 
         // Check for Assigned Task
-        Task? nextTask = await _mediator.Send(new GetNextTaskForAgentQuery(request.Token), cancellationToken)
+        // We need to expand this to support different types of priorities (prioritize by project, hashtype, etc)
+        GetNextTaskForAgentProjectionResponse? nextTask = await _mediator
+            .Send(new GetNextTaskForAgentProjectionQuery(agent.Id), cancellationToken)
             .ConfigureAwait(true);
-
+        Log.Information("Next Task for Agent {AgentId} is {@TaskId}", agent.Id, nextTask);
         if (nextTask is not null)
-            return request.Adapt<GetTaskResponse>() with
+            return nextTask.Adapt<GetTaskResponse>() with
             {
                 Response = HashtopolisConstants.SuccessResponse,
-                TaskId = nextTask.Id,
-                HashlistId = nextTask.TaskWrapper.HashlistId,
                 Bench = HashSlingerConfiguration.BenchmarkTime,
                 StatusTimer = HashSlingerConfiguration.StatusTimer,
-                BenchType = nextTask.UseNewBenchmark ? "speed" : "run",
-                CrackerId = nextTask.CrackerBinary?.Id,
                 HashlistAlias = HashSlingerConfiguration.HashlistAlias,
-                Files = nextTask.Files.Select(f => f.FileName).ToList(),
-                Keyspace = nextTask.Keyspace,
-                UsePreprocessor = nextTask.UsePreprocessor,
-                PreprocessorId = nextTask.Preprocessor?.Id,
-                PreprocessorCommand = nextTask.PreprocessorCommand,
-                EnforcePipe = nextTask.EnforcePipe,
                 UseBrain = HashSlingerConfiguration.HashcatBrainEnable,
                 BrainHost = HashSlingerConfiguration.HashcatBrainHost,
                 BrainPort = HashSlingerConfiguration.HashcatBrainPort,

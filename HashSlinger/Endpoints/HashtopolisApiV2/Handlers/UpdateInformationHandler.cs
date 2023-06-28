@@ -5,9 +5,9 @@ using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
-using Models;
-using Models.Enums;
 using Serilog;
+using Shared.Models;
+using Shared.Models.Enums;
 
 /// <summary>Handles the Hashtopolis API request to update the client information.</summary>
 
@@ -28,7 +28,7 @@ public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest
     )
     {
         Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
-            .ConfigureAwait(false);
+                                      .ConfigureAwait(false);
         if (agent == null)
         {
             Log.Information("Agent not found");
@@ -39,16 +39,15 @@ public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest
             };
         }
 
-        if (request.OperatingSystem != null)
-            agent.OperatingSystem = request.OperatingSystem.Adapt<AgentOperatingSystems>();
+        agent.OperatingSystem = request.OperatingSystem.Adapt<AgentOperatingSystems>();
         agent.LastAction = AgentActions.UpdateClientInformation;
-        agent.LastSeenTime = DateTime.UtcNow;
         agent.Devices = request.Devices.Adapt<List<string>>();
-        agent.LastSeenIpAddress = request.IpAddress;
         if (string.IsNullOrWhiteSpace(agent.Uid)) agent.CpuOnly = !agent.CheckForGpuDevices();
         agent.Uid = request.Uid;
 
         await _mediator.Send(new UpdateAgentCommand(agent), cancellationToken).ConfigureAwait(true);
+        await _mediator.Send(new TouchAgentCommand(agent.Token, AgentActions.UpdateClientInformation), cancellationToken)
+                       .ConfigureAwait(true);
         return request.Adapt<UpdateInformationResponse>() with
         {
             Response = HashtopolisConstants.SuccessResponse

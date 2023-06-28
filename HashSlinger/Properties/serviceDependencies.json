@@ -6,6 +6,14 @@
     "postgresql1": {
       "type": "postgresql",
       "connectionId": "HashSlingerContext"
+    },
+    "mssql1": {
+      "ignored": "true",
+      "type": "mssql"
+    },
+    "sqlite1": {
+      "ignored": "true",
+      "type": "sqlite"
     }
   }
 }

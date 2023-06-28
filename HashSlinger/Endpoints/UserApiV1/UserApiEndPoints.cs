@@ -1,95 +1,284 @@
 ﻿namespace HashSlinger.Api.Endpoints.UserApiV1;
 
-using Data;
-using Generated;
 using Handlers.Commands;
-using Handlers.Queries;
-using Mapster;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-using Models;
+using Shared.Generated;
+using Shared.Models;
 
 /// <summary>Contains the version 1 API for user interface functionality.</summary>
 public static class UserApiEndPoints
 {
-    private const string ApiPrefix = "/api/v1";
+    /// <summary>The API prefix</summary>
+    public const string ApiPrefix = "/api/v1";
 
-
-    /// <summary>Maps the agent endpoints.</summary>
+    /// <summary>Maps the agent binary endpoints.</summary>
     /// <param name="routes">The routes.</param>
-    public static void MapAgentEndpoints(this IEndpointRouteBuilder routes)
+    /// <returns></returns>
+    public static void MapAgentBinaryEndpoints(this IEndpointRouteBuilder routes)
     {
-        RouteGroupBuilder group = routes.MapGroup($"{ApiPrefix}/Agent").WithTags(nameof(Agent));
+        RouteGroupBuilder? group = routes.MapGroup("/AgentBinary").WithTags(nameof(AgentBinary));
 
-        group.MapGet("/",
-                (HashSlingerContext db) => db.Agents.Include(a => a.HealthCheckAgents)
-                    .Include(x => x.Assignments)
-                    .ProjectToType<AgentDto>()
-                    .ToListAsync())
-            .WithName("GetAllAgents")
+        group.MapGet("/", AgentBinariesEndpointHandlers.GetAllAgentBinariesHandlerAsync)
+            .WithName("GetAllAgentBinaries")
+            .Produces<List<AgentBinaryDto>>()
+            .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi();
 
-        group.MapGet("/{id:int}",
-                async Task<Results<Ok<AgentDto>, NotFound>> (int id, IMediator mediator) =>
-                {
-                    Agent? agent = await mediator.Send(new GetAgentByIdQuery(id)).ConfigureAwait(true);
-                    return agent is null ? TypedResults.NotFound() : TypedResults.Ok(agent.Adapt<AgentDto>());
-                })
-            .WithName("GetAgentById")
+        group.MapGet("/{id:int}", AgentBinariesEndpointHandlers.GetAgentBinaryByIdHandlerAsync)
+            .WithName("GetAgentBinaryById")
+            .Produces<AgentBinaryDto>()
+            .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi();
 
-        group.MapPut("/{id:int}",
-                async Task<Results<Ok, NotFound>> (int id, AgentDto agent, HashSlingerContext db) =>
-                {
-                    var affected = await db.Agents.Where(model => model.Id == id)
-                        .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.Id, agent.Id)
-                            .SetProperty(m => m.Name, agent.Name)
-                            .SetProperty(m => m.Uid, agent.Uid)
-                            .SetProperty(m => m.Devices, agent.Devices)
-                            .SetProperty(m => m.CommandParameters, agent.CommandParameters)
-                            .SetProperty(m => m.IgnoreErrors, agent.IgnoreErrors)
-                            .SetProperty(m => m.IsActive, agent.IsActive)
-                            .SetProperty(m => m.IsTrusted, agent.IsTrusted)
-                            .SetProperty(m => m.Token, agent.Token)
-                            .SetProperty(m => m.LastSeenTime, agent.LastSeenTime)
-                            .SetProperty(m => m.UserId, agent.UserId)
-                            .SetProperty(m => m.CpuOnly, agent.CpuOnly)
-                            .SetProperty(m => m.ClientSignature, agent.ClientSignature))
-                        .ConfigureAwait(true);
-
-                    return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
-                })
-            .WithName("UpdateAgent")
+        group.MapPut("/{id:int}", AgentBinariesEndpointHandlers.UpdateAgentBinaryHandlerAsync)
+            .WithName("UpdateAgentBinary")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<AgentBinaryDto>(false, "application/json")
             .WithOpenApi();
 
-        group.MapPost("/",
-                async (AgentDto agent, HashSlingerContext db) =>
-                {
-                    db.Agents.Add(agent.Adapt<Agent>());
-                    await db.SaveChangesAsync().ConfigureAwait(true);
-                    return TypedResults.Created($"{ApiPrefix}/Agent/{agent.Id}", agent);
-                })
-            .WithName("CreateAgent")
+        group.MapPost("/", AgentBinariesEndpointHandlers.CreateAgentBinaryHandlerAsync)
+            .WithName("CreateAgentBinary")
+            .Produces<AgentBinaryDto>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<AgentBinaryDto>(false, "application/json")
             .WithOpenApi();
 
-        group.MapDelete("/{id}",
-                async Task<Results<Ok, NotFound>> (int id, HashSlingerContext db) =>
-                {
-                    var affected = await db.Agents.Where(model => model.Id == id).ExecuteDeleteAsync().ConfigureAwait(true);
+        group.MapDelete("/{id:int}", AgentBinariesEndpointHandlers.DeleteAgentBinaryHandlerAsync)
+            .WithName("DeleteAgentBinary")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+    }
 
-                    return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
-                })
-            .WithName("DeleteAgent")
+    /// <summary>Maps the cracker binary endpoints.</summary>
+    /// <param name="routes">The routes.</param>
+    /// <returns></returns>
+    public static void MapCrackerBinaryEndpoints(this IEndpointRouteBuilder routes)
+    {
+        RouteGroupBuilder group = routes.MapGroup("/CrackerBinary").WithTags(nameof(CrackerBinary));
+
+        group.MapGet("/", CrackerBinariesEndpointHandler.GetAllCrackerBinariesHandlerAsync)
+            .WithName("GetAllCrackerBinaries")
+            .Produces<List<CrackerBinaryDto>>()
+            .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi();
 
+        group.MapGet("/{id:int}", CrackerBinariesEndpointHandler.GetCrackerBinaryByIdHandlerAsync)
+            .WithName("GetCrackerBinaryById")
+            .Produces<CrackerBinaryDto>()
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+
+        group.MapPut("/{id:int}", CrackerBinariesEndpointHandler.UpdateCrackerBinaryHandlerAsync)
+            .WithName("UpdateCrackerBinary")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<CrackerBinaryDto>(false, "application/json")
+            .WithOpenApi();
+
+        group.MapPost("/", CrackerBinariesEndpointHandler.CreateCrackerBinaryHandlerAsync)
+            .WithName("CreateCrackerBinary")
+            .Produces<CrackerBinaryDto>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<CrackerBinaryDto>(false, "application/json")
+            .WithOpenApi();
+
+        group.MapDelete("/{id:int}", CrackerBinariesEndpointHandler.DeleteCrackerBinaryHandlerAsync)
+            .WithName("DeleteCrackerBinary")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+    }
+
+    /// <summary>Maps the hashlist endpoints.</summary>
+    /// <param name="routes">The routes.</param>
+    /// <returns></returns>
+    public static void MapHashlistEndpoints(this IEndpointRouteBuilder routes)
+    {
+        RouteGroupBuilder? group = routes.MapGroup("/Hashlist").WithTags(nameof(Hashlist));
+
+        group.MapGet("/", HashlistEndpointHandlers.GetAllHashlistsHandlerAsync)
+            .WithName("GetAllHashlists")
+            .Produces<List<HashlistDto>>()
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+
+        group.MapGet("/{id:int}", HashlistEndpointHandlers.GetHashlistByIdHandlerAsync)
+            .WithName("GetHashlistById")
+            .Produces<HashlistDto>()
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+
+        group.MapPut("/{id:int}", HashlistEndpointHandlers.UpdateHashlistHandlerAsync)
+            .WithName("UpdateHashlist")
+            .Produces<HashlistDto>()
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<HashlistDto>(false, "application/json")
+            .WithOpenApi();
+
+        group.MapPost("/", HashlistEndpointHandlers.CreateHashlistHandlerAsync)
+            .WithName("CreateHashlist")
+            .Produces<HashlistDto>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<HashlistDto>(false, "application/json")
+            .WithOpenApi();
+
+        group.MapDelete("/{id:int}", HashlistEndpointHandlers.DeleteHashlistHandlerAsync)
+            .WithName("DeleteHashlist")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+    }
+
+    /// <summary>Maps the task endpoints.</summary>
+    /// <param name="routes">The routes.</param>
+    public static void MapTaskEndpoints(this IEndpointRouteBuilder routes)
+    {
+        RouteGroupBuilder group = routes.MapGroup("/Task").WithTags(nameof(Task));
+
+        group.MapGet("/", TaskEndpointHandlers.GetAllTasksHandlerAsync)
+            .Produces<List<TaskDto>>()
+            .Produces(StatusCodes.Status404NotFound)
+            .WithName("GetAllTasks")
+            .WithOpenApi();
+
+        group.MapGet("/{id:int}", TaskEndpointHandlers.GetTaskByIdHandlerAsync)
+            .Produces<TaskDto>()
+            .Produces(StatusCodes.Status404NotFound)
+            .WithName("GetTaskById")
+            .WithOpenApi();
+
+        group.MapPut("/{id:int}", TaskEndpointHandlers.UpdateTaskHandlerAsync)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<TaskDto>(false, "application/json")
+            .WithName("UpdateTask")
+            .WithOpenApi();
+
+        group.MapPost("/", TaskEndpointHandlers.CreateTaskHandlerAsync)
+            .Produces<TaskDto>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<TaskDto>(false, "application/json")
+            .WithName("CreateTask")
+            .WithOpenApi();
+
+        group.MapDelete("/{id:int}", TaskEndpointHandlers.DeleteTaskHandlerAsync)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .WithName("DeleteTask")
+            .WithOpenApi();
+    }
+
+    /// <summary>Maps the user API endpoints.</summary>
+    /// <param name="routes">The routes.</param>
+    public static void MapUserApiEndpoints(this IEndpointRouteBuilder routes)
+    {
+        RouteGroupBuilder? group = routes.MapGroup($"{ApiPrefix}");
+        group.MapAgentEndpoints();
+        group.MapRegistrationVoucherEndpoints();
+        group.MapUtilityEndpoints();
+        group.MapTaskEndpoints();
+        group.MapHashlistEndpoints();
+        group.MapAgentBinaryEndpoints();
+        group.MapCrackerBinaryEndpoints();
+    }
+
+    /// <summary>Maps the utility endpoints.</summary>
+    /// <param name="routes">The routes.</param>
+    public static void MapUtilityEndpoints(this IEndpointRouteBuilder routes)
+    {
+        RouteGroupBuilder group = routes.MapGroup("/Utils").WithTags("Utils");
         // Mostly for testing. This is not part of the final API.
-        group.MapPost("/initial-setup", (IMediator mediator) => { mediator.Send(new PerformInitialSetupCommand()); })
+        group.MapPost("/initial-setup", void (IMediator mediator) => mediator.Send(new PerformInitialSetupCommand()))
             .WithOpenApi();
 
         // Mostly for testing. This is not part of the final API.
         group.MapPost("/create-health-check",
-                (IMediator mediator) => { mediator.Send(new AssignAllAgentsHealthCheckCommand()); })
+                void (IMediator mediator) => mediator.Send(new AssignAllAgentsHealthCheckCommand()))
+            .WithOpenApi();
+    }
+
+    /// <summary>Maps the agent endpoints.</summary>
+    /// <param name="routes">The routes.</param>
+    internal static void MapAgentEndpoints(this IEndpointRouteBuilder routes)
+    {
+        RouteGroupBuilder group = routes.MapGroup("/Agent").WithTags(nameof(Agent));
+
+        group.MapGet("/", AgentEndpointHandlers.GetAllAgentsHandlerAsync)
+            .WithName("GetAllAgents")
+            .Produces<List<AgentDto>>()
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+
+        group.MapGet("/{id:int}", AgentEndpointHandlers.GetAgentByIdHandlerAsync)
+            .WithName("GetAgentById")
+            .Produces<AgentDto>()
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+
+        group.MapPut("/{id:int}", AgentEndpointHandlers.UpdateAgentHandlerAsync)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<AgentDto>(false, "application/json")
+            .WithName("UpdateAgent")
+            .WithOpenApi();
+
+        group.MapPost("/", AgentEndpointHandlers.CreateAgentHandlerAsync)
+            .Accepts<AgentDto>(false, "application/json")
+            .Produces<AgentDto>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<AgentDto>(false, "application/json")
+            .WithName("CreateAgent")
+            .WithOpenApi();
+
+        group.MapDelete("/{id}", AgentEndpointHandlers.DeleteAgentHandlerAsync)
+            .Accepts<int>(false, "application/json")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .WithName("DeleteAgent")
+            .WithOpenApi();
+    }
+
+
+    /// <summary>Maps the registration voucher endpoints.</summary>
+    /// <param name="routes">The routes.</param>
+    internal static void MapRegistrationVoucherEndpoints(this IEndpointRouteBuilder routes)
+    {
+        RouteGroupBuilder? group = routes.MapGroup("/RegistrationVoucher").WithTags(nameof(RegistrationVoucher));
+
+        group.MapGet("/", RegistrationVoucherEndpointHandlers.GetAllRegistrationVouchersHandlerAsync)
+            .WithName("GetAllRegistrationVouchers")
+            .Produces<List<RegistrationVoucherDto>>()
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+
+        group.MapGet("/{id:int}", RegistrationVoucherEndpointHandlers.GetRegistrationVoucherByIdHandlerAsync)
+            .WithName("GetRegistrationVoucherById")
+            .Produces<RegistrationVoucherDto>()
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+
+        group.MapPut("/{id:int}", RegistrationVoucherEndpointHandlers.UpdateRegistrationVoucherHandlerAsync)
+            .Accepts<RegistrationVoucherDto>(false, "application/json")
+            .WithName("UpdateRegistrationVoucher")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<RegistrationVoucherDto>(false, "application/json")
+            .WithOpenApi();
+
+        group.MapPost("/", RegistrationVoucherEndpointHandlers.CreateRegistrationVoucherHandlerAsync)
+            .Accepts<RegistrationVoucherDto>(false, "application/json")
+            .WithName("CreateRegistrationVoucher")
+            .Produces<RegistrationVoucherDto>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status404NotFound)
+            .Accepts<RegistrationVoucherDto>(false, "application/json")
+            .WithOpenApi();
+
+        group.MapDelete("/{id:int}", RegistrationVoucherEndpointHandlers.DeleteRegistrationVoucherHandlerAsync)
+            .WithName("DeleteRegistrationVoucher")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi();
     }
 }

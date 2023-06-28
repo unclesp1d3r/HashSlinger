@@ -3,9 +3,9 @@
 using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
 using SemanticVersioning;
 using Serilog;
+using Shared.Models;
 
 /// <summary>Represents a query to retrieve the agent binary.</summary>
 public record GetAgentBinaryQuery(string CurrentVersion, string Type) : IRequest<AgentBinary?>;

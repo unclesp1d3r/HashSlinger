@@ -3,8 +3,8 @@
 using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Models;
 using Serilog;
+using Shared.Models;
 
 /// <summary>Represents a query to retrieve the registration voucher.</summary>
 public record GetRegistrationVoucherQuery(string Voucher) : IRequest<RegistrationVoucher?>;
@@ -15,7 +15,7 @@ public class
     // ReSharper disable UnusedType.Global
     GetRegistrationVoucherHandler : IRequestHandler<GetRegistrationVoucherQuery, RegistrationVoucher?>
 
-    // ReSharper restore UnusedType.Global
+// ReSharper restore UnusedType.Global
 {
     private readonly HashSlingerContext _dbContext;
 

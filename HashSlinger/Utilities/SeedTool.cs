@@ -1,12 +1,15 @@
 ﻿namespace HashSlinger.Api.Utilities;
 
-using Models;
+using Shared.Models;
 
 /// <summary>
 /// Contains methods to seed the database with data.
 /// </summary>
 public static class SeedTool
 {
+    /// <summary>
+    /// Seeds the database with a list of hash types.
+    /// </summary>
     public static List<HashType> GetHashTypeSeeds()
     {
         return new List<HashType>()

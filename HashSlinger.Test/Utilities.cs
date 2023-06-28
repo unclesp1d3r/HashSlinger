@@ -1,10 +1,10 @@
 ﻿namespace HashSlinger.Test;
 
 using Api.Data;
-using Api.Models;
-using Api.Models.Enums;
 using Api.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Shared.Models;
+using Shared.Models.Enums;
 
 internal static class Utilities
 {

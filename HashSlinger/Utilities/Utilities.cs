@@ -1,6 +1,6 @@
 ﻿namespace HashSlinger.Api.Utilities;
 
-using Models.Enums;
+using Shared.Models.Enums;
 
 /// <summary>General utilities.</summary>
 public static class Utilities
