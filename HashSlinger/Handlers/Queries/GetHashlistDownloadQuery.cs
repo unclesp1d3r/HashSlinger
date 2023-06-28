@@ -51,7 +51,12 @@ public class GetHashlistDownloadHandler : IRequestHandler<GetHashlistDownloadQue
                     sb.AppendLine(hash);
                 }
 
-                return Results.File(Encoding.UTF8.GetBytes(sb.ToString()), "text/plain", request.HashlistId.ToString());
+                return sb.Length == 0
+                           ? Results.NoContent()
+                           : Results.File(Encoding.UTF8.GetBytes(sb.ToString()),
+                               "text/plain",
+                               request.HashlistId.ToString());
+
             case HashListFormats.BinaryFile:
             case HashListFormats.HCCAPXFile:
                 IQueryable<byte[]> binHashes = _context.BinaryHashes.Where(x => x.HashlistId == hashlist.Id)
@@ -70,7 +75,5 @@ public class GetHashlistDownloadHandler : IRequestHandler<GetHashlistDownloadQue
             default:
                 throw new ArgumentOutOfRangeException(nameof(request));
         }
-
-        return Results.NoContent();
     }
 }

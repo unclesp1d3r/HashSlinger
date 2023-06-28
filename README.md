@@ -6,6 +6,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/unclesp1d3r/HashSlinger)
 ![Maintenance](https://img.shields.io/maintenance/yes/2023)
 [![LoC](https://tokei.rs/b1/github/unclesp1d3r/HashSlinger?category=code)](https://github.com/unclesp1d3r/HashSlinger)
+[![wakatime](https://wakatime.com/badge/github/unclesp1d3r/HashSlinger.svg)](https://wakatime.com/badge/github/unclesp1d3r/HashSlinger)
 
 
 Hash Slinger is a purpose-built wrapper for Hashcat, designed specifically to facilitate distributed hash cracking in high-speed, secure, and centralized network environments. By leveraging the power of multiple machines, Hash Slinger adeptly manages large quantities of hashes, aiming to optimize your hash cracking operations.
@@ -117,7 +118,7 @@ After extensive testing, .NET was determined to be the most performant option fo
 - [X] DownloadBinary
 - [ ] ClientError
 - [ ] GetFile
-- [ ] GetHashlist
+- [X] GetHashlist
 - [ ] GetTask
 - [ ] GetChunk
 - [ ] SendKeyspace
