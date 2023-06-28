@@ -14,8 +14,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HashSlinger.Api.Migrations
 {
     [DbContext(typeof(HashSlingerContext))]
-    [Migration("20230627233938_MergedHashAndHashbinary")]
-    partial class MergedHashAndHashbinary
+    [Migration("20230628011334_InitialSetup")]
+    partial class InitialSetup
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -170,6 +170,10 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Token");
+
+                    b.HasIndex("Uid");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Agents");
@@ -202,6 +206,8 @@ namespace HashSlinger.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AgentId");
+
+                    b.HasIndex("ChunkId");
 
                     b.HasIndex("TaskId");
 
@@ -535,7 +541,7 @@ namespace HashSlinger.Api.Migrations
                     b.ToTable("FileDownload");
                 });
 
-            modelBuilder.Entity("HashSlinger.Shared.Models.Hash", b =>
+            modelBuilder.Entity("HashSlinger.Shared.Models.HashBase", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -549,57 +555,9 @@ namespace HashSlinger.Api.Migrations
                     b.Property<decimal>("CrackPos")
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<string>("HashValue")
+                    b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("HashlistId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsCracked")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Plaintext")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("Salt")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<DateTime?>("TimeCracked")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChunkId");
-
-                    b.HasIndex("HashlistId");
-
-                    b.ToTable("Hash");
-                });
-
-            modelBuilder.Entity("HashSlinger.Shared.Models.HashBinary", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ChunkId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("CrackPos")
-                        .HasColumnType("numeric(20,0)");
-
-                    b.Property<string>("Essid")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<byte[]>("HashBytes")
-                        .IsRequired()
-                        .HasColumnType("bytea");
 
                     b.Property<int>("HashlistId")
                         .HasColumnType("integer");
@@ -616,11 +574,11 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChunkId");
+                    b.ToTable("HashBase");
 
-                    b.HasIndex("HashlistId");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("HashBase");
 
-                    b.ToTable("HashBinary");
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("HashSlinger.Shared.Models.HashType", b =>
@@ -710,6 +668,8 @@ namespace HashSlinger.Api.Migrations
                     b.HasIndex("AccessGroupId");
 
                     b.HasIndex("HashTypeId");
+
+                    b.HasIndex("IsSecret");
 
                     b.ToTable("Hashlists");
                 });
@@ -946,6 +906,9 @@ namespace HashSlinger.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccessGroupId");
+
+                    b.HasIndex("Voucher")
+                        .IsUnique();
 
                     b.ToTable("RegistrationVouchers");
                 });
@@ -1311,6 +1274,8 @@ namespace HashSlinger.Api.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.HasIndex("Type");
+
                     b.HasDiscriminator().HasValue("AgentBinary");
                 });
 
@@ -1343,6 +1308,48 @@ namespace HashSlinger.Api.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasDiscriminator().HasValue("Preprocessor");
+                });
+
+            modelBuilder.Entity("HashSlinger.Shared.Models.BinaryHash", b =>
+                {
+                    b.HasBaseType("HashSlinger.Shared.Models.HashBase");
+
+                    b.Property<string>("Essid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("HashBytes")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.HasIndex("ChunkId");
+
+                    b.HasIndex("HashlistId");
+
+                    b.HasIndex("IsCracked");
+
+                    b.HasDiscriminator().HasValue("BinaryHash");
+                });
+
+            modelBuilder.Entity("HashSlinger.Shared.Models.Hash", b =>
+                {
+                    b.HasBaseType("HashSlinger.Shared.Models.HashBase");
+
+                    b.Property<string>("HashValue")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Salt")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasIndex("ChunkId");
+
+                    b.HasIndex("HashlistId");
+
+                    b.HasIndex("IsCracked");
+
+                    b.HasDiscriminator().HasValue("Hash");
                 });
 
             modelBuilder.Entity("AccessGroupAgent", b =>
@@ -1419,14 +1426,20 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.Agent", "Agent")
                         .WithMany("Errors")
                         .HasForeignKey("AgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("HashSlinger.Shared.Models.Chunk", "Chunk")
+                        .WithMany("Errors")
+                        .HasForeignKey("ChunkId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("HashSlinger.Shared.Models.Task", "Task")
                         .WithMany("AgentErrors")
                         .HasForeignKey("TaskId");
 
                     b.Navigation("Agent");
+
+                    b.Navigation("Chunk");
 
                     b.Navigation("Task");
                 });
@@ -1520,39 +1533,6 @@ namespace HashSlinger.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("File");
-                });
-
-            modelBuilder.Entity("HashSlinger.Shared.Models.Hash", b =>
-                {
-                    b.HasOne("HashSlinger.Shared.Models.Chunk", "Chunk")
-                        .WithMany("Hashes")
-                        .HasForeignKey("ChunkId");
-
-                    b.HasOne("HashSlinger.Shared.Models.Hashlist", "Hashlist")
-                        .WithMany("Hashes")
-                        .HasForeignKey("HashlistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Chunk");
-
-                    b.Navigation("Hashlist");
-                });
-
-            modelBuilder.Entity("HashSlinger.Shared.Models.HashBinary", b =>
-                {
-                    b.HasOne("HashSlinger.Shared.Models.Chunk", "Chunk")
-                        .WithMany("HashBinaries")
-                        .HasForeignKey("ChunkId");
-
-                    b.HasOne("HashSlinger.Shared.Models.Hashlist", "Hashlist")
-                        .WithMany("HashBinaries")
-                        .HasForeignKey("HashlistId")
-                        .IsRequired();
-
-                    b.Navigation("Chunk");
-
-                    b.Navigation("Hashlist");
                 });
 
             modelBuilder.Entity("HashSlinger.Shared.Models.Hashlist", b =>
@@ -1765,6 +1745,40 @@ namespace HashSlinger.Api.Migrations
                     b.Navigation("CrackerBinaryType");
                 });
 
+            modelBuilder.Entity("HashSlinger.Shared.Models.BinaryHash", b =>
+                {
+                    b.HasOne("HashSlinger.Shared.Models.Chunk", "Chunk")
+                        .WithMany("BinaryHashes")
+                        .HasForeignKey("ChunkId");
+
+                    b.HasOne("HashSlinger.Shared.Models.Hashlist", "Hashlist")
+                        .WithMany("BinaryHashes")
+                        .HasForeignKey("HashlistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chunk");
+
+                    b.Navigation("Hashlist");
+                });
+
+            modelBuilder.Entity("HashSlinger.Shared.Models.Hash", b =>
+                {
+                    b.HasOne("HashSlinger.Shared.Models.Chunk", "Chunk")
+                        .WithMany("Hashes")
+                        .HasForeignKey("ChunkId");
+
+                    b.HasOne("HashSlinger.Shared.Models.Hashlist", "Hashlist")
+                        .WithMany("Hashes")
+                        .HasForeignKey("HashlistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chunk");
+
+                    b.Navigation("Hashlist");
+                });
+
             modelBuilder.Entity("HashSlinger.Shared.Models.AccessGroup", b =>
                 {
                     b.Navigation("Files");
@@ -1800,7 +1814,9 @@ namespace HashSlinger.Api.Migrations
 
             modelBuilder.Entity("HashSlinger.Shared.Models.Chunk", b =>
                 {
-                    b.Navigation("HashBinaries");
+                    b.Navigation("BinaryHashes");
+
+                    b.Navigation("Errors");
 
                     b.Navigation("Hashes");
                 });
@@ -1828,7 +1844,7 @@ namespace HashSlinger.Api.Migrations
 
             modelBuilder.Entity("HashSlinger.Shared.Models.Hashlist", b =>
                 {
-                    b.Navigation("HashBinaries");
+                    b.Navigation("BinaryHashes");
 
                     b.Navigation("Hashes");
 

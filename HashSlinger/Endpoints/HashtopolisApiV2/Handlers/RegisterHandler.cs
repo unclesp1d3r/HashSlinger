@@ -24,8 +24,8 @@ public class RegisterHandler : IRequestHandler<RegisterRequest, RegisterResponse
     public async Task<RegisterResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
     {
         RegistrationVoucher? voucher = await _mediator
-            .Send(new GetRegistrationVoucherQuery(request.Voucher), cancellationToken)
-            .ConfigureAwait(true);
+                                             .Send(new GetRegistrationVoucherQuery(request.Voucher), cancellationToken)
+                                             .ConfigureAwait(true);
         if (voucher == null)
         {
             Log.Error("Voucher not found");

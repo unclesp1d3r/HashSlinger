@@ -7,8 +7,9 @@ namespace HashSlinger.Shared.Generated
     public partial record ChunkDto
     {
         public AgentDto? Agent { get; set; }
-        public ICollection<HashBinaryDto> HashBinaries { get; set; }
+        public ICollection<BinaryHashDto> BinaryHashes { get; set; }
         public ICollection<HashDto> Hashes { get; set; }
+        public ICollection<AgentErrorDto> Errors { get; set; }
         public TaskDto Task { get; set; }
         public int? AgentId { get; set; }
         public ulong Checkpoint { get; set; }

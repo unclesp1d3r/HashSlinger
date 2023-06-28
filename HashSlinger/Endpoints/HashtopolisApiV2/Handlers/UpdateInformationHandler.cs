@@ -28,7 +28,7 @@ public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest
     )
     {
         Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
-            .ConfigureAwait(false);
+                                      .ConfigureAwait(false);
         if (agent == null)
         {
             Log.Information("Agent not found");
@@ -41,13 +41,13 @@ public class UpdateInformationHandler : IRequestHandler<UpdateInformationRequest
 
         agent.OperatingSystem = request.OperatingSystem.Adapt<AgentOperatingSystems>();
         agent.LastAction = AgentActions.UpdateClientInformation;
-        agent.LastSeenTime = DateTime.UtcNow;
         agent.Devices = request.Devices.Adapt<List<string>>();
-        agent.LastSeenIpAddress = request.IpAddress;
         if (string.IsNullOrWhiteSpace(agent.Uid)) agent.CpuOnly = !agent.CheckForGpuDevices();
         agent.Uid = request.Uid;
 
         await _mediator.Send(new UpdateAgentCommand(agent), cancellationToken).ConfigureAwait(true);
+        await _mediator.Send(new TouchAgentCommand(agent.Token, AgentActions.UpdateClientInformation), cancellationToken)
+                       .ConfigureAwait(true);
         return request.Adapt<UpdateInformationResponse>() with
         {
             Response = HashtopolisConstants.SuccessResponse

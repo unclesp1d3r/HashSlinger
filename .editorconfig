@@ -68,6 +68,8 @@ dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggest
 
 # ReSharper properties
 resharper_align_linq_query = true
+resharper_align_multiline_calls_chain = true
+resharper_align_multiline_expression = true
 resharper_apply_on_completion = true
 resharper_autodetect_indent_settings = true
 resharper_blank_lines_around_single_line_auto_property = 1

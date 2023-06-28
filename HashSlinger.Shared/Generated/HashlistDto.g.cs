@@ -6,7 +6,7 @@ namespace HashSlinger.Shared.Generated
     public partial record HashlistDto
     {
         public AccessGroupDto AccessGroup { get; set; }
-        public ICollection<HashBinaryDto> HashBinaries { get; set; }
+        public ICollection<BinaryHashDto> BinaryHashes { get; set; }
         public ICollection<HashDto> Hashes { get; set; }
         public HashTypeDto HashType { get; set; }
         public ICollection<TaskWrapperDto> TaskWrappers { get; set; }

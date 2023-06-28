@@ -7,6 +7,7 @@ namespace HashSlinger.Shared.Generated
     {
         public AgentDto Agent { get; set; }
         public TaskDto? Task { get; set; }
+        public ChunkDto? Chunk { get; set; }
         public int? ChunkId { get; set; }
         public string Error { get; set; }
         public int Id { get; set; }

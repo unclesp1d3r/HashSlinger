@@ -24,8 +24,6 @@ public class CreateAgentHandler : IRequestHandler<CreateAgentCommand, int>
     /// <returns>Response from the request</returns>
     public async Task<int> Handle(CreateAgentCommand request, CancellationToken cancellationToken)
     {
-        //await WriteLogEventAsync(LogEntry.Information($"Creating agent {newAgent}", Issuer))
-        //    .ConfigureAwait(true);
         Agent newAgent = request.Agent;
         await _dbContext.Agents.AddAsync(newAgent, cancellationToken).ConfigureAwait(true);
         return await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(true);

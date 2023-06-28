@@ -211,6 +211,7 @@ namespace HashSlinger.Api.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     HashTypeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AccessGroupId = table.Column<int>(type: "integer", nullable: false),
                     BrainFeatures = table.Column<short>(type: "smallint", nullable: false),
                     BrainId = table.Column<int>(type: "integer", nullable: false),
                     Cracked = table.Column<int>(type: "integer", nullable: false),
@@ -222,8 +223,7 @@ namespace HashSlinger.Api.Migrations
                     IsSecret = table.Column<bool>(type: "boolean", nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Notes = table.Column<string>(type: "text", nullable: false),
-                    SaltSeparator = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
-                    AccessGroupId = table.Column<int>(type: "integer", nullable: false)
+                    SaltSeparator = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -700,34 +700,6 @@ namespace HashSlinger.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AgentError",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AgentId = table.Column<int>(type: "integer", nullable: false),
-                    TaskId = table.Column<int>(type: "integer", nullable: true),
-                    ChunkId = table.Column<int>(type: "integer", nullable: true),
-                    Error = table.Column<string>(type: "text", nullable: false),
-                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AgentError", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AgentError_Agents_AgentId",
-                        column: x => x.AgentId,
-                        principalTable: "Agents",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AgentError_Tasks_TaskId",
-                        column: x => x.TaskId,
-                        principalTable: "Tasks",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Assignment",
                 columns: table => new
                 {
@@ -856,7 +828,40 @@ namespace HashSlinger.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Hash",
+                name: "AgentError",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AgentId = table.Column<int>(type: "integer", nullable: false),
+                    TaskId = table.Column<int>(type: "integer", nullable: true),
+                    ChunkId = table.Column<int>(type: "integer", nullable: true),
+                    Error = table.Column<string>(type: "text", nullable: false),
+                    Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AgentError", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AgentError_Agents_AgentId",
+                        column: x => x.AgentId,
+                        principalTable: "Agents",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AgentError_Chunk_ChunkId",
+                        column: x => x.ChunkId,
+                        principalTable: "Chunk",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AgentError_Tasks_TaskId",
+                        column: x => x.TaskId,
+                        principalTable: "Tasks",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HashBase",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -864,57 +869,29 @@ namespace HashSlinger.Api.Migrations
                     ChunkId = table.Column<int>(type: "integer", nullable: true),
                     CrackPos = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     HashlistId = table.Column<int>(type: "integer", nullable: false),
-                    HashValue = table.Column<string>(type: "text", nullable: false),
                     IsCracked = table.Column<bool>(type: "boolean", nullable: false),
                     Plaintext = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Salt = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     TimeCracked = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Essid = table.Column<string>(type: "text", nullable: true)
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    Essid = table.Column<string>(type: "text", nullable: true),
+                    HashBytes = table.Column<byte[]>(type: "bytea", nullable: true),
+                    HashValue = table.Column<string>(type: "text", nullable: true),
+                    Salt = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Hash", x => x.Id);
+                    table.PrimaryKey("PK_HashBase", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Hash_Chunk_ChunkId",
+                        name: "FK_HashBase_Chunk_ChunkId",
                         column: x => x.ChunkId,
                         principalTable: "Chunk",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Hash_Hashlists_HashlistId",
+                        name: "FK_HashBase_Hashlists_HashlistId",
                         column: x => x.HashlistId,
                         principalTable: "Hashlists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "HashBinary",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ChunkId = table.Column<int>(type: "integer", nullable: true),
-                    CrackPos = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    Essid = table.Column<string>(type: "text", nullable: false),
-                    Hash = table.Column<byte[]>(type: "bytea", nullable: false),
-                    HashlistId = table.Column<int>(type: "integer", nullable: false),
-                    IsCracked = table.Column<bool>(type: "boolean", nullable: false),
-                    Plaintext = table.Column<string>(type: "text", nullable: true),
-                    TimeCracked = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HashBinary", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_HashBinary_Chunk_ChunkId",
-                        column: x => x.ChunkId,
-                        principalTable: "Chunk",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_HashBinary_Hashlists_HashlistId",
-                        column: x => x.HashlistId,
-                        principalTable: "Hashlists",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -938,9 +915,24 @@ namespace HashSlinger.Api.Migrations
                 column: "AgentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AgentError_ChunkId",
+                table: "AgentError",
+                column: "ChunkId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AgentError_TaskId",
                 table: "AgentError",
                 column: "TaskId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Agents_Token",
+                table: "Agents",
+                column: "Token");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Agents_Uid",
+                table: "Agents",
+                column: "Uid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Agents_UserId",
@@ -993,6 +985,11 @@ namespace HashSlinger.Api.Migrations
                 column: "FileId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DownloadableBinaries_Type",
+                table: "DownloadableBinaries",
+                column: "Type");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FileDownload_FileId",
                 table: "FileDownload",
                 column: "FileId");
@@ -1013,24 +1010,19 @@ namespace HashSlinger.Api.Migrations
                 column: "TasksId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Hash_ChunkId",
-                table: "Hash",
+                name: "IX_HashBase_ChunkId",
+                table: "HashBase",
                 column: "ChunkId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Hash_HashlistId",
-                table: "Hash",
+                name: "IX_HashBase_HashlistId",
+                table: "HashBase",
                 column: "HashlistId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HashBinary_ChunkId",
-                table: "HashBinary",
-                column: "ChunkId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_HashBinary_HashlistId",
-                table: "HashBinary",
-                column: "HashlistId");
+                name: "IX_HashBase_IsCracked",
+                table: "HashBase",
+                column: "IsCracked");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Hashlists_AccessGroupId",
@@ -1041,6 +1033,11 @@ namespace HashSlinger.Api.Migrations
                 name: "IX_Hashlists_HashTypeId",
                 table: "Hashlists",
                 column: "HashTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Hashlists_IsSecret",
+                table: "Hashlists",
+                column: "IsSecret");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HashTypes_HashcatId",
@@ -1082,6 +1079,12 @@ namespace HashSlinger.Api.Migrations
                 name: "IX_RegistrationVouchers_AccessGroupId",
                 table: "RegistrationVouchers",
                 column: "AccessGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RegistrationVouchers_Voucher",
+                table: "RegistrationVouchers",
+                column: "Voucher",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Session_UserId",
@@ -1188,10 +1191,7 @@ namespace HashSlinger.Api.Migrations
                 name: "FileTask");
 
             migrationBuilder.DropTable(
-                name: "Hash");
-
-            migrationBuilder.DropTable(
-                name: "HashBinary");
+                name: "HashBase");
 
             migrationBuilder.DropTable(
                 name: "HealthCheckAgents");

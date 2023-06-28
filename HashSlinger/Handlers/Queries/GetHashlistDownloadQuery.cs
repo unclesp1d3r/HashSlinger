@@ -7,9 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Models;
 using Shared.Models.Enums;
 
-/// <summary>
-/// Represents a query to get a Hashlist download.
-/// </summary>
+/// <summary>Represents a query to get a Hashlist download.</summary>
 public record GetHashlistDownloadQuery(int HashlistId, string AgentToken) : IRequest<IResult>;
 
 /// <summary>Handles requests for Hashlist downloads.</summary>
@@ -25,41 +23,44 @@ public class GetHashlistDownloadHandler : IRequestHandler<GetHashlistDownloadQue
     public async Task<IResult> Handle(GetHashlistDownloadQuery request, CancellationToken cancellationToken)
     {
         Agent? agent = await _context.Agents.Include(x => x.AccessGroups)
-            .FirstOrDefaultAsync(x => x.Token == request.AgentToken, cancellationToken)
-            .ConfigureAwait(false);
+                                     .FirstOrDefaultAsync(x => x.Token == request.AgentToken, cancellationToken)
+                                     .ConfigureAwait(false);
 
         if (agent == null) return Results.Unauthorized();
-        Hashlist? hashlist = await _context.Hashlists.Include(x => x.Hashes)
-            .Include(x => x.HashBinaries)
-            .SingleOrDefaultAsync(x => x.Id == request.HashlistId, cancellationToken)
-            .ConfigureAwait(false);
+        Hashlist? hashlist = await _context.Hashlists.Where(x => agent.IsTrusted == x.IsSecret)
+                                           .Where(x => agent.AccessGroups.Select(a => a.Id).Contains(x.AccessGroupId))
+                                           .SingleOrDefaultAsync(cancellationToken)
+                                           .ConfigureAwait(true);
+
 
         // Verify Agent has access to Hashlist
-        if (hashlist == null
-            || agent.IsTrusted != hashlist.IsSecret
-            || agent.AccessGroups.All(x => x.Id != hashlist.AccessGroupId))
+        if (hashlist is null)
             return Results.BadRequest("Agent does not have access to hashlist.");
-        var hashes = hashlist.Hashes.Where(x => x.IsCracked == false).ToList();
-        if (!hashes.Any())
-            return Results.NoContent();
+
         switch (hashlist.Format)
         {
             case HashListFormats.TextFile:
+                IQueryable<Hash> hashes = _context.Hashes.Where(x => x.HashlistId == hashlist.Id)
+                                                  .Where(x => x.IsCracked == false);
+
                 var sb = new StringBuilder();
-                hashes.ForEach(hash =>
+                foreach (var hash in hashes.Select(x => hashlist.IsSalted
+                                                            ? $"{x.HashValue}{hashlist.SaltSeparator}{x.Salt}"
+                                                            : $"{x.HashValue}"))
                 {
-                    sb.AppendLine(hashlist.IsSalted
-                        ? $"{hash.HashValue}{hashlist.SaltSeparator}{hash.Salt}"
-                        : $"{hash.HashValue}");
-                });
+                    sb.AppendLine(hash);
+                }
+
                 return Results.File(Encoding.UTF8.GetBytes(sb.ToString()), "text/plain", request.HashlistId.ToString());
             case HashListFormats.BinaryFile:
             case HashListFormats.HCCAPXFile:
-                var binaryHashes = hashes.Select(x => Convert.FromHexString(x.HashValue)).ToArray();
-                var data = new byte[binaryHashes.Sum(arr => arr.Length)];
+                IQueryable<byte[]> binHashes = _context.BinaryHashes.Where(x => x.HashlistId == hashlist.Id)
+                                                       .Where(x => x.IsCracked == false)
+                                                       .Select(x => x.HashBytes);
+                var data = new byte[binHashes.Sum(arr => arr.Length)];
                 using (var stream = new MemoryStream(data))
                 {
-                    foreach (var bytes in binaryHashes)
+                    foreach (var bytes in binHashes)
                     {
                         stream.Write(bytes, 0, bytes.Length);
                     }
@@ -69,5 +70,7 @@ public class GetHashlistDownloadHandler : IRequestHandler<GetHashlistDownloadQue
             default:
                 throw new ArgumentOutOfRangeException(nameof(request));
         }
+
+        return Results.NoContent();
     }
 }
