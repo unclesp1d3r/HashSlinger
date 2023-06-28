@@ -10,7 +10,7 @@ using Shared.Models.Enums;
 /// <summary>
 /// Represents a query to get a Hashlist download.
 /// </summary>
-public record GetHashlistDownloadQuery(int HashlistId, string AgentToken) : IRequest<IResult> { }
+public record GetHashlistDownloadQuery(int HashlistId, string AgentToken) : IRequest<IResult>;
 
 /// <summary>Handles requests for Hashlist downloads.</summary>
 public class GetHashlistDownloadHandler : IRequestHandler<GetHashlistDownloadQuery, IResult>
