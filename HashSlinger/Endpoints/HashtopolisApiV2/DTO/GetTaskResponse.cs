@@ -13,6 +13,8 @@ public record GetTaskResponse(
     int? TaskId,
     [property: JsonPropertyName("attackcmd"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? AttackCommand,
+    [property: JsonPropertyName("cmdpars")]
+    string? CommandParameters,
     [property: JsonPropertyName("hashlistId"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     int? HashlistId,
     [property: JsonPropertyName("bench"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]

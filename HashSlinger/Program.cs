@@ -1,6 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 using HashSlinger.Api.Data;
-using HashSlinger.Api.Endpoints.ClientApiV1;
 using HashSlinger.Api.Endpoints.HashtopolisApiV2;
 using HashSlinger.Api.Endpoints.UserApiV1;
 using HashSlinger.Api.Services;
@@ -15,9 +14,9 @@ TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);
 TypeAdapterConfig.GlobalSettings.Default.MaxDepth(2);
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console(LogEventLevel.Information)
-    .MinimumLevel.Debug()
-    .WriteTo.File("Log/log-.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+                                      .MinimumLevel.Debug()
+                                      .WriteTo.File("Log/log-.txt", rollingInterval: RollingInterval.Day)
+                                      .CreateLogger();
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
@@ -52,11 +51,9 @@ app.UseCors();
 app.MapHashtopolisEndpoints();
 app.MapUserApiEndpoints();
 
-app.MapFileEndpoints();
-
 await using (AsyncServiceScope scope = app.Services.CreateAsyncScope())
 {
-    HashSlingerContext dbContext = scope.ServiceProvider.GetRequiredService<HashSlingerContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<HashSlingerContext>();
     await dbContext.Database.EnsureCreatedAsync().ConfigureAwait(true);
 }
 

@@ -19,7 +19,7 @@ namespace HashSlinger.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.7")
+                .HasAnnotation("ProductVersion", "7.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -349,8 +349,8 @@ namespace HashSlinger.Api.Migrations
                     b.Property<decimal>("Length")
                         .HasColumnType("numeric(20,0)");
 
-                    b.Property<int?>("Progress")
-                        .HasColumnType("integer");
+                    b.Property<float?>("Progress")
+                        .HasColumnType("real");
 
                     b.Property<decimal>("Skip")
                         .HasColumnType("numeric(20,0)");
@@ -373,7 +373,7 @@ namespace HashSlinger.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Chunk");
+                    b.ToTable("Chunks");
                 });
 
             modelBuilder.Entity("HashSlinger.Shared.Models.CrackerBinaryType", b =>
@@ -480,15 +480,19 @@ namespace HashSlinger.Api.Migrations
                     b.Property<bool>("IsSecret")
                         .HasColumnType("boolean");
 
-                    b.Property<long?>("LineCount")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("LineCount")
+                        .HasColumnType("integer");
 
-                    b.Property<long>("Size")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Size")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccessGroupId");
+
+                    b.HasIndex("FileGuid");
+
+                    b.HasIndex("FileName");
 
                     b.ToTable("Files");
                 });
@@ -1413,7 +1417,8 @@ namespace HashSlinger.Api.Migrations
                 {
                     b.HasOne("HashSlinger.Shared.Models.User", "User")
                         .WithMany("Agents")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("User");
                 });
@@ -1446,6 +1451,7 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.Agent", "Agent")
                         .WithMany("Stats")
                         .HasForeignKey("AgentId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Agent");
@@ -1474,11 +1480,13 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.Agent", "Agent")
                         .WithMany("Assignments")
                         .HasForeignKey("AgentId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HashSlinger.Shared.Models.Task", "Task")
                         .WithMany("Assignments")
                         .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Agent");
@@ -1496,6 +1504,7 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.Task", "Task")
                         .WithMany("Chunks")
                         .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Agent");
@@ -1517,6 +1526,7 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.AccessGroup", "AccessGroup")
                         .WithMany("Files")
                         .HasForeignKey("AccessGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AccessGroup");
@@ -1527,6 +1537,7 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.File", "File")
                         .WithMany("FileDownloads")
                         .HasForeignKey("FileId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("File");
@@ -1542,6 +1553,7 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.HashType", "HashType")
                         .WithMany("Hashlists")
                         .HasForeignKey("HashTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AccessGroup");
@@ -1554,11 +1566,13 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.CrackerBinary", "CrackerBinary")
                         .WithMany("HealthChecks")
                         .HasForeignKey("CrackerBinaryId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HashSlinger.Shared.Models.HashType", "HashType")
                         .WithMany("HealthChecks")
                         .HasForeignKey("HashTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CrackerBinary");
@@ -1571,6 +1585,7 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.Agent", "Agent")
                         .WithMany("HealthCheckAgents")
                         .HasForeignKey("AgentId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HashSlinger.Shared.Models.HealthCheck", "HealthCheck")
@@ -1677,7 +1692,7 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.TaskWrapper", "TaskWrapper")
                         .WithMany("Tasks")
                         .HasForeignKey("TaskWrapperId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CrackerBinary");
@@ -1708,6 +1723,7 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.Hashlist", "Hashlist")
                         .WithMany("TaskWrappers")
                         .HasForeignKey("HashlistId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AccessGroup");
@@ -1737,6 +1753,7 @@ namespace HashSlinger.Api.Migrations
                     b.HasOne("HashSlinger.Shared.Models.CrackerBinaryType", "CrackerBinaryType")
                         .WithMany("CrackerBinaries")
                         .HasForeignKey("CrackerBinaryTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CrackerBinaryType");

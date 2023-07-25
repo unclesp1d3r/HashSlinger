@@ -2,9 +2,8 @@
 
 using Data;
 using MediatR;
-using Shared.Models;
+using Microsoft.EntityFrameworkCore;
 using Shared.Models.Enums;
-using Task = System.Threading.Tasks.Task;
 
 /// <summary>Represents a query to check if there is a pending health check for an agent.</summary>
 /// <seealso cref="MediatR.IBaseRequest" />
@@ -23,8 +22,8 @@ public class GetPendingHealthCheckForAgentHandler : IRequestHandler<GetPendingHe
     /// <inheritdoc />
     public Task<bool> Handle(GetPendingHealthCheckForAgentQuery request, CancellationToken cancellationToken)
     {
-        IQueryable<Agent>? agent = _dbContext.Agents.Where(a =>
-            a.Id == request.AgentId && a.HealthCheckAgents.Count(h => h.Status == HealthCheckStatus.Pending) > 0);
-        return Task.FromResult(agent.Any());
+        return _dbContext.Agents.Where(a =>
+                             a.Id == request.AgentId && a.HealthCheckAgents.Any(h => h.Status == HealthCheckStatus.Pending))
+                         .AnyAsync(cancellationToken);
     }
 }

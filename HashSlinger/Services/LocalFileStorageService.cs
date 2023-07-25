@@ -15,7 +15,7 @@ public class LocalFileStorageService : IFileStorageService
         get => _localStoragePath;
         set
         {
-            LocalFileStorageService.EnsureDirectoryExists(value);
+            EnsureDirectoryExists(value);
             _localStoragePath = value;
         }
     }
@@ -32,7 +32,7 @@ public class LocalFileStorageService : IFileStorageService
     /// <inheritdoc />
     public async Task<bool> StoreFileAsync(string name, string bucket, Stream fileStream)
     {
-        var filePath = Path.Combine(GetBucketPath(bucket), LocalFileStorageService.SanitizePath(name));
+        var filePath = Path.Combine(GetBucketPath(bucket), SanitizePath(name));
         EnsureBucketExists(bucket);
         await using (FileStream stream = File.Create(filePath))
         {
@@ -47,7 +47,7 @@ public class LocalFileStorageService : IFileStorageService
     /// <inheritdoc />
     public Task<bool> FileExistsAsync(string name, string bucket)
     {
-        var filePath = Path.Combine(GetBucketPath(bucket), LocalFileStorageService.SanitizePath(name));
+        var filePath = Path.Combine(GetBucketPath(bucket), SanitizePath(name));
         return Task.FromResult(File.Exists(filePath));
     }
 
@@ -67,11 +67,11 @@ public class LocalFileStorageService : IFileStorageService
     private void EnsureBucketExists(string bucket)
     {
         var bucketPath = GetBucketPath(bucket);
-        LocalFileStorageService.EnsureDirectoryExists(bucketPath);
+        EnsureDirectoryExists(bucketPath);
     }
 
     private string GetBucketPath(string bucket)
     {
-        return Path.Combine(LocalStoragePath, LocalFileStorageService.SanitizePath(bucket));
+        return Path.Combine(LocalStoragePath, SanitizePath(bucket));
     }
 }

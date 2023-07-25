@@ -17,11 +17,11 @@ namespace HashSlinger.Shared.Generated
         public DateTime DispatchTime { get; set; }
         public int Id { get; set; }
         public ulong Length { get; set; }
-        public int? Progress { get; set; }
+        public float? Progress { get; set; }
         public ulong Skip { get; set; }
         public DateTime SolveTime { get; set; }
         public ulong Speed { get; set; }
-        public int State { get; set; }
+        public string State { get; set; }
         public int TaskId { get; set; }
     }
 }

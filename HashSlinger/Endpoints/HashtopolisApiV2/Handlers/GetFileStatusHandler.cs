@@ -5,7 +5,6 @@ using Api.Handlers.Queries;
 using DTO;
 using Mapster;
 using MediatR;
-using Shared.Models;
 using Shared.Models.Enums;
 
 /// <summary>Handles the Hashtopolis API v2 GetFileStatus endpoint.</summary>
@@ -22,7 +21,7 @@ public class GetFileStatusHandler : IRequestHandler<GetFileStatusRequest, GetFil
     public async Task<GetFileStatusResponse> Handle(GetFileStatusRequest request, CancellationToken cancellationToken)
     {
         var validAgent = await _mediator.Send(new ValidateAgentTokenQuery(request.Token), cancellationToken)
-            .ConfigureAwait(true);
+                                        .ConfigureAwait(true);
         if (!validAgent)
             return request.Adapt<GetFileStatusResponse>() with
             {
@@ -31,16 +30,15 @@ public class GetFileStatusHandler : IRequestHandler<GetFileStatusRequest, GetFil
             };
 
         await _mediator.Send(new TouchAgentCommand(request.Token, AgentActions.GetFileStatus), cancellationToken)
-            .ConfigureAwait(false);
+                       .ConfigureAwait(false);
 
-        List<FileDelete> deletedFiles = await _mediator.Send(new GetDeletedFilesQuery(), cancellationToken)
-            .ConfigureAwait(true);
+        var deletedFiles = await _mediator.Send(new GetDeletedFileNamesQuery(), cancellationToken).ConfigureAwait(true);
 
         return request.Adapt<GetFileStatusResponse>() with
         {
             Response = HashtopolisConstants.SuccessResponse,
             Message = "Success",
-            FileNames = deletedFiles.Select(x => x.FileName).ToList()
+            FileNames = deletedFiles
         };
     }
 }
