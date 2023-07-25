@@ -15,6 +15,6 @@ namespace HashSlinger.Shared.Generated
         public bool IsArchived { get; set; }
         public string Name { get; set; }
         public int Priority { get; set; }
-        public int TaskType { get; set; }
+        public string TaskType { get; set; }
     }
 }

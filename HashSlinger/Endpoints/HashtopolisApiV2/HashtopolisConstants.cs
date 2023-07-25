@@ -32,4 +32,7 @@ public static class HashtopolisConstants
 
     /// <summary>The upload end point prefix</summary>
     public const string UploadEndPointPrefix = "/files";
+
+    /// <summary>The keyspace value indicating that the task is a prince task.</summary>
+    public const long PrinceKeyspace = -1605;
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Shared.Generated;
 using Shared.Models;
+using Shared.Models.Enums;
 
 /// <summary>Holds the handlers for the Task endpoints.</summary>
 public static class TaskEndpointHandlers
@@ -43,16 +44,16 @@ public static class TaskEndpointHandlers
     public async static Task<Results<Ok<TaskDto>, NotFound>> GetTaskByIdHandlerAsync(int id, HashSlingerContext db)
     {
         return await db.Tasks.Include(t => t.TaskWrapper)
-            .ThenInclude(t => t.Hashlist)
-            .Include(t => t.CrackerBinary)
-            .Include(t => t.CrackerBinaryType)
-            .ProjectToType<TaskDto>()
-            .AsSplitQuery()
-            .AsNoTracking()
-            .FirstOrDefaultAsync(model => model.Id == id)
-            .ConfigureAwait(true) is TaskDto model
-            ? TypedResults.Ok(model)
-            : TypedResults.NotFound();
+                       .ThenInclude(t => t.Hashlist)
+                       .Include(t => t.CrackerBinary)
+                       .Include(t => t.CrackerBinaryType)
+                       .ProjectToType<TaskDto>()
+                       .AsSplitQuery()
+                       .AsNoTracking()
+                       .FirstOrDefaultAsync(model => model.Id == id)
+                       .ConfigureAwait(true) is TaskDto model
+                   ? TypedResults.Ok(model)
+                   : TypedResults.NotFound();
     }
 
     /// <summary>Handles updating</summary>
@@ -62,36 +63,41 @@ public static class TaskEndpointHandlers
     public async static Task<Results<Ok, NotFound>> UpdateTaskHandlerAsync(int id, TaskDto task, HashSlingerContext db)
     {
         var affected = await db.Tasks.Where(model => model.Id == id)
-            .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.AttackCommand, task.AttackCommand)
-                .SetProperty(m => m.ChunkSize, task.ChunkSize)
-                .SetProperty(m => m.ChunkTime, task.ChunkTime)
-                .SetProperty(m => m.Color, task.Color)
-                .SetProperty(m => m.EnforcePipe, task.EnforcePipe)
-                .SetProperty(m => m.Id, task.Id)
-                .SetProperty(m => m.IsArchived, task.IsArchived)
-                .SetProperty(m => m.IsCpuTask, task.IsCpuTask)
-                .SetProperty(m => m.IsSmall, task.IsSmall)
-                .SetProperty(m => m.Keyspace, task.Keyspace)
-                .SetProperty(m => m.KeyspaceProgress, task.KeyspaceProgress)
-                .SetProperty(m => m.MaxAgents, task.MaxAgents)
-                .SetProperty(m => m.Name, task.Name)
-                .SetProperty(m => m.Notes, task.Notes)
-                .SetProperty(m => m.PreprocessorCommand, task.PreprocessorCommand)
-                .SetProperty(m => m.Priority, task.Priority)
-                .SetProperty(m => m.SkipKeyspace, task.SkipKeyspace)
-                .SetProperty(m => m.StaticChunks, task.StaticChunks)
-                .SetProperty(m => m.StatusTimer, task.StatusTimer)
-                .SetProperty(m => m.TaskWrapperId, task.TaskWrapperId)
-                .SetProperty(m => m.UseNewBenchmark, task.UseNewBenchmark)
-                .SetProperty(m => m.UsePreprocessor, task.UsePreprocessor))
-            .ConfigureAwait(true);
+                               .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.AttackCommand, task.AttackCommand)
+                                                                     .SetProperty(m => m.ChunkSize, task.ChunkSize)
+                                                                     .SetProperty(m => m.ChunkTime, task.ChunkTime)
+                                                                     .SetProperty(m => m.Color, task.Color)
+                                                                     .SetProperty(m => m.EnforcePipe, task.EnforcePipe)
+                                                                     .SetProperty(m => m.Id, task.Id)
+                                                                     .SetProperty(m => m.IsArchived, task.IsArchived)
+                                                                     .SetProperty(m => m.IsCpuTask, task.IsCpuTask)
+                                                                     .SetProperty(m => m.IsSmall, task.IsSmall)
+                                                                     .SetProperty(m => m.Keyspace, task.Keyspace)
+                                                                     .SetProperty(m => m.KeyspaceProgress,
+                                                                         task.KeyspaceProgress)
+                                                                     .SetProperty(m => m.MaxAgents, task.MaxAgents)
+                                                                     .SetProperty(m => m.Name, task.Name)
+                                                                     .SetProperty(m => m.Notes, task.Notes)
+                                                                     .SetProperty(m => m.PreprocessorCommand,
+                                                                         task.PreprocessorCommand)
+                                                                     .SetProperty(m => m.Priority, task.Priority)
+                                                                     .SetProperty(m => m.SkipKeyspace, task.SkipKeyspace)
+                                                                     .SetProperty(m => m.StaticChunks,
+                                                                         task.StaticChunks.Adapt<TaskStaticChunking>())
+                                                                     .SetProperty(m => m.StatusTimer, task.StatusTimer)
+                                                                     .SetProperty(m => m.TaskWrapperId, task.TaskWrapperId)
+                                                                     .SetProperty(m => m.UseNewBenchmark,
+                                                                         task.UseNewBenchmark)
+                                                                     .SetProperty(m => m.UsePreprocessor,
+                                                                         task.UsePreprocessor))
+                               .ConfigureAwait(true);
 
         if (affected != 1) return TypedResults.NotFound();
 
         Task? modifiedTask = await db.Tasks.Include(t => t.TaskWrapper)
-            .Where(model => model.Id == id)
-            .SingleOrDefaultAsync()
-            .ConfigureAwait(true);
+                                     .Where(model => model.Id == id)
+                                     .SingleOrDefaultAsync()
+                                     .ConfigureAwait(true);
         if (task.TaskWrapper is not null) modifiedTask!.TaskWrapper.HashlistId = task.TaskWrapper.HashlistId;
         if (task.CrackerBinary is not null) modifiedTask!.CrackerBinaryId = task.CrackerBinary.Id;
         db.Tasks.Update(modifiedTask!);

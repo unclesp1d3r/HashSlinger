@@ -6,7 +6,7 @@ using MediatR;
 using Shared.Models;
 using Shared.Models.Enums;
 using Utilities;
-using Task = Task;
+using Task = System.Threading.Tasks.Task;
 
 /// <summary>Represents a command to perform the initial setup of the application.</summary>
 public record PerformInitialSetupCommand : IRequest;
@@ -40,6 +40,7 @@ public class PerformInitialSetupHandler : IRequestHandler<PerformInitialSetupCom
         _dbContext.LogEntries.RemoveRange(_dbContext.LogEntries);
         _dbContext.CrackerBinaries.RemoveRange(_dbContext.CrackerBinaries);
         _dbContext.Hashlists.RemoveRange(_dbContext.Hashlists);
+        _dbContext.Files.RemoveRange(_dbContext.Files);
         _dbContext.SaveChanges();
 
         // Seed the database.
@@ -51,11 +52,11 @@ public class PerformInitialSetupHandler : IRequestHandler<PerformInitialSetupCom
             Executable = "https://archive.hashtopolis.org/agent/python/stable/0.7.1.zip",
             Name = "hashtopolis.zip",
             OperatingSystems = new List<string>
-            {
-                AgentOperatingSystems.Windows.Adapt<string>(),
-                AgentOperatingSystems.Linux.Adapt<string>(),
-                AgentOperatingSystems.MacOS.Adapt<string>()
-            },
+                {
+                        AgentOperatingSystems.Windows.Adapt<string>(),
+                        AgentOperatingSystems.Linux.Adapt<string>(),
+                        AgentOperatingSystems.MacOS.Adapt<string>()
+                },
             Version = "0.7.1",
             UpdateAvailable = string.Empty,
             UpdateTrack = "stable"
@@ -93,11 +94,11 @@ public class PerformInitialSetupHandler : IRequestHandler<PerformInitialSetupCom
             DownloadUrl = "https://hashcat.net/files/hashcat-6.2.6.7z",
             Name = "hashcat",
             OperatingSystems = new List<string>
-            {
-                AgentOperatingSystems.Windows.Adapt<string>(),
-                AgentOperatingSystems.Linux.Adapt<string>(),
-                AgentOperatingSystems.MacOS.Adapt<string>()
-            },
+                {
+                        AgentOperatingSystems.Windows.Adapt<string>(),
+                        AgentOperatingSystems.Linux.Adapt<string>(),
+                        AgentOperatingSystems.MacOS.Adapt<string>()
+                },
             Version = "6.2.6",
             CrackerBinaryType = _dbContext.CrackerBinaryTypes.Single(x => x.TypeName == "hashcat")
         };
@@ -107,13 +108,13 @@ public class PerformInitialSetupHandler : IRequestHandler<PerformInitialSetupCom
         {
             AccessGroup = defaultGroup,
             Hashes = new List<Hash>
-            {
-                new()
                 {
-                    HashValue = "e2fc714c4727ee9395f324cd2e7f331f",
-                    IsCracked = false
-                }
-            },
+                        new()
+                        {
+                                HashValue = "e2fc714c4727ee9395f324cd2e7f331f",
+                                IsCracked = false
+                        }
+                },
             HashType = _dbContext.HashTypes.Single(x => x.HashcatId == 0),
             BrainFeatures = 0,
             BrainId = 0,
@@ -130,6 +131,16 @@ public class PerformInitialSetupHandler : IRequestHandler<PerformInitialSetupCom
         };
         _dbContext.Hashlists.Add(hashlist);
 
+        var passwordList = new File
+        {
+            AccessGroup = defaultGroup,
+            FileName = "500-worst-passwords.txt",
+            IsSecret = false,
+            FileType = FileType.WordList,
+            LineCount = 500,
+            Size = 3491
+        };
+        _dbContext.Files.Add(passwordList);
 
         var newTask = new Shared.Models.Task
         {
@@ -143,12 +154,13 @@ public class PerformInitialSetupHandler : IRequestHandler<PerformInitialSetupCom
                 Name = "Test Task",
                 Priority = 0
             },
-            AttackCommand = "-a 0 #HL#",
+            AttackCommand = "-a 0 #HL# 500-worst-passwords.txt",
             ChunkSize = 600,
             EnforcePipe = false,
             IsArchived = false,
             IsCpuTask = false,
             IsSmall = false,
+            Files = new List<File> { passwordList },
             MaxAgents = 0,
             Name = "Test Task",
             Notes = "It's perfect. No notes.",

@@ -13,10 +13,10 @@ namespace HashSlinger.Shared.Generated
         public int AccessGroupId { get; set; }
         public Guid? FileGuid { get; set; }
         public string FileName { get; set; }
-        public int FileType { get; set; }
+        public string FileType { get; set; }
         public int Id { get; set; }
         public bool IsSecret { get; set; }
-        public long? LineCount { get; set; }
-        public long Size { get; set; }
+        public int? LineCount { get; set; }
+        public int Size { get; set; }
     }
 }

@@ -23,7 +23,7 @@ public class GetTaskHandler : IRequestHandler<GetTaskRequest, GetTaskResponse>
     {
         // Verify Agent
         Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
-            .ConfigureAwait(false);
+                                      .ConfigureAwait(false);
 
         if (agent is null)
         {
@@ -37,12 +37,12 @@ public class GetTaskHandler : IRequestHandler<GetTaskRequest, GetTaskResponse>
 
         // Update Agent LastSeen
         await _mediator.Send(new TouchAgentCommand(request.Token, AgentActions.GetTask), cancellationToken)
-            .ConfigureAwait(false);
+                       .ConfigureAwait(false);
 
 
         // Check for HealthChecks
         var healthChecks = await _mediator.Send(new GetPendingHealthCheckForAgentQuery(agent.Id), cancellationToken)
-            .ConfigureAwait(true);
+                                          .ConfigureAwait(true);
 
         if (healthChecks)
         {
@@ -69,12 +69,14 @@ public class GetTaskHandler : IRequestHandler<GetTaskRequest, GetTaskResponse>
         // Check for Assigned Task
         // We need to expand this to support different types of priorities (prioritize by project, hashtype, etc)
         GetNextTaskForAgentProjectionResponse? nextTask = await _mediator
-            .Send(new GetNextTaskForAgentProjectionQuery(agent.Id), cancellationToken)
-            .ConfigureAwait(true);
+                                                                .Send(new GetNextTaskForAgentProjectionQuery(agent.Id),
+                                                                    cancellationToken)
+                                                                .ConfigureAwait(true);
         Log.Information("Next Task for Agent {AgentId} is {@TaskId}", agent.Id, nextTask);
         if (nextTask is not null)
             return nextTask.Adapt<GetTaskResponse>() with
             {
+                Action = request.Action,
                 Response = HashtopolisConstants.SuccessResponse,
                 Bench = HashSlingerConfiguration.BenchmarkTime,
                 StatusTimer = HashSlingerConfiguration.StatusTimer,

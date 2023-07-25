@@ -33,7 +33,7 @@ namespace HashSlinger.Shared.Generated
         public string? PreprocessorCommand { get; set; }
         public int Priority { get; set; }
         public ulong SkipKeyspace { get; set; }
-        public int StaticChunks { get; set; }
+        public string StaticChunks { get; set; }
         public int StatusTimer { get; set; }
         public int TaskWrapperId { get; set; }
         public bool UseNewBenchmark { get; set; }
