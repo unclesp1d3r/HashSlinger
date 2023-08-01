@@ -29,6 +29,14 @@ public class LocalFileStorageService : IFileStorageService
         return Task.FromResult<Stream?>(stream);
     }
 
+    public Task<FileInfo?> GetFileInfoAsync(string name, string bucket)
+    {
+        var filePath = Path.Combine(GetBucketPath(bucket), name);
+        if (!File.Exists(filePath)) return Task.FromResult<FileInfo?>(null);
+        FileInfo info = new(filePath);
+        return Task.FromResult<FileInfo?>(info);
+    }
+
     /// <inheritdoc />
     public async Task<bool> StoreFileAsync(string name, string bucket, Stream fileStream)
     {

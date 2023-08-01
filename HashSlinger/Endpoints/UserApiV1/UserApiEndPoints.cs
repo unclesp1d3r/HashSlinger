@@ -198,6 +198,16 @@ public static class UserApiEndPoints
         group.MapPost("/create-health-check",
                       void (IMediator mediator) => mediator.Send(new AssignAllAgentsHealthCheckCommand()))
              .WithOpenApi();
+
+        group.MapPost("/update-file/{id:int}",
+                 (int id, IMediator mediator) => mediator.Send(new UpdateFileRecordCommand(id)))
+             .WithOpenApi();
+
+        group.MapPost("/update-files",
+                 (IMediator mediator) => mediator.Send(new UpdateFileRecordsCommand()))
+             .WithOpenApi();
+
+
     }
 
     /// <summary>Maps the agent endpoints.</summary>
