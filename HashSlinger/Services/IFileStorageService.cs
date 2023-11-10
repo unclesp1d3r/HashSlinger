@@ -15,6 +15,14 @@ public interface IFileStorageService
     /// <returns></returns>
     public Task<Stream?> GetFileAsync(string name, string bucket);
 
+    /// <summary>
+    /// Gets the file information asynchronous.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <param name="bucket">The bucket.</param>
+    /// <returns></returns>
+    public Task<FileInfo?> GetFileInfoAsync(string name, string bucket);
+
     /// <summary>Stores the file asynchronously.</summary>
     /// <param name="name">The name.</param>
     /// <param name="bucket">The bucket.</param>
