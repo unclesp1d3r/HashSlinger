@@ -19,7 +19,7 @@ namespace HashSlinger.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -483,8 +483,8 @@ namespace HashSlinger.Api.Migrations
                     b.Property<int?>("LineCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Size")
-                        .HasColumnType("integer");
+                    b.Property<long>("Size")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -1163,6 +1163,9 @@ namespace HashSlinger.Api.Migrations
                         .HasColumnType("integer");
 
                     b.Property<bool>("IsArchived")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")

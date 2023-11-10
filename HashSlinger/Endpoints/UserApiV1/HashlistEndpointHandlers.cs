@@ -48,12 +48,12 @@ public static class HashlistEndpointHandlers
     public async static Task<Results<Ok<HashlistDto>, NotFound>> GetHashlistByIdHandlerAsync(int id, HashSlingerContext db)
     {
         return await db.Hashlists.AsNoTracking()
-            .ProjectToType<HashlistDto>()
-            .AsSplitQuery()
-            .FirstOrDefaultAsync(model => model.Id == id)
-            .ConfigureAwait(true) is HashlistDto model
-            ? TypedResults.Ok(model)
-            : TypedResults.NotFound();
+                       .ProjectToType<HashlistDto>()
+                       .AsSplitQuery()
+                       .FirstOrDefaultAsync(model => model.Id == id)
+                       .ConfigureAwait(true) is HashlistDto model
+                   ? TypedResults.Ok(model)
+                   : TypedResults.NotFound();
     }
 
     /// <summary>Handles updating a Hashlist PUT /api/v1/Hashlist/{id}</summary>
@@ -68,20 +68,21 @@ public static class HashlistEndpointHandlers
     )
     {
         var affected = await db.Hashlists.Where(model => model.Id == id)
-            .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.BrainFeatures, hashlist.BrainFeatures)
-                .SetProperty(m => m.BrainId, hashlist.BrainId)
-                .SetProperty(m => m.Cracked, hashlist.Cracked)
-                .SetProperty(m => m.Format, hashlist.Format.Adapt<HashListFormats>())
-                .SetProperty(m => m.HashCount, hashlist.HashCount)
-                .SetProperty(m => m.HexSalt, hashlist.HexSalt)
-                .SetProperty(m => m.Id, hashlist.Id)
-                .SetProperty(m => m.IsArchived, hashlist.IsArchived)
-                .SetProperty(m => m.IsSalted, hashlist.IsSalted)
-                .SetProperty(m => m.IsSecret, hashlist.IsSecret)
-                .SetProperty(m => m.Name, hashlist.Name)
-                .SetProperty(m => m.Notes, hashlist.Notes)
-                .SetProperty(m => m.SaltSeparator, hashlist.SaltSeparator))
-            .ConfigureAwait(true);
+                               .ExecuteUpdateAsync(setters =>
+                                   setters.SetProperty(m => m.BrainFeatures, hashlist.BrainFeatures)
+                                          .SetProperty(m => m.BrainId, hashlist.BrainId)
+                                          .SetProperty(m => m.Cracked, hashlist.Cracked)
+                                          .SetProperty(m => m.Format, hashlist.Format.Adapt<HashListFormats>())
+                                          .SetProperty(m => m.HashCount, hashlist.HashCount)
+                                          .SetProperty(m => m.HexSalt, hashlist.HexSalt)
+                                          .SetProperty(m => m.Id, hashlist.Id)
+                                          .SetProperty(m => m.IsArchived, hashlist.IsArchived)
+                                          .SetProperty(m => m.IsSalted, hashlist.IsSalted)
+                                          .SetProperty(m => m.IsSecret, hashlist.IsSecret)
+                                          .SetProperty(m => m.Name, hashlist.Name)
+                                          .SetProperty(m => m.Notes, hashlist.Notes)
+                                          .SetProperty(m => m.SaltSeparator, hashlist.SaltSeparator))
+                               .ConfigureAwait(true);
 
         return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
     }

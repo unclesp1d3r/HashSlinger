@@ -227,16 +227,12 @@ public class HashSlingerContext : DbContext
 
         modelBuilder.Entity<NotificationSetting>(entity =>
         {
-            entity.HasOne(d => d.User)
-                  .WithMany(p => p.NotificationSettings)
-                  .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.User).WithMany(p => p.NotificationSettings).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<PreconfiguredTask>(entity =>
         {
-            entity.HasOne(d => d.CrackerBinaryType)
-                  .WithMany(p => p.Pretasks)
-                  .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.CrackerBinaryType).WithMany(p => p.Pretasks).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<RegistrationVoucher>(entity =>
@@ -247,9 +243,7 @@ public class HashSlingerContext : DbContext
 
         modelBuilder.Entity<Session>(entity =>
         {
-            entity.HasOne(d => d.User)
-                  .WithMany(p => p.Sessions)
-                  .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.User).WithMany(p => p.Sessions).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<Speed>(entity =>
@@ -282,9 +276,7 @@ public class HashSlingerContext : DbContext
 
         modelBuilder.Entity<TaskDebugOutput>(entity =>
         {
-            entity.HasOne(d => d.Task)
-                  .WithMany(p => p.TaskDebugOutputs)
-                  .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.HasOne(d => d.Task).WithMany(p => p.TaskDebugOutputs).OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<TaskWrapper>(entity =>

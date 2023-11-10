@@ -38,7 +38,7 @@ public record LogEntry
     /// <returns>A new LogEntry</returns>
     public static LogEntry Debug(string message, string issuer = "HashSlinger")
     {
-        return LogEntry.CreateEntry(message, LogEntryLevels.Debug, issuer);
+        return CreateEntry(message, LogEntryLevels.Debug, issuer);
     }
 
     /// <summary>Creates a new Error level entry.</summary>
@@ -47,7 +47,7 @@ public record LogEntry
     /// <returns>A new LogEntry</returns>
     public static LogEntry Error(string message, string issuer = "HashSlinger")
     {
-        return LogEntry.CreateEntry(message, LogEntryLevels.Error, issuer);
+        return CreateEntry(message, LogEntryLevels.Error, issuer);
     }
 
     /// <summary>Creates a new Fatal level entry.</summary>
@@ -56,7 +56,7 @@ public record LogEntry
     /// <returns>A new LogEntry</returns>
     public static LogEntry Fatal(string message, string issuer = "HashSlinger")
     {
-        return LogEntry.CreateEntry(message, LogEntryLevels.Fatal, issuer);
+        return CreateEntry(message, LogEntryLevels.Fatal, issuer);
     }
 
     /// <summary>Creates a new Information level entry.</summary>
@@ -65,7 +65,7 @@ public record LogEntry
     /// <returns>A new LogEntry</returns>
     public static LogEntry Information(string message, string issuer = "HashSlinger")
     {
-        return LogEntry.CreateEntry(message, LogEntryLevels.Information, issuer);
+        return CreateEntry(message, LogEntryLevels.Information, issuer);
     }
 
     /// <summary>Creates a new Trace level entry.</summary>
@@ -73,7 +73,7 @@ public record LogEntry
     /// <param name="issuer">The issuer.</param>
     public static LogEntry Tracing(string message, string issuer = "HashSlinger")
     {
-        return LogEntry.CreateEntry(message, LogEntryLevels.Trace, issuer);
+        return CreateEntry(message, LogEntryLevels.Trace, issuer);
     }
 
     /// <summary>Creates a new Warning level entry.</summary>
@@ -82,7 +82,7 @@ public record LogEntry
     /// <returns>A new LogEntry</returns>
     public static LogEntry Warning(string message, string issuer = "HashSlinger")
     {
-        return LogEntry.CreateEntry(message, LogEntryLevels.Warning, issuer);
+        return CreateEntry(message, LogEntryLevels.Warning, issuer);
     }
 
     /// <summary>Creates a new entry with defaults.</summary>

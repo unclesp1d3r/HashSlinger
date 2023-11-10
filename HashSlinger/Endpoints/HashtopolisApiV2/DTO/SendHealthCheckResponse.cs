@@ -7,6 +7,6 @@ public record SendHealthCheckResponse(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("response")]
     string Response,
-    [property: JsonPropertyName("message"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [property: JsonPropertyName("message")] [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     string? Message = null
 ) : IHashtopolisMessage;

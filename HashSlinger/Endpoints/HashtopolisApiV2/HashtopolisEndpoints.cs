@@ -31,104 +31,98 @@ public static class HashtopolisEndpoints
         RouteGroupBuilder group = routes.MapGroup(HashtopolisConstants.EndPointPrefix);
 
         group.MapPost("/",
-                      async (HashtopolisRequest request, [FromServices] HashSlingerContext dbContext, IMediator mediator) =>
-                      {
-                          Log.Information("New request: {@Request}", request);
+                 async (HashtopolisRequest request, [FromServices] HashSlingerContext dbContext, IMediator mediator) =>
+                 {
+                     Log.Information("New request: {@Request}", request);
 
-                          IHashtopolisRequest? message = HashtopolisRequest.ToHashtopolisRequest(request);
-                          if (message is null)
-                          {
-                              HashtopolisRequest badRequest = request with { Response = "ERROR" };
-                              Log.Error("Bad API request: {@BadRequest}", badRequest);
-                              return Results.BadRequest(badRequest);
-                          }
+                     IHashtopolisRequest? message = HashtopolisRequest.ToHashtopolisRequest(request);
+                     if (message is null)
+                     {
+                         HashtopolisRequest badRequest = request with { Response = "ERROR" };
+                         Log.Error("Bad API request: {@BadRequest}", badRequest);
+                         return Results.BadRequest(badRequest);
+                     }
 
-                          var result = await mediator.Send(message).ConfigureAwait(true);
-                          Log.Information("Result: {@Result}", result);
-                          return Results.Ok(result);
-                      })
-                .Accepts<HashtopolisRequest>(false, "application/json")
-                .Produces<CheckClientVersionResponse>()
-                .Produces<ClientErrorResponse>()
-                .Produces<DeregisterResponse>()
-                .Produces<DownloadBinaryResponse>()
-                .Produces<GetChunkResponse>()
-                .Produces<GetFileResponse>()
-                .Produces<GetFileStatusResponse>()
-                .Produces<GetHashlistResponse>()
-                .Produces<GetHealthCheckResponse>()
-                .Produces<GetTaskResponse>()
-                .Produces<LoginResponse>()
-                .Produces<RegisterResponse>()
-                .Produces<SendBenchmarkResponse>()
-                .Produces<SendHealthCheckResponse>()
-                .Produces<SendKeyspaceResponse>()
-                .Produces<SendProgressResponse>()
-                .Produces<TestConnectionResponse>()
-                .Produces<UpdateInformationResponse>()
-                .Produces(StatusCodes.Status400BadRequest);
+                     var result = await mediator.Send(message).ConfigureAwait(true);
+                     Log.Information("Result: {@Result}", result);
+                     return Results.Ok(result);
+                 })
+             .Accepts<HashtopolisRequest>(false, "application/json")
+             .Produces<CheckClientVersionResponse>()
+             .Produces<ClientErrorResponse>()
+             .Produces<DeregisterResponse>()
+             .Produces<DownloadBinaryResponse>()
+             .Produces<GetChunkResponse>()
+             .Produces<GetFileResponse>()
+             .Produces<GetFileStatusResponse>()
+             .Produces<GetHashlistResponse>()
+             .Produces<GetHealthCheckResponse>()
+             .Produces<GetTaskResponse>()
+             .Produces<LoginResponse>()
+             .Produces<RegisterResponse>()
+             .Produces<SendBenchmarkResponse>()
+             .Produces<SendHealthCheckResponse>()
+             .Produces<SendKeyspaceResponse>()
+             .Produces<SendProgressResponse>()
+             .Produces<TestConnectionResponse>()
+             .Produces<UpdateInformationResponse>()
+             .Produces(StatusCodes.Status400BadRequest);
 
         group.MapGet("/getHashlist/{id:int}",
-                     (int id, [FromQuery] string token, IMediator mediator) =>
-                             mediator.Send(new GetHashlistDownloadQuery(id, token)))
-                .Produces<FileContentHttpResult>()
-                .Produces(StatusCodes.Status404NotFound)
-                .WithName("DownloadHashlist")
-                .WithOpenApi();
+                 (int id, [FromQuery] string token, IMediator mediator) =>
+                     mediator.Send(new GetHashlistDownloadQuery(id, token)))
+             .Produces<FileContentHttpResult>()
+             .Produces(StatusCodes.Status404NotFound)
+             .WithName("DownloadHashlist")
+             .WithOpenApi();
 
         group.MapGet("/getFile/{id:int}",
-                     async (
-                             int id,
-                             IMediator mediator,
-                             HashSlingerContext context,
-                             IFileStorageService fileStorageService
-                     ) =>
-                     {
-                         // Return the file
-                         File? fileRecord = context.Files.FirstOrDefault(x => x.Id == id);
-                         if (fileRecord is null)
-                             return Results.NotFound();
+                 async (int id, IMediator mediator, HashSlingerContext context, IFileStorageService fileStorageService) =>
+                 {
+                     // Return the file
+                     File? fileRecord = context.Files.FirstOrDefault(x => x.Id == id);
+                     if (fileRecord is null)
+                         return Results.NotFound();
 
-                         await using Stream? fileData = await fileStorageService.GetFileAsync(fileRecord.FileName, "files")
-                                                                .ConfigureAwait(true);
-                         return fileData is null
-                                        ? Results.NotFound()
-                                        : Results.File(fileData, "text/plain", fileRecord.FileName);
-                     })
-                .Produces<FileContentHttpResult>()
-                .Produces(StatusCodes.Status404NotFound)
-                .Produces(StatusCodes.Status403Forbidden)
-                .WithName("DownloadFile")
-                .WithOpenApi();
+                     await using Stream? fileData = await fileStorageService.GetFileAsync(fileRecord.FileName, "files")
+                                                                            .ConfigureAwait(true);
+                     return fileData is null
+                                ? Results.NotFound()
+                                : Results.File(fileData, "text/plain", fileRecord.FileName);
+                 })
+             .Produces<FileContentHttpResult>()
+             .Produces(StatusCodes.Status404NotFound)
+             .Produces(StatusCodes.Status403Forbidden)
+             .WithName("DownloadFile")
+             .WithOpenApi();
 
         group.MapMethods("/getFile/{id:int}",
-                         new[] { "HEAD" },
-                         async (
-                                 int id,
-
-                                 HashSlingerContext context
-
-                         ) =>
-                         {
-                             return await context.Files.AnyAsync(x => x.Id == id).ConfigureAwait(true)
-                                            ? Results.Ok()
-                                            : Results.NotFound();
-                         })
-                .Produces(StatusCodes.Status404NotFound)
-                .Produces(StatusCodes.Status200OK)
-                .WithName("DownloadFileHead")
-                .WithOpenApi();
+                 new[] { "HEAD" },
+                 async (int id, HashSlingerContext context) =>
+                 {
+                     return await context.Files.AnyAsync(x => x.Id == id).ConfigureAwait(true)
+                                ? Results.Ok()
+                                : Results.NotFound();
+                 })
+             .Produces(StatusCodes.Status404NotFound)
+             .Produces(StatusCodes.Status200OK)
+             .WithName("DownloadFileHead")
+             .WithOpenApi();
         // This is a mess and I need to move it somewhere else.
         group.MapPost("/putFile",
-                 async (IFormFile file,
+                 async (
+                     IFormFile file,
                      IFileStorageService fileStorageService,
                      HashSlingerContext dbContext,
-                     IMediator mediator) =>
+                     IMediator mediator
+                 ) =>
+
                  {
                      if (file.Length == 0) return Results.BadRequest();
                      Log.Information("Temp file: {TempFile}", file.Name);
                      await using Stream fileStream = file.OpenReadStream();
-                     var stored = await fileStorageService.StoreFileAsync(file.FileName, "files", fileStream).ConfigureAwait(true);
+                     var stored = await fileStorageService.StoreFileAsync(file.FileName, "files", fileStream)
+                                                          .ConfigureAwait(true);
 
                      var fileRecord = new File
                      {
@@ -149,10 +143,14 @@ public static class HashtopolisEndpoints
 
         // This is a mess and I need to move it somewhere else.
         group.MapPost("/attachFile/{id:int}",
-                 async (int id, IFormFile file,
+                 async (
+                     int id,
+                     IFormFile file,
                      IFileStorageService fileStorageService,
                      HashSlingerContext dbContext,
-                     IMediator mediator) =>
+                     IMediator mediator
+                 ) =>
+
                  {
                      if (file.Length == 0) return Results.BadRequest();
                      Log.Information("Temp file: {TempFile}", file.Name);
@@ -161,7 +159,8 @@ public static class HashtopolisEndpoints
                      if (fileRecord is null) return Results.NotFound();
                      fileRecord.FileName = file.FileName;
                      await using Stream fileStream = file.OpenReadStream();
-                     var stored = await fileStorageService.StoreFileAsync(file.FileName, "files", fileStream).ConfigureAwait(true);
+                     var stored = await fileStorageService.StoreFileAsync(file.FileName, "files", fileStream)
+                                                          .ConfigureAwait(true);
 
                      await dbContext.SaveChangesAsync().ConfigureAwait(true);
                      await mediator.Send(new UpdateFileRecordCommand(fileRecord.Id)).ConfigureAwait(true);

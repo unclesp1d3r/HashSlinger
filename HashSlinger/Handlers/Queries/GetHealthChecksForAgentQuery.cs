@@ -26,11 +26,11 @@ public class GetHealthChecksForAgentHandler : IRequestHandler<GetHealthChecksFor
     {
         Log.Information("Getting HealthChecks for Agent {AgentId}", request.AgentId);
         Agent? agent = await _dbContext.Agents.Where(a => a.Id == request.AgentId)
-            .Include(a => a.HealthCheckAgents)
-            .ThenInclude(h => h.HealthCheck)
-            .ThenInclude(hc => hc.CrackerBinary)
-            .SingleOrDefaultAsync(cancellationToken)
-            .ConfigureAwait(true);
+                                       .Include(a => a.HealthCheckAgents)
+                                       .ThenInclude(h => h.HealthCheck)
+                                       .ThenInclude(hc => hc.CrackerBinary)
+                                       .SingleOrDefaultAsync(cancellationToken)
+                                       .ConfigureAwait(true);
         if (agent is null) return null;
 
         IEnumerable<HealthCheckAgent> pendingHealthChecks

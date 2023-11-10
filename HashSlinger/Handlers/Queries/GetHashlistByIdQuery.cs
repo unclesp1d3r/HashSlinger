@@ -21,6 +21,6 @@ public class GetHashlistByIdHandler : IRequestHandler<GetHashlistByIdQuery, Hash
     public Task<Hashlist?> Handle(GetHashlistByIdQuery request, CancellationToken cancellationToken)
     {
         return _context.Hashlists.Include(x => x.AccessGroup)
-            .FirstOrDefaultAsync(x => x.Id == request.RequestHashlistId, cancellationToken);
+                       .FirstOrDefaultAsync(x => x.Id == request.RequestHashlistId, cancellationToken);
     }
 }

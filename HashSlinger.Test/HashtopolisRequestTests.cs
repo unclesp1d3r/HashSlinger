@@ -13,10 +13,10 @@ public class HashtopolisRequestTests
     [SetUp] public void Setup() { }
 
     private const string TestConnectionJsonMessage = """
-            {
-                "action":"testConnection"
-            }
-            """;
+                                                     {
+                                                         "action":"testConnection"
+                                                     }
+                                                     """;
 
     /// <summary>Tests that a bad request is still deserialized correctly</summary>
     /// <remarks>It should still deserialize, but all of the fields will be null.</remarks>
@@ -24,12 +24,12 @@ public class HashtopolisRequestTests
     public void BadRequestDeserializeTest()
     {
         const string jsonMessage = """
-            {
-            "bad":"request"
-            }
-            """;
+                                   {
+                                   "bad":"request"
+                                   }
+                                   """;
 
-        HashtopolisRequest? hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
+        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
         Assert.That(hashtopolisRequest, Is.Not.Null);
 
         Assert.Pass();
@@ -40,7 +40,7 @@ public class HashtopolisRequestTests
     [Test]
     public void TestConnectionRequestDeserializeTest()
     {
-        HashtopolisRequest? hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(TestConnectionJsonMessage);
+        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(TestConnectionJsonMessage);
 
         Assert.That(hashtopolisRequest, Is.Not.Null);
         Assert.That(hashtopolisRequest?.Action, Is.EqualTo("testConnection"));
@@ -49,16 +49,16 @@ public class HashtopolisRequestTests
     }
 
     /// <summary>Tests to ensure that a bad request is not converted to a HashtopolisRequest</summary>
-    [Test, SuppressMessage("ReSharper", "StringLiteralTypo")]
+    [Test] [SuppressMessage("ReSharper", "StringLiteralTypo")]
     public void BadRequestConvertTest()
     {
         const string jsonMessage = """
-            {
-                "action":"doesntWork"
-            }
-            """;
+                                   {
+                                       "action":"doesntWork"
+                                   }
+                                   """;
 
-        HashtopolisRequest? hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
+        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(jsonMessage);
         IHashtopolisRequest? testConnectionRequest = HashtopolisRequest.ToHashtopolisRequest(hashtopolisRequest);
         Assert.That(testConnectionRequest, Is.Null);
         Assert.Pass();
@@ -69,7 +69,7 @@ public class HashtopolisRequestTests
     [Test]
     public void TestConnectionRequestConvertTest()
     {
-        HashtopolisRequest? hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(TestConnectionJsonMessage);
+        var hashtopolisRequest = JsonSerializer.Deserialize<HashtopolisRequest>(TestConnectionJsonMessage);
 
         Assert.That(hashtopolisRequest, Is.Not.Null);
 

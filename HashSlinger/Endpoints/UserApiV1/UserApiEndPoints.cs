@@ -16,7 +16,7 @@ public static class UserApiEndPoints
     /// <returns></returns>
     public static void MapAgentBinaryEndpoints(this IEndpointRouteBuilder routes)
     {
-        RouteGroupBuilder? group = routes.MapGroup("/AgentBinary").WithTags(nameof(AgentBinary));
+        RouteGroupBuilder group = routes.MapGroup("/AgentBinary").WithTags(nameof(AgentBinary));
 
         group.MapGet("/", AgentBinariesEndpointHandlers.GetAllAgentBinariesHandlerAsync)
              .WithName("GetAllAgentBinaries")
@@ -96,7 +96,7 @@ public static class UserApiEndPoints
     /// <returns></returns>
     public static void MapHashlistEndpoints(this IEndpointRouteBuilder routes)
     {
-        RouteGroupBuilder? group = routes.MapGroup("/Hashlist").WithTags(nameof(Hashlist));
+        RouteGroupBuilder group = routes.MapGroup("/Hashlist").WithTags(nameof(Hashlist));
 
         group.MapGet("/", HashlistEndpointHandlers.GetAllHashlistsHandlerAsync)
              .WithName("GetAllHashlists")
@@ -174,7 +174,7 @@ public static class UserApiEndPoints
     /// <param name="routes">The routes.</param>
     public static void MapUserApiEndpoints(this IEndpointRouteBuilder routes)
     {
-        RouteGroupBuilder? group = routes.MapGroup($"{ApiPrefix}");
+        RouteGroupBuilder group = routes.MapGroup($"{ApiPrefix}");
         group.MapAgentEndpoints();
         group.MapRegistrationVoucherEndpoints();
         group.MapUtilityEndpoints();
@@ -196,18 +196,14 @@ public static class UserApiEndPoints
 
         // Mostly for testing. This is not part of the final API.
         group.MapPost("/create-health-check",
-                      void (IMediator mediator) => mediator.Send(new AssignAllAgentsHealthCheckCommand()))
+                 void (IMediator mediator) => mediator.Send(new AssignAllAgentsHealthCheckCommand()))
              .WithOpenApi();
 
         group.MapPost("/update-file/{id:int}",
                  (int id, IMediator mediator) => mediator.Send(new UpdateFileRecordCommand(id)))
              .WithOpenApi();
 
-        group.MapPost("/update-files",
-                 (IMediator mediator) => mediator.Send(new UpdateFileRecordsCommand()))
-             .WithOpenApi();
-
-
+        group.MapPost("/update-files", (IMediator mediator) => mediator.Send(new UpdateFileRecordsCommand())).WithOpenApi();
     }
 
     /// <summary>Maps the agent endpoints.</summary>
@@ -256,7 +252,7 @@ public static class UserApiEndPoints
     /// <param name="routes">The routes.</param>
     internal static void MapRegistrationVoucherEndpoints(this IEndpointRouteBuilder routes)
     {
-        RouteGroupBuilder? group = routes.MapGroup("/RegistrationVoucher").WithTags(nameof(RegistrationVoucher));
+        RouteGroupBuilder group = routes.MapGroup("/RegistrationVoucher").WithTags(nameof(RegistrationVoucher));
 
         group.MapGet("/", RegistrationVoucherEndpointHandlers.GetAllRegistrationVouchersHandlerAsync)
              .WithName("GetAllRegistrationVouchers")
@@ -296,7 +292,7 @@ public static class UserApiEndPoints
     /// <summary>Maps the file endpoints.</summary>
     public static void MapFileEndpoints(this IEndpointRouteBuilder routes)
     {
-        RouteGroupBuilder? group = routes.MapGroup("/File").WithTags(nameof(File));
+        RouteGroupBuilder group = routes.MapGroup("/File").WithTags(nameof(File));
 
         group.MapGet("/", FileEndpointHandlers.GetAllFilesHandlerAsync)
              .WithName("GetAllFiles")

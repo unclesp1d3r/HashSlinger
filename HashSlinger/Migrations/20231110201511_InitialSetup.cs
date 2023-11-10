@@ -1,11 +1,13 @@
-﻿#nullable disable
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
 
 namespace HashSlinger.Api.Migrations
 {
-    using System.Net;
-    using Microsoft.EntityFrameworkCore.Migrations;
-    using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-
     /// <inheritdoc />
     public partial class InitialSetup : Migration
     {
@@ -140,7 +142,7 @@ namespace HashSlinger.Api.Migrations
                     FileName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     FileType = table.Column<int>(type: "integer", nullable: false),
                     IsSecret = table.Column<bool>(type: "boolean", nullable: false),
-                    LineCount = table.Column<long>(type: "bigint", nullable: true),
+                    LineCount = table.Column<int>(type: "integer", nullable: true),
                     Size = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -150,7 +152,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_Files_AccessGroups_AccessGroupId",
                         column: x => x.AccessGroupId,
                         principalTable: "AccessGroups",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -235,7 +238,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_Hashlists_HashTypes_HashTypeId",
                         column: x => x.HashTypeId,
                         principalTable: "HashTypes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -291,7 +295,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_Agents_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -399,7 +404,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_DownloadableBinaries_CrackerBinaryTypes_CrackerBinaryTypeId",
                         column: x => x.CrackerBinaryTypeId,
                         principalTable: "CrackerBinaryTypes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_DownloadableBinaries_Files_FileId",
                         column: x => x.FileId,
@@ -424,7 +430,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_FileDownload_Files_FileId",
                         column: x => x.FileId,
                         principalTable: "Files",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -488,7 +495,8 @@ namespace HashSlinger.Api.Migrations
                     IsArchived = table.Column<bool>(type: "boolean", nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Priority = table.Column<int>(type: "integer", nullable: false),
-                    TaskType = table.Column<int>(type: "integer", nullable: false)
+                    TaskType = table.Column<int>(type: "integer", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -502,7 +510,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_TaskWrapper_Hashlists_HashlistId",
                         column: x => x.HashlistId,
                         principalTable: "Hashlists",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -547,7 +556,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_AgentStat_Agents_AgentId",
                         column: x => x.AgentId,
                         principalTable: "Agents",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -600,12 +610,14 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_HealthChecks_DownloadableBinaries_CrackerBinaryId",
                         column: x => x.CrackerBinaryId,
                         principalTable: "DownloadableBinaries",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_HealthChecks_HashTypes_HashTypeId",
                         column: x => x.HashTypeId,
                         principalTable: "HashTypes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -664,7 +676,7 @@ namespace HashSlinger.Api.Migrations
                         column: x => x.TaskWrapperId,
                         principalTable: "TaskWrapper",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -689,7 +701,8 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_HealthCheckAgents_Agents_AgentId",
                         column: x => x.AgentId,
                         principalTable: "Agents",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_HealthCheckAgents_HealthChecks_HealthCheckId",
                         column: x => x.HealthCheckId,
@@ -714,16 +727,18 @@ namespace HashSlinger.Api.Migrations
                         name: "FK_Assignment_Agents_AgentId",
                         column: x => x.AgentId,
                         principalTable: "Agents",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Assignment_Tasks_TaskId",
                         column: x => x.TaskId,
                         principalTable: "Tasks",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Chunk",
+                name: "Chunks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -733,7 +748,7 @@ namespace HashSlinger.Api.Migrations
                     Cracked = table.Column<int>(type: "integer", nullable: false),
                     DispatchTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Length = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    Progress = table.Column<int>(type: "integer", nullable: true),
+                    Progress = table.Column<float>(type: "real", nullable: true),
                     Skip = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     SolveTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Speed = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
@@ -742,18 +757,19 @@ namespace HashSlinger.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Chunk", x => x.Id);
+                    table.PrimaryKey("PK_Chunks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Chunk_Agents_AgentId",
+                        name: "FK_Chunks_Agents_AgentId",
                         column: x => x.AgentId,
                         principalTable: "Agents",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Chunk_Tasks_TaskId",
+                        name: "FK_Chunks_Tasks_TaskId",
                         column: x => x.TaskId,
                         principalTable: "Tasks",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -846,9 +862,9 @@ namespace HashSlinger.Api.Migrations
                         principalTable: "Agents",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_AgentError_Chunk_ChunkId",
+                        name: "FK_AgentError_Chunks_ChunkId",
                         column: x => x.ChunkId,
-                        principalTable: "Chunk",
+                        principalTable: "Chunks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -880,9 +896,9 @@ namespace HashSlinger.Api.Migrations
                 {
                     table.PrimaryKey("PK_HashBase", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HashBase_Chunk_ChunkId",
+                        name: "FK_HashBase_Chunks_ChunkId",
                         column: x => x.ChunkId,
-                        principalTable: "Chunk",
+                        principalTable: "Chunks",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_HashBase_Hashlists_HashlistId",
@@ -963,13 +979,13 @@ namespace HashSlinger.Api.Migrations
                 column: "TaskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chunk_AgentId",
-                table: "Chunk",
+                name: "IX_Chunks_AgentId",
+                table: "Chunks",
                 column: "AgentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chunk_TaskId",
-                table: "Chunk",
+                name: "IX_Chunks_TaskId",
+                table: "Chunks",
                 column: "TaskId");
 
             migrationBuilder.CreateIndex(
@@ -1001,6 +1017,16 @@ namespace HashSlinger.Api.Migrations
                 name: "IX_Files_AccessGroupId",
                 table: "Files",
                 column: "AccessGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_FileGuid",
+                table: "Files",
+                column: "FileGuid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_FileName",
+                table: "Files",
+                column: "FileName");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FileTask_TasksId",
@@ -1222,7 +1248,7 @@ namespace HashSlinger.Api.Migrations
                 name: "ApiGroup");
 
             migrationBuilder.DropTable(
-                name: "Chunk");
+                name: "Chunks");
 
             migrationBuilder.DropTable(
                 name: "HealthChecks");

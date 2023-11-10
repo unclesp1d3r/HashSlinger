@@ -349,3 +349,4 @@ fabric.properties
 
 HashSlinger/*.db
 HashSlinger/Database/
+/docker-compose.override.yml

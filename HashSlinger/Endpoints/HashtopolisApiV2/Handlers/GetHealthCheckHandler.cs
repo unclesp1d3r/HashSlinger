@@ -23,7 +23,7 @@ public class GetHealthCheckHandler : IRequestHandler<GetHealthCheckRequest, GetH
     {
         // Verify Agent
         Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
-            .ConfigureAwait(false);
+                                      .ConfigureAwait(false);
 
         if (agent is null)
         {
@@ -37,10 +37,10 @@ public class GetHealthCheckHandler : IRequestHandler<GetHealthCheckRequest, GetH
 
         // Update Agent LastSeen
         await _mediator.Send(new TouchAgentCommand(request.Token, AgentActions.GetHealthCheck), cancellationToken)
-            .ConfigureAwait(false);
+                       .ConfigureAwait(false);
 
         HealthCheck? healthCheck = await _mediator.Send(new GetHealthChecksForAgentQuery(agent.Id), cancellationToken)
-            .ConfigureAwait(true);
+                                                  .ConfigureAwait(true);
 
         if (healthCheck is null)
             return request.Adapt<GetHealthCheckResponse>() with

@@ -29,10 +29,10 @@ public class GetAgentByIdHandler : IRequestHandler<GetAgentByIdQuery, Agent?>
     {
         Log.Debug("Getting agent {Id}", request.Id);
         Agent? agent = await _dbContext.Agents.Include(a => a.AccessGroups)
-            .Include(a => a.User)
-            .Include(a => a.Chunks)
-            .SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken)
-            .ConfigureAwait(true);
+                                       .Include(a => a.User)
+                                       .Include(a => a.Chunks)
+                                       .SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken)
+                                       .ConfigureAwait(true);
         return agent;
     }
 }

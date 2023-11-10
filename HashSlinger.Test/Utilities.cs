@@ -16,7 +16,7 @@ internal static class Utilities
         db.RegistrationVouchers.ExecuteDelete();
         db.Agents.ExecuteDelete();
         db.AgentBinaries.ExecuteDelete();
-        Utilities.InitializeDbForTests(db);
+        InitializeDbForTests(db);
     }
 
     private static void InitializeDbForTests(HashSlingerContext db)

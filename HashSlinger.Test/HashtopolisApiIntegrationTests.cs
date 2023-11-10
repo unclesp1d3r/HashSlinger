@@ -25,7 +25,7 @@ internal class HashtopolisApiIntegrationTests
 
             var actualJsonString = await response.Content.ReadAsStringAsync();
 
-            HashtopolisRequest? actual = JsonSerializer.Deserialize<HashtopolisRequest>(actualJsonString);
+            var actual = JsonSerializer.Deserialize<HashtopolisRequest>(actualJsonString);
             Assert.That(actual, Is.EqualTo(expected));
         }
 
@@ -46,7 +46,7 @@ internal class HashtopolisApiIntegrationTests
 
             var actualJsonString = await response.Content.ReadAsStringAsync();
 
-            CheckClientVersionResponse? actual = JsonSerializer.Deserialize<CheckClientVersionResponse>(actualJsonString);
+            var actual = JsonSerializer.Deserialize<CheckClientVersionResponse>(actualJsonString);
             Assert.Multiple(() =>
             {
                 Assert.That(actual, Is.Not.Null);
@@ -72,7 +72,7 @@ internal class HashtopolisApiIntegrationTests
 
             var actualJsonString = await response.Content.ReadAsStringAsync();
 
-            CheckClientVersionResponse? actual = JsonSerializer.Deserialize<CheckClientVersionResponse>(actualJsonString);
+            var actual = JsonSerializer.Deserialize<CheckClientVersionResponse>(actualJsonString);
             Assert.Multiple(() =>
             {
                 Assert.That(actual, Is.Not.Null);
@@ -98,7 +98,7 @@ internal class HashtopolisApiIntegrationTests
 
             var actualJsonString = await response.Content.ReadAsStringAsync();
 
-            GetFileStatusResponse? actual = JsonSerializer.Deserialize<GetFileStatusResponse>(actualJsonString);
+            var actual = JsonSerializer.Deserialize<GetFileStatusResponse>(actualJsonString);
             Assert.Multiple(() =>
             {
                 Assert.That(actual, Is.Not.Null);
@@ -124,7 +124,7 @@ internal class HashtopolisApiIntegrationTests
 
             var actualJsonString = await response.Content.ReadAsStringAsync();
 
-            GetTaskResponse? actual = JsonSerializer.Deserialize<GetTaskResponse>(actualJsonString);
+            var actual = JsonSerializer.Deserialize<GetTaskResponse>(actualJsonString);
             Assert.Multiple(() =>
             {
                 Assert.That(actual, Is.Not.Null);
@@ -152,7 +152,7 @@ internal class HashtopolisApiIntegrationTests
 
             var actualJsonString = await response.Content.ReadAsStringAsync();
 
-            LoginResponse? actual = JsonSerializer.Deserialize<LoginResponse>(actualJsonString);
+            var actual = JsonSerializer.Deserialize<LoginResponse>(actualJsonString);
             Assert.That(actual, Is.Not.Null);
 
             Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
@@ -175,7 +175,7 @@ internal class HashtopolisApiIntegrationTests
 
             var actualJsonString = await response.Content.ReadAsStringAsync();
 
-            RegisterResponse? actual = JsonSerializer.Deserialize<RegisterResponse>(actualJsonString);
+            var actual = JsonSerializer.Deserialize<RegisterResponse>(actualJsonString);
             Assert.That(actual, Is.Not.Null);
 
             Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));
@@ -192,7 +192,7 @@ internal class HashtopolisApiIntegrationTests
 
         using IServiceScope scope = _factory.Services.CreateScope();
         IServiceProvider scopedServices = scope.ServiceProvider;
-        HashSlingerContext db = scopedServices.GetRequiredService<HashSlingerContext>();
+        var db = scopedServices.GetRequiredService<HashSlingerContext>();
         db.Database.EnsureCreated();
         Utilities.ReinitializeDbForTests(db);
     }
@@ -202,7 +202,7 @@ internal class HashtopolisApiIntegrationTests
     {
         using IServiceScope scope = _factory.Services.CreateScope();
         IServiceProvider scopedServices = scope.ServiceProvider;
-        HashSlingerContext db = scopedServices.GetRequiredService<HashSlingerContext>();
+        var db = scopedServices.GetRequiredService<HashSlingerContext>();
         db.Database.EnsureDeleted();
 
         _client.Dispose();
@@ -225,7 +225,7 @@ internal class HashtopolisApiIntegrationTests
 
             var actualJsonString = await response.Content.ReadAsStringAsync();
 
-            TestConnectionResponse? actual = JsonSerializer.Deserialize<TestConnectionResponse>(actualJsonString);
+            var actual = JsonSerializer.Deserialize<TestConnectionResponse>(actualJsonString);
 
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -252,7 +252,7 @@ internal class HashtopolisApiIntegrationTests
 
             var actualJsonString = await response.Content.ReadAsStringAsync();
 
-            UpdateInformationResponse? actual = JsonSerializer.Deserialize<UpdateInformationResponse>(actualJsonString);
+            var actual = JsonSerializer.Deserialize<UpdateInformationResponse>(actualJsonString);
             Assert.That(actual, Is.Not.Null);
 
             Assert.That(actual!.Response, Is.EqualTo(HashtopolisConstants.SuccessResponse));

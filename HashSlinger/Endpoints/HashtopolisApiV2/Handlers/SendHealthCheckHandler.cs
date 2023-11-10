@@ -20,7 +20,7 @@ public class SendHealthCheckHandler : IRequestHandler<SendHealthCheckRequest, Se
     public async Task<SendHealthCheckResponse> Handle(SendHealthCheckRequest request, CancellationToken cancellationToken)
     {
         var validAgent = await _mediator.Send(new ValidateAgentTokenQuery(request.Token), cancellationToken)
-                                 .ConfigureAwait(true);
+                                        .ConfigureAwait(true);
         if (!validAgent)
             return request.Adapt<SendHealthCheckResponse>() with
             {
@@ -29,17 +29,17 @@ public class SendHealthCheckHandler : IRequestHandler<SendHealthCheckRequest, Se
             };
 
         await _mediator.Send(new TouchAgentCommand(request.Token, AgentActions.GetFileStatus), cancellationToken)
-                .ConfigureAwait(false);
+                       .ConfigureAwait(false);
 
         await _mediator.Send(new UpdateHealthCheckWithResultCommand(request.Token,
-                                                                    request.NumCracked,
-                                                                    request.Start,
-                                                                    request.End,
-                                                                    request.NumGpus,
-                                                                    request.Errors,
-                                                                    request.CheckId),
-                             cancellationToken)
-                .ConfigureAwait(false);
+                               request.NumCracked,
+                               request.Start,
+                               request.End,
+                               request.NumGpus,
+                               request.Errors,
+                               request.CheckId),
+                           cancellationToken)
+                       .ConfigureAwait(false);
         return request.Adapt<SendHealthCheckResponse>() with
         {
             Response = HashtopolisConstants.OkResponse

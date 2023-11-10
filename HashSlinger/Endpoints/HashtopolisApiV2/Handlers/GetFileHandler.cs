@@ -19,10 +19,7 @@ public class GetFileHandler : IRequestHandler<GetFileRequest, GetFileResponse>
 
     /// <summary>Initializes a new instance of the <see cref="GetFileHandler" /> class.</summary>
     /// <param name="mediator">The mediator.</param>
-    public GetFileHandler(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public GetFileHandler(IMediator mediator) => _mediator = mediator;
 
     /// <inheritdoc />
     public async Task<GetFileResponse> Handle(GetFileRequest request, CancellationToken cancellationToken)

@@ -45,12 +45,12 @@ public static class AgentBinariesEndpointHandlers
     )
     {
         return await db.AgentBinaries.ProjectToType<AgentBinaryDto>()
-            .AsNoTracking()
-            .AsSplitQuery()
-            .FirstOrDefaultAsync(model => model.Id == id)
-            .ConfigureAwait(true) is AgentBinaryDto model
-            ? TypedResults.Ok(model)
-            : TypedResults.NotFound();
+                       .AsNoTracking()
+                       .AsSplitQuery()
+                       .FirstOrDefaultAsync(model => model.Id == id)
+                       .ConfigureAwait(true) is AgentBinaryDto model
+                   ? TypedResults.Ok(model)
+                   : TypedResults.NotFound();
     }
 
     /// <summary>Handles getting all agent binaries.</summary>
@@ -73,16 +73,20 @@ public static class AgentBinariesEndpointHandlers
     )
     {
         var affected = await db.AgentBinaries.Where(model => model.Id == id)
-            .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.Type, agentBinary.Type)
-                .SetProperty(m => m.UpdateAvailable, agentBinary.UpdateAvailable)
-                .SetProperty(m => m.UpdateTrack, agentBinary.UpdateTrack)
-                .SetProperty(m => m.DownloadUrl, agentBinary.DownloadUrl)
-                .SetProperty(m => m.Executable, agentBinary.Executable)
-                .SetProperty(m => m.Id, agentBinary.Id)
-                .SetProperty(m => m.Name, agentBinary.Name)
-                .SetProperty(m => m.OperatingSystems, agentBinary.OperatingSystems)
-                .SetProperty(m => m.Version, agentBinary.Version))
-            .ConfigureAwait(true);
+                               .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.Type, agentBinary.Type)
+                                                                     .SetProperty(m => m.UpdateAvailable,
+                                                                         agentBinary.UpdateAvailable)
+                                                                     .SetProperty(m => m.UpdateTrack,
+                                                                         agentBinary.UpdateTrack)
+                                                                     .SetProperty(m => m.DownloadUrl,
+                                                                         agentBinary.DownloadUrl)
+                                                                     .SetProperty(m => m.Executable, agentBinary.Executable)
+                                                                     .SetProperty(m => m.Id, agentBinary.Id)
+                                                                     .SetProperty(m => m.Name, agentBinary.Name)
+                                                                     .SetProperty(m => m.OperatingSystems,
+                                                                         agentBinary.OperatingSystems)
+                                                                     .SetProperty(m => m.Version, agentBinary.Version))
+                               .ConfigureAwait(true);
 
         return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
     }

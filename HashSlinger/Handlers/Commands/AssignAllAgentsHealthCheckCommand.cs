@@ -5,7 +5,7 @@ using MediatR;
 using Serilog;
 using Shared.Models;
 using Shared.Models.Enums;
-using Task = System.Threading.Tasks.Task;
+using Task = Task;
 
 /// <summary>Represents a command to assign a health check to all agents.</summary>
 /// <seealso cref="MediatR.IRequest" />
@@ -29,8 +29,8 @@ public class AssignAllAgentsHealthCheckHandler : IRequestHandler<AssignAllAgents
         Log.Information("Assigning HealthCheck to all Agents");
 
 
-        CrackerBinary? hashcat = _dbContext.CrackerBinaries.FirstOrDefault(x => x.Name == "hashcat")!;
-        HashType? hashType = _dbContext.HashTypes.SingleOrDefault(x => x.HashcatId == 0)!;
+        CrackerBinary hashcat = _dbContext.CrackerBinaries.FirstOrDefault(x => x.Name == "hashcat")!;
+        HashType hashType = _dbContext.HashTypes.SingleOrDefault(x => x.HashcatId == 0)!;
         try
         {
             var healthCheck = new HealthCheck
@@ -57,14 +57,14 @@ public class AssignAllAgentsHealthCheckHandler : IRequestHandler<AssignAllAgents
             foreach (Agent? agent in _dbContext.Agents.AsEnumerable())
             {
                 await _dbContext.HealthCheckAgents.AddAsync(new HealthCheckAgent
-                        {
-                            Agent = agent,
-                            HealthCheck = healthCheck,
-                            Status = HealthCheckStatus.Pending,
-                            Errors = new List<string>()
-                        },
-                        cancellationToken)
-                    .ConfigureAwait(true);
+                                    {
+                                        Agent = agent,
+                                        HealthCheck = healthCheck,
+                                        Status = HealthCheckStatus.Pending,
+                                        Errors = new List<string>()
+                                    },
+                                    cancellationToken)
+                                .ConfigureAwait(true);
             }
 
 

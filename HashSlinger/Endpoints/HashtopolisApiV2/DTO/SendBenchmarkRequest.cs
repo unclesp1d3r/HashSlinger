@@ -1,6 +1,7 @@
 ﻿namespace HashSlinger.Api.Endpoints.HashtopolisApiV2.DTO;
 
 using System.Text.Json.Serialization;
+using MediatR;
 
 /// <summary>The client sends the tested benchmark of a task.</summary>
 /// <remarks>
@@ -12,7 +13,7 @@ using System.Text.Json.Serialization;
 public record SendBenchmarkRequest(
     [property: JsonPropertyName("action")] string Action,
     [property: JsonPropertyName("token")] string Token,
-    [property: JsonPropertyName("taskId")] int? TaskId,
+    [property: JsonPropertyName("taskId")] int TaskId,
     [property: JsonPropertyName("type")] string Type,
     [property: JsonPropertyName("result")] string Result
-) : IHashtopolisRequest;
+) : IHashtopolisRequest, IRequest<SendBenchmarkResponse>;

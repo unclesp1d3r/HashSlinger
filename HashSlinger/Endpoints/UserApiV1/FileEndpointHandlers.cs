@@ -52,9 +52,8 @@ public static class FileEndpointHandlers
                                .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.AccessGroupId, file.AccessGroupId)
                                                                      .SetProperty(m => m.FileGuid, file.FileGuid)
                                                                      .SetProperty(m => m.FileName, file.FileName)
-                                                                     .SetProperty(
-                                                                             m => m.FileType,
-                                                                             file.FileType.Adapt<FileType>())
+                                                                     .SetProperty(m => m.FileType,
+                                                                         file.FileType.Adapt<FileType>())
                                                                      .SetProperty(m => m.Id, file.Id)
                                                                      .SetProperty(m => m.IsSecret, file.IsSecret)
                                                                      .SetProperty(m => m.LineCount, file.LineCount)
@@ -76,8 +75,8 @@ public static class FileEndpointHandlers
                        .AsNoTracking()
                        .FirstOrDefaultAsync(model => model.Id == id)
                        .ConfigureAwait(true) is FileDto model
-                       ? TypedResults.Ok(model)
-                       : TypedResults.NotFound();
+                   ? TypedResults.Ok(model)
+                   : TypedResults.NotFound();
     }
 
     /// <summary>

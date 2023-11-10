@@ -31,6 +31,6 @@ public class
     {
         Log.Debug("Getting voucher {Voucher}", request.Voucher);
         return _dbContext.RegistrationVouchers.Include(r => r.AccessGroup)
-            .SingleOrDefaultAsync(v => v.Voucher == request.Voucher, cancellationToken);
+                         .SingleOrDefaultAsync(v => v.Voucher == request.Voucher, cancellationToken);
     }
 }

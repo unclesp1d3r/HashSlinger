@@ -6,7 +6,7 @@ using MediatR;
 using Shared.Models;
 using Shared.Models.Enums;
 using Utilities;
-using Task = System.Threading.Tasks.Task;
+using Task = Task;
 
 /// <summary>Represents a command to perform the initial setup of the application.</summary>
 public record PerformInitialSetupCommand : IRequest;
@@ -52,11 +52,11 @@ public class PerformInitialSetupHandler : IRequestHandler<PerformInitialSetupCom
             Executable = "https://archive.hashtopolis.org/agent/python/stable/0.7.1.zip",
             Name = "hashtopolis.zip",
             OperatingSystems = new List<string>
-                {
-                        AgentOperatingSystems.Windows.Adapt<string>(),
-                        AgentOperatingSystems.Linux.Adapt<string>(),
-                        AgentOperatingSystems.MacOS.Adapt<string>()
-                },
+            {
+                AgentOperatingSystems.Windows.Adapt<string>(),
+                AgentOperatingSystems.Linux.Adapt<string>(),
+                AgentOperatingSystems.MacOS.Adapt<string>()
+            },
             Version = "0.7.1",
             UpdateAvailable = string.Empty,
             UpdateTrack = "stable"
@@ -94,11 +94,11 @@ public class PerformInitialSetupHandler : IRequestHandler<PerformInitialSetupCom
             DownloadUrl = "https://hashcat.net/files/hashcat-6.2.6.7z",
             Name = "hashcat",
             OperatingSystems = new List<string>
-                {
-                        AgentOperatingSystems.Windows.Adapt<string>(),
-                        AgentOperatingSystems.Linux.Adapt<string>(),
-                        AgentOperatingSystems.MacOS.Adapt<string>()
-                },
+            {
+                AgentOperatingSystems.Windows.Adapt<string>(),
+                AgentOperatingSystems.Linux.Adapt<string>(),
+                AgentOperatingSystems.MacOS.Adapt<string>()
+            },
             Version = "6.2.6",
             CrackerBinaryType = _dbContext.CrackerBinaryTypes.Single(x => x.TypeName == "hashcat")
         };
@@ -108,13 +108,13 @@ public class PerformInitialSetupHandler : IRequestHandler<PerformInitialSetupCom
         {
             AccessGroup = defaultGroup,
             Hashes = new List<Hash>
+            {
+                new()
                 {
-                        new()
-                        {
-                                HashValue = "e2fc714c4727ee9395f324cd2e7f331f",
-                                IsCracked = false
-                        }
-                },
+                    HashValue = "e2fc714c4727ee9395f324cd2e7f331f",
+                    IsCracked = false
+                }
+            },
             HashType = _dbContext.HashTypes.Single(x => x.HashcatId == 0),
             BrainFeatures = 0,
             BrainId = 0,

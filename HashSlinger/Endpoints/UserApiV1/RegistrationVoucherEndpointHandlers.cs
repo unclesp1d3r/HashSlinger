@@ -26,8 +26,8 @@ public static class RegistrationVoucherEndpointHandlers
     public async static Task<Results<Ok, NotFound>> DeleteRegistrationVoucherHandlerAsync(int id, HashSlingerContext db)
     {
         var affected = await db.RegistrationVouchers.Where(model => model.Id == id)
-            .ExecuteDeleteAsync()
-            .ConfigureAwait(true);
+                               .ExecuteDeleteAsync()
+                               .ConfigureAwait(true);
 
         return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
     }
@@ -45,12 +45,12 @@ public static class RegistrationVoucherEndpointHandlers
     )
     {
         return await db.RegistrationVouchers.ProjectToType<RegistrationVoucherDto>()
-            .AsNoTracking()
-            .AsSplitQuery()
-            .FirstOrDefaultAsync(model => model.Id == id)
-            .ConfigureAwait(true) is RegistrationVoucherDto model
-            ? TypedResults.Ok(model)
-            : TypedResults.NotFound();
+                       .AsNoTracking()
+                       .AsSplitQuery()
+                       .FirstOrDefaultAsync(model => model.Id == id)
+                       .ConfigureAwait(true) is RegistrationVoucherDto model
+                   ? TypedResults.Ok(model)
+                   : TypedResults.NotFound();
     }
 
     /// <summary>Handles updating a RegistrationVoucher PUT /api/v1/RegistrationVoucher/{id}</summary>
@@ -61,11 +61,11 @@ public static class RegistrationVoucherEndpointHandlers
     )
     {
         var affected = await db.RegistrationVouchers.Where(model => model.Id == id)
-            .ExecuteUpdateAsync(setters =>
-                setters.SetProperty(m => m.Expiration, registrationVoucherDto.Expiration)
-                    .SetProperty(m => m.Id, registrationVoucherDto.Id)
-                    .SetProperty(m => m.Voucher, registrationVoucherDto.Voucher))
-            .ConfigureAwait(true);
+                               .ExecuteUpdateAsync(setters =>
+                                   setters.SetProperty(m => m.Expiration, registrationVoucherDto.Expiration)
+                                          .SetProperty(m => m.Id, registrationVoucherDto.Id)
+                                          .SetProperty(m => m.Voucher, registrationVoucherDto.Voucher))
+                               .ConfigureAwait(true);
 
         return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
     }

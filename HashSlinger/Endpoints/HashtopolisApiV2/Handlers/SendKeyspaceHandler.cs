@@ -23,7 +23,7 @@ public class SendKeyspaceHandler : IRequestHandler<SendKeyspaceRequest, SendKeys
     public async Task<SendKeyspaceResponse> Handle(SendKeyspaceRequest request, CancellationToken cancellationToken)
     {
         var validAgent = await _mediator.Send(new ValidateAgentTokenQuery(request.Token), cancellationToken)
-                                 .ConfigureAwait(true);
+                                        .ConfigureAwait(true);
         if (!validAgent)
             return request.Adapt<SendKeyspaceResponse>() with
             {
@@ -32,11 +32,11 @@ public class SendKeyspaceHandler : IRequestHandler<SendKeyspaceRequest, SendKeys
             };
 
         await _mediator.Send(new TouchAgentCommand(request.Token, AgentActions.SendKeyspace), cancellationToken)
-                .ConfigureAwait(false);
+                       .ConfigureAwait(false);
 
 
         Task? task = await _mediator.Send(new GetTaskByIdQuery(request.Token, request.TaskId), cancellationToken)
-                             .ConfigureAwait(true);
+                                    .ConfigureAwait(true);
 
         if (task is null)
             return request.Adapt<SendKeyspaceResponse>() with { Response = "error", Message = "Task not found" };
