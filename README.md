@@ -117,12 +117,12 @@ After extensive testing, .NET was determined to be the most performant option fo
 - [X] CheckClientVersion
 - [X] DownloadBinary
 - [ ] ClientError
-- [ ] GetFile
+- [X] GetFile
 - [X] GetHashlist
-- [ ] GetTask
-- [ ] GetChunk
-- [ ] SendKeyspace
-- [	] SendBenchmark
+- [X] GetTask
+- [X] GetChunk
+- [X] SendKeyspace
+- [X] SendBenchmark
 - [ ] SendProgress
 - [X] GetFileStatus
 - [X] GetHealthCheck
