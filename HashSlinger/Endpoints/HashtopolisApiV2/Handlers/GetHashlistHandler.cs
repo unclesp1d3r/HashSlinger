@@ -25,7 +25,7 @@ public class GetHashlistHandler : IRequestHandler<GetHashlistRequest, GetHashlis
     {
         // Verify Agent
         Agent? agent = await _mediator.Send(new GetAgentByTokenQuery(request.Token), cancellationToken)
-            .ConfigureAwait(false);
+                                      .ConfigureAwait(false);
 
         if (agent is null)
         {
@@ -39,11 +39,11 @@ public class GetHashlistHandler : IRequestHandler<GetHashlistRequest, GetHashlis
 
         // Update Agent LastSeen
         await _mediator.Send(new TouchAgentCommand(request.Token, AgentActions.GetHashlist), cancellationToken)
-            .ConfigureAwait(false);
+                       .ConfigureAwait(false);
 
 
         Hashlist? hashlist = await _mediator.Send(new GetHashlistByIdQuery(request.HashlistId), cancellationToken)
-            .ConfigureAwait(true);
+                                            .ConfigureAwait(true);
 
 
         if (hashlist is null)

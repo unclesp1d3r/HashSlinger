@@ -3,7 +3,7 @@
 using Data;
 using MediatR;
 using Serilog;
-using Task = System.Threading.Tasks.Task;
+using Task = Task;
 
 /// <summary>Represents a command to update an task.</summary>
 public record UpdateTaskCommand(Shared.Models.Task Task) : IRequest;

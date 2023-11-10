@@ -39,12 +39,12 @@ public static class AgentEndpointHandlers
     public async static Task<Results<Ok<AgentDto>, NotFound>> GetAgentByIdHandlerAsync(int id, HashSlingerContext db)
     {
         return await db.Agents.AsNoTracking()
-            .ProjectToType<AgentDto>()
-            .AsSplitQuery()
-            .FirstOrDefaultAsync(model => model.Id == id)
-            .ConfigureAwait(true) is AgentDto model
-            ? TypedResults.Ok(model)
-            : TypedResults.NotFound();
+                       .ProjectToType<AgentDto>()
+                       .AsSplitQuery()
+                       .FirstOrDefaultAsync(model => model.Id == id)
+                       .ConfigureAwait(true) is AgentDto model
+                   ? TypedResults.Ok(model)
+                   : TypedResults.NotFound();
     }
 
     /// <summary>Gets all agents.</summary>
@@ -65,20 +65,22 @@ public static class AgentEndpointHandlers
     public async static Task<Results<Ok, NotFound>> UpdateAgentHandlerAsync(int id, AgentDto agent, HashSlingerContext db)
     {
         var affected = await db.Agents.Where(model => model.Id == id)
-            .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.Id, agent.Id)
-                .SetProperty(m => m.Name, agent.Name)
-                .SetProperty(m => m.Uid, agent.Uid)
-                .SetProperty(m => m.Devices, agent.Devices)
-                .SetProperty(m => m.CommandParameters, agent.CommandParameters)
-                .SetProperty(m => m.IgnoreErrors, agent.IgnoreErrors)
-                .SetProperty(m => m.IsActive, agent.IsActive)
-                .SetProperty(m => m.IsTrusted, agent.IsTrusted)
-                .SetProperty(m => m.Token, agent.Token)
-                .SetProperty(m => m.LastSeenTime, agent.LastSeenTime)
-                .SetProperty(m => m.UserId, agent.UserId)
-                .SetProperty(m => m.CpuOnly, agent.CpuOnly)
-                .SetProperty(m => m.ClientSignature, agent.ClientSignature))
-            .ConfigureAwait(true);
+                               .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.Id, agent.Id)
+                                                                     .SetProperty(m => m.Name, agent.Name)
+                                                                     .SetProperty(m => m.Uid, agent.Uid)
+                                                                     .SetProperty(m => m.Devices, agent.Devices)
+                                                                     .SetProperty(m => m.CommandParameters,
+                                                                         agent.CommandParameters)
+                                                                     .SetProperty(m => m.IgnoreErrors, agent.IgnoreErrors)
+                                                                     .SetProperty(m => m.IsActive, agent.IsActive)
+                                                                     .SetProperty(m => m.IsTrusted, agent.IsTrusted)
+                                                                     .SetProperty(m => m.Token, agent.Token)
+                                                                     .SetProperty(m => m.LastSeenTime, agent.LastSeenTime)
+                                                                     .SetProperty(m => m.UserId, agent.UserId)
+                                                                     .SetProperty(m => m.CpuOnly, agent.CpuOnly)
+                                                                     .SetProperty(m => m.ClientSignature,
+                                                                         agent.ClientSignature))
+                               .ConfigureAwait(true);
 
         return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
     }

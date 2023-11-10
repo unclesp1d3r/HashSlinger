@@ -33,7 +33,7 @@ public class DownloadBinaryHandler : IRequestHandler<DownloadBinaryRequest, Down
             };
         var extension = Utilities.GetFileExtension(agent.OperatingSystem);
         await _mediator.Send(new TouchAgentCommand(request.Token, AgentActions.DownloadBinary), cancellationToken)
-            .ConfigureAwait(false);
+                       .ConfigureAwait(false);
 
         // This is the best I can come up with, given how weird the Hashtopolis API is.
         return request.Type switch
@@ -62,8 +62,8 @@ public class DownloadBinaryHandler : IRequestHandler<DownloadBinaryRequest, Down
     private async Task<DownloadBinaryResponse> GetCrackerResponseAsync(DownloadBinaryRequest request, string extension)
     {
         DownloadableBinary? crackerBinary = await _mediator
-            .Send(new GetCrackerBinaryQuery(request.BinaryVersionId))
-            .ConfigureAwait(true);
+                                                  .Send(new GetCrackerBinaryQuery(request.BinaryVersionId))
+                                                  .ConfigureAwait(true);
         if (crackerBinary == null)
             return request.Adapt<DownloadBinaryResponse>() with
             {

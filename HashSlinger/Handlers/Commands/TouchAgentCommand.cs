@@ -39,12 +39,12 @@ public class TouchAgentHandler : IRequestHandler<TouchAgentCommand>
             request.LastAction);
 
         return _dbContext.Agents.Where(x => x.Token == request.Token)
-            .ForEachAsync(x =>
-                {
-                    x.LastSeenTime = DateTime.UtcNow;
-                    x.LastSeenIpAddress = clientIp;
-                    x.LastAction = request.LastAction;
-                },
-                cancellationToken);
+                         .ForEachAsync(x =>
+                             {
+                                 x.LastSeenTime = DateTime.UtcNow;
+                                 x.LastSeenIpAddress = clientIp;
+                                 x.LastAction = request.LastAction;
+                             },
+                             cancellationToken);
     }
 }

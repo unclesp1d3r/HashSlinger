@@ -30,7 +30,7 @@ public class
     {
         Log.Debug("Processing request {@Request}", this);
         var validAgent = await _mediator.Send(new ValidateAgentTokenQuery(request.Token), cancellationToken)
-            .ConfigureAwait(true);
+                                        .ConfigureAwait(true);
         if (!validAgent)
             return request.Adapt<CheckClientVersionResponse>() with
             {
@@ -39,12 +39,12 @@ public class
             };
 
         await _mediator.Send(new TouchAgentCommand(request.Token, AgentActions.CheckClientVersion), cancellationToken)
-            .ConfigureAwait(false);
+                       .ConfigureAwait(false);
 
 
         AgentBinary? clientBinary = await _mediator
-            .Send(new GetAgentBinaryQuery(request.Version, request.Type), cancellationToken)
-            .ConfigureAwait(false);
+                                          .Send(new GetAgentBinaryQuery(request.Version, request.Type), cancellationToken)
+                                          .ConfigureAwait(false);
 
         if (clientBinary is null)
         {

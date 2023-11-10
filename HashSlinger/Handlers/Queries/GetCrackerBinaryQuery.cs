@@ -28,8 +28,9 @@ public class GetCrackerBinaryHandler : IRequestHandler<GetCrackerBinaryQuery, Cr
     {
         Log.Information("Getting cracker binary for version {Version}", request.BinaryVersionId);
         CrackerBinary? crackerBinary = await _dbContext.CrackerBinaries.Include(a => a.File)
-            .SingleOrDefaultAsync(c => c.Id == request.BinaryVersionId, cancellationToken)
-            .ConfigureAwait(true);
+                                                       .SingleOrDefaultAsync(c => c.Id == request.BinaryVersionId,
+                                                           cancellationToken)
+                                                       .ConfigureAwait(true);
 
         if (crackerBinary is null)
         {

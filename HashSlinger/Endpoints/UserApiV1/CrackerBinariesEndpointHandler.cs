@@ -53,12 +53,12 @@ public static class CrackerBinariesEndpointHandler
     )
     {
         return await db.CrackerBinaries.ProjectToType<CrackerBinaryDto>()
-            .AsNoTracking()
-            .AsSplitQuery()
-            .FirstOrDefaultAsync(model => model.Id == id)
-            .ConfigureAwait(true) is CrackerBinaryDto model
-            ? TypedResults.Ok(model)
-            : TypedResults.NotFound();
+                       .AsNoTracking()
+                       .AsSplitQuery()
+                       .FirstOrDefaultAsync(model => model.Id == id)
+                       .ConfigureAwait(true) is CrackerBinaryDto model
+                   ? TypedResults.Ok(model)
+                   : TypedResults.NotFound();
     }
 
     /// <summary>Handles updating a cracker binary.</summary>
@@ -73,13 +73,14 @@ public static class CrackerBinariesEndpointHandler
     )
     {
         var affected = await db.CrackerBinaries.Where(model => model.Id == id)
-            .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.DownloadUrl, crackerBinary.DownloadUrl)
-                .SetProperty(m => m.Executable, crackerBinary.Executable)
-                .SetProperty(m => m.Id, crackerBinary.Id)
-                .SetProperty(m => m.Name, crackerBinary.Name)
-                .SetProperty(m => m.OperatingSystems, crackerBinary.OperatingSystems)
-                .SetProperty(m => m.Version, crackerBinary.Version))
-            .ConfigureAwait(true);
+                               .ExecuteUpdateAsync(setters =>
+                                   setters.SetProperty(m => m.DownloadUrl, crackerBinary.DownloadUrl)
+                                          .SetProperty(m => m.Executable, crackerBinary.Executable)
+                                          .SetProperty(m => m.Id, crackerBinary.Id)
+                                          .SetProperty(m => m.Name, crackerBinary.Name)
+                                          .SetProperty(m => m.OperatingSystems, crackerBinary.OperatingSystems)
+                                          .SetProperty(m => m.Version, crackerBinary.Version))
+                               .ConfigureAwait(true);
 
         return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
     }

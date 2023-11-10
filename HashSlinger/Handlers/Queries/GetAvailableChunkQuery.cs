@@ -17,11 +17,11 @@ public class GetAvailableChunkHandler : IRequestHandler<GetAvailableChunkQuery, 
     public Task<Chunk?> Handle(GetAvailableChunkQuery request, CancellationToken cancellationToken)
     {
         // Find chunks for this task.
-        IQueryable<Chunk>? orderedChunks = _context.Chunks.OrderBy(x => x.Skip).Where(x => x.TaskId == request.TaskId);
+        IQueryable<Chunk> orderedChunks = _context.Chunks.OrderBy(x => x.Skip).Where(x => x.TaskId == request.TaskId);
 
         // Find uncracked chunks for this task.
-        IQueryable<Chunk>? uncrackedChunks = orderedChunks.Where(x => x.State != ChunkState.Cracked)
-                                                          .Where(x => x.Progress < 100.00 || x.Progress == null);
+        IQueryable<Chunk> uncrackedChunks = orderedChunks.Where(x => x.State != ChunkState.Cracked)
+                                                         .Where(x => x.Progress < 100.00 || x.Progress == null);
 
         // Find chunks that are not assigned to an agent or have been aborted or timed out.
         return uncrackedChunks.FirstOrDefaultAsync(x => x.AgentId == request.AgentId

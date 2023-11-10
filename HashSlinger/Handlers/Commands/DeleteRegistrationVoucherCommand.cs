@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Shared.Models;
-using Task = System.Threading.Tasks.Task;
+using Task = Task;
 
 /// <summary>Represents a command to delete a registration voucher.</summary>
 public record DeleteRegistrationVoucherCommand(int Id) : IRequest;
@@ -28,8 +28,8 @@ public class DeleteRegistrationVoucherCommandHandler : IRequestHandler<DeleteReg
     public async Task Handle(DeleteRegistrationVoucherCommand request, CancellationToken cancellationToken)
     {
         RegistrationVoucher? voucher = await _dbContext.RegistrationVouchers
-            .SingleOrDefaultAsync(r => r.Id == request.Id, cancellationToken)
-            .ConfigureAwait(true);
+                                                       .SingleOrDefaultAsync(r => r.Id == request.Id, cancellationToken)
+                                                       .ConfigureAwait(true);
 
         if (voucher == null)
         {

@@ -4,7 +4,7 @@ using Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Shared.Models;
-using Task = System.Threading.Tasks.Task;
+using Task = Task;
 
 /// <summary>
 /// Represents the command to update all file records from files on disk.
