@@ -105,7 +105,9 @@ public static class HashtopolisEndpoints
                          new[] { "HEAD" },
                          async (
                                  int id,
+
                                  HashSlingerContext context
+
                          ) =>
                          {
                              return await context.Files.AnyAsync(x => x.Id == id).ConfigureAwait(true)
@@ -116,7 +118,6 @@ public static class HashtopolisEndpoints
                 .Produces(StatusCodes.Status200OK)
                 .WithName("DownloadFileHead")
                 .WithOpenApi();
-
         // This is a mess and I need to move it somewhere else.
         group.MapPost("/putFile",
                  async (IFormFile file,
