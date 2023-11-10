@@ -45,5 +45,9 @@
     <ItemGroup>
         <ProjectReference Include="..\HashSlinger.Shared\HashSlinger.Shared.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
     
 </Project>

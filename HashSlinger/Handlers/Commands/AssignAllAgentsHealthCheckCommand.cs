@@ -57,12 +57,12 @@ public class AssignAllAgentsHealthCheckHandler : IRequestHandler<AssignAllAgents
             foreach (Agent? agent in _dbContext.Agents.AsEnumerable())
             {
                 await _dbContext.HealthCheckAgents.AddAsync(new HealthCheckAgent
-                {
-                    Agent = agent,
-                    HealthCheck = healthCheck,
-                    Status = HealthCheckStatus.Pending,
-                    Errors = new List<string>()
-                },
+                                    {
+                                        Agent = agent,
+                                        HealthCheck = healthCheck,
+                                        Status = HealthCheckStatus.Pending,
+                                        Errors = new List<string>()
+                                    },
                                     cancellationToken)
                                 .ConfigureAwait(true);
             }
