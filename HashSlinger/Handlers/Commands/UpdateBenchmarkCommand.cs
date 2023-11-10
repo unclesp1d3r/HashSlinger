@@ -8,7 +8,10 @@ using Shared.Models;
 /// <summary>
 /// Represents a command to update a benchmark for a task.
 /// </summary>
-public record UpdateBenchmarkCommand(int taskId, string agentToken, string benchmark) : IRequest;
+/// <param name="TaskId">The task identifier.</param>
+/// <param name="AgentToken">The agent token.</param>
+/// <param name="Benchmark">The benchmark.</param>
+public record UpdateBenchmarkCommand(int TaskId, string AgentToken, string Benchmark) : IRequest;
 
 /// <summary>
 /// Handles updating a benchmark for a task.
@@ -27,8 +30,8 @@ public class UpdateBenchmarkCommandHandler : IRequestHandler<UpdateBenchmarkComm
     public async System.Threading.Tasks.Task Handle(UpdateBenchmarkCommand request, CancellationToken cancellationToken)
     {
         // Get Task
-        Log.Debug("Getting task for agent: {agent}", request.agentToken);
-        Task? task = await _mediator.Send(new GetTaskByIdQuery(request.agentToken, request.taskId), cancellationToken)
+        Log.Debug("Getting task for agent: {agent}", request.AgentToken);
+        Task? task = await _mediator.Send(new GetTaskByIdQuery(request.AgentToken, request.TaskId), cancellationToken)
                                     .ConfigureAwait(false);
         if (task is null)
         {
@@ -36,18 +39,16 @@ public class UpdateBenchmarkCommandHandler : IRequestHandler<UpdateBenchmarkComm
             return;
         }
 
-        Assignment? assignment = task.Assignments.SingleOrDefault(a => a.Agent.Token == request.agentToken);
+        Assignment? assignment = task.Assignments.SingleOrDefault(a => a.Agent.Token == request.AgentToken);
         if (assignment is null)
         {
             Log.Error("Assignment not found!");
             return;
         }
-        // Update Benchmark
-        Log.Information("Updating benchmark for task {task} and agent {agent}", task.Id, request.agentToken);
-        assignment.Benchmark = request.benchmark;
-        await _mediator.Send(new UpdateTaskCommand(task), cancellationToken)
-                       .ConfigureAwait(false);
 
+        // Update Benchmark
+        Log.Information("Updating benchmark for task {task} and agent {agent}", task.Id, request.AgentToken);
+        assignment.Benchmark = request.Benchmark;
+        await _mediator.Send(new UpdateTaskCommand(task), cancellationToken).ConfigureAwait(false);
     }
 }
-

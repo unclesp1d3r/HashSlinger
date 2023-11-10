@@ -50,7 +50,7 @@ public static class HashSlingerConfiguration
     /// </value>
     public static bool DisableTrimming => false;
 
-    /// <summary>Gets the disp tolerance.</summary>
+    /// <summary>Gets the Chunk tolerance.</summary>
     /// <value>
     ///     <para>Allowable deviation in the final chunk of a task in percent.</para>
     ///     <para>
@@ -58,7 +58,7 @@ public static class HashSlingerConfiguration
     ///         chunk size).
     ///     </para>
     /// </value>
-    public static int DispTolerance => 20;
+    public static int ChunkTolerance => 20;
 
     /// <summary>Gets the field separator.</summary>
     /// <value>The separator character used to separate hash and plain (or salt).</value>

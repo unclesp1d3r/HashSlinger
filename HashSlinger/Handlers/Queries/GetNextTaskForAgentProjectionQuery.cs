@@ -78,11 +78,7 @@ public class GetNextTaskForAgentProjectionHandler : IRequestHandler<GetNextTaskF
                                    t.EnforcePipe,
                                    t.TaskWrapper.Hashlist.HashType.IsSlowHash,
                                    t.Priority,
-                                   $" --hash-type={
-                                       t.TaskWrapper.Hashlist.HashType.HashcatId
-                                   } {
-                                       t.Assignments.Single(a => a.Agent.Id == request.AgentId).Agent.CommandParameters
-                                   }"))
+                                   $" --hash-type={t.TaskWrapper.Hashlist.HashType.HashcatId} {t.Assignments.Single(a => a.Agent.Id == request.AgentId).Agent.CommandParameters}"))
                                .FirstOrDefaultAsync(cancellationToken)
                                .ConfigureAwait(true);
     }

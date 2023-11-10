@@ -109,7 +109,7 @@ public class GetChunkHandler : IRequestHandler<GetChunkRequest, GetChunkResponse
             };
 
         // Check for fully dispatched
-
+        //TODO: Check if task is fully dispatched
 
         // Find an existing chunk to assign
         Log.Information("Checking for available chunks for task {task} and agent {agent}", task.Id, agent.Id);
@@ -120,6 +120,7 @@ public class GetChunkHandler : IRequestHandler<GetChunkRequest, GetChunkResponse
             // Assign Chunk to Agent
             Log.Information("Assigning chunk {chunk} to agent {agent}", chunk.Id, agent.Id);
             chunk.Agent = agent;
+            chunk.DispatchTime = DateTime.UtcNow;
             await _mediator.Send(new UpdateTaskCommand(task), cancellationToken).ConfigureAwait(true);
             return request.Adapt<GetChunkResponse>() with
             {
@@ -133,13 +134,142 @@ public class GetChunkHandler : IRequestHandler<GetChunkRequest, GetChunkResponse
 
 
         // Create a new chunk to assign
+        var remainingTolerance = HashSlingerConfiguration.ChunkTolerance / 100 + 1;
+        if (task.SkipKeyspace > task.KeyspaceProgress)
+        {
+            task.KeyspaceProgress = task.SkipKeyspace;
+            await _mediator.Send(new UpdateTaskCommand(task), cancellationToken).ConfigureAwait(true);
+        }
+
+        // Check if there is enough keyspace remaining to create a new chunk
+        var remainingKeyspace = task.Keyspace - task.KeyspaceProgress;
+        if (remainingKeyspace == 0 && !task.UsePreprocessor)
+        {
+            task.TaskWrapper.IsCompleted = true;
+            await _mediator.Send(new UpdateTaskCommand(task), cancellationToken).ConfigureAwait(true);
+        }
 
 
+        if (task.ChunkTime <= 0)
+        {
+            task.ChunkTime = HashSlingerConfiguration.ChunkDuration;
+            await _mediator.Send(new UpdateTaskCommand(task), cancellationToken).ConfigureAwait(true);
+        }
+
+        // Let's figure out what size the new chunk should be.
+        ulong chunkSize = 0;
+        switch (task.StaticChunks)
+        {
+            case TaskStaticChunking.ChunkSize:
+                if (task.ChunkSize == 0)
+                    return request.Adapt<GetChunkResponse>() with
+                    {
+                        Response = HashtopolisConstants.ErrorResponse,
+                        Message = "Chunk size cannot be 0."
+                    };
+
+                chunkSize = (ulong)task.ChunkSize;
+                break;
+            case TaskStaticChunking.NumberOfChunks:
+                if (task.ChunkSize == 0 || task.ChunkSize > 10000)
+                    return request.Adapt<GetChunkResponse>() with
+                    {
+                        Response = HashtopolisConstants.ErrorResponse,
+                        Message = "Chunk size is not valid."
+                    };
+
+                chunkSize = (ulong)Math.Ceiling(task.Keyspace / (double)task.ChunkSize);
+
+                break;
+            case TaskStaticChunking.Normal:
+                if (string.IsNullOrWhiteSpace(assignment.Benchmark))
+                    return request.Adapt<GetChunkResponse>() with
+                    {
+                        Response = HashtopolisConstants.ErrorResponse,
+                        Message = "No benchmark provided."
+                    };
+
+
+                if (assignment.Benchmark.Contains(':'))
+                {
+                    var benchmarkStrings = assignment.Benchmark.Split(':');
+                    if (HandlerUtilities.IsInvalidSpeedBenchmarkValue(benchmarkStrings))
+                        return request.Adapt<GetChunkResponse>() with
+                        {
+                            Response = HashtopolisConstants.ErrorResponse,
+                            Message = "Invalid benchmark."
+                        };
+
+                    chunkSize = GetChunkSizeFromSpeedBenchmark(benchmarkStrings, task);
+                }
+                else if (!int.TryParse(assignment.Benchmark, out var benchmarkSeconds))
+                {
+                    return request.Adapt<GetChunkResponse>() with
+                    {
+                        Response = HashtopolisConstants.ErrorResponse,
+                        Message = "Invalid benchmark."
+                    };
+                }
+                else
+                {
+                    chunkSize = GetChunkSizeForRuntimeBenchmark(benchmarkSeconds, task);
+                }
+
+                break;
+            default:
+                return request.Adapt<GetChunkResponse>() with
+                {
+                    Response = HashtopolisConstants.ErrorResponse,
+                    Message = "Unknown chunking method."
+                };
+                break;
+        }
+
+        // Create the chunk
+        Log.Information("Creating chunk for task {task} and agent {agent}, of size {size}", task.Id, agent.Id, chunkSize);
+        var chunkStart = task.KeyspaceProgress;
+        var chunkLength = chunkSize;
+        if (remainingKeyspace / chunkLength <= (ulong)remainingTolerance && !task.UsePreprocessor)
+            chunkLength = remainingKeyspace;
+        chunk = new Chunk()
+        {
+            Agent = agent,
+            Task = task,
+            Length = chunkLength,
+            Skip = chunkStart,
+            DispatchTime = DateTime.UtcNow
+        };
+        await _mediator.Send(new UpdateChunkCommand(chunk), cancellationToken).ConfigureAwait(true);
         return request.Adapt<GetChunkResponse>() with
         {
-            Response = HashtopolisConstants.ErrorResponse,
-            Message = "Ran of of implementation time."
+            Response = HashtopolisConstants.SuccessResponse,
+            Status = GetChuckResponseStatusConstants.Ok,
+            ChunkId = chunk.Id,
+            Length = chunk.Length,
+            Skip = chunk.Skip
         };
+    }
+
+
+    private static ulong GetChunkSizeForRuntimeBenchmark(int benchmarkSeconds, Task task)
+    {
+        ulong chunkSize;
+        if (benchmarkSeconds <= 0) chunkSize = task.Keyspace;
+        else
+            chunkSize = (ulong)Math.Floor(
+                // ReSharper disable once PossibleLossOfFraction
+                (double)(task.Keyspace * (ulong)benchmarkSeconds * (ulong)task.ChunkTime / 100));
+
+        return chunkSize;
+    }
+
+    private static ulong GetChunkSizeFromSpeedBenchmark(IReadOnlyList<string> benchmarkStrings, Task task)
+    {
+        var value1 = double.Parse(benchmarkStrings[0]);
+        var value2 = double.Parse(benchmarkStrings[1]);
+        var factor = task.ChunkTime / value2 * 1000;
+        var chunkSize = (ulong)Math.Floor(factor * value1);
+        return chunkSize;
     }
 }
 

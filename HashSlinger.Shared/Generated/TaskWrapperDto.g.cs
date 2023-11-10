@@ -16,5 +16,6 @@ namespace HashSlinger.Shared.Generated
         public string Name { get; set; }
         public int Priority { get; set; }
         public string TaskType { get; set; }
+        public bool IsCompleted { get; set; }
     }
 }
