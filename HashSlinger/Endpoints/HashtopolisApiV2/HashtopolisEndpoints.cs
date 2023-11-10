@@ -175,4 +175,3 @@ public static class HashtopolisEndpoints
              .WithOpenApi();
     }
 }
-
