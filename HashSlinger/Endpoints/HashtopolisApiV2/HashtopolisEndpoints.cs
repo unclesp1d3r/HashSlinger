@@ -116,6 +116,7 @@ public static class HashtopolisEndpoints
                      HashSlingerContext dbContext,
                      IMediator mediator
                  ) =>
+
                  {
                      if (file.Length == 0) return Results.BadRequest();
                      Log.Information("Temp file: {TempFile}", file.Name);
@@ -149,6 +150,7 @@ public static class HashtopolisEndpoints
                      HashSlingerContext dbContext,
                      IMediator mediator
                  ) =>
+
                  {
                      if (file.Length == 0) return Results.BadRequest();
                      Log.Information("Temp file: {TempFile}", file.Name);
@@ -173,3 +175,4 @@ public static class HashtopolisEndpoints
              .WithOpenApi();
     }
 }
+
