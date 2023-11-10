@@ -108,9 +108,6 @@ public class GetChunkHandler : IRequestHandler<GetChunkRequest, GetChunkResponse
                 Status = GetChuckResponseStatusConstants.Benchmark
             };
 
-        // Check for fully dispatched
-        //TODO: Check if task is fully dispatched
-
         // Find an existing chunk to assign
         Log.Information("Checking for available chunks for task {task} and agent {agent}", task.Id, agent.Id);
         Chunk? chunk = await _mediator.Send(new GetAvailableChunkQuery(task.Id, agent.Id), cancellationToken)
@@ -145,8 +142,12 @@ public class GetChunkHandler : IRequestHandler<GetChunkRequest, GetChunkResponse
         var remainingKeyspace = task.Keyspace - task.KeyspaceProgress;
         if (remainingKeyspace == 0 && !task.UsePreprocessor)
         {
-            task.TaskWrapper.IsCompleted = true;
-            await _mediator.Send(new UpdateTaskCommand(task), cancellationToken).ConfigureAwait(true);
+            Log.Information("Task {Task} is fully dispatched.", task.Id);
+            return request.Adapt<GetChunkResponse>() with
+            {
+                Response = HashtopolisConstants.SuccessResponse,
+                Status = GetChuckResponseStatusConstants.FullyDispatched
+            };
         }
 
 
@@ -171,7 +172,7 @@ public class GetChunkHandler : IRequestHandler<GetChunkRequest, GetChunkResponse
                 chunkSize = (ulong)task.ChunkSize;
                 break;
             case TaskStaticChunking.NumberOfChunks:
-                if (task.ChunkSize == 0 || task.ChunkSize > 10000)
+                if (task.ChunkSize is 0 or > 10000)
                     return request.Adapt<GetChunkResponse>() with
                     {
                         Response = HashtopolisConstants.ErrorResponse,
