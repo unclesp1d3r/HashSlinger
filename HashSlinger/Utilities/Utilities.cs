@@ -15,7 +15,7 @@ public static class Utilities
         {
             AgentOperatingSystems.Windows => ".exe",
             AgentOperatingSystems.Linux => ".bin",
-            AgentOperatingSystems.MacOS => ".bin",
+            AgentOperatingSystems.MacOS => ".osx",
             AgentOperatingSystems.Unknown => string.Empty,
             _ => throw new ArgumentOutOfRangeException(nameof(agentOS), agentOS, null)
         };

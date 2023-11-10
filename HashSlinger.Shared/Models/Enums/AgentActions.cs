@@ -36,6 +36,11 @@ public enum AgentActions
     /// <summary>Got a chunk from the server.</summary>
     GetChunk,
 
+    /// <summary>
+    /// Sent the benchmark for a task to sthe server
+    /// </summary>
+    SendBenchmark,
+
     /// <summary>Sent the keyspace for a task to the server.</summary>
     SendKeyspace,
 
