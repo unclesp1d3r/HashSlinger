@@ -33,10 +33,7 @@ public class UpdateHealthCheckWithResultHandler : IRequestHandler<UpdateHealthCh
         HealthCheckAgent? healthCheckAgent = await _dbContext.HealthCheckAgents
             .FirstOrDefaultAsync(x => x.HealthCheck.Id == request.CheckId && x.Agent.Token == request.AgentToken,
                 cancellationToken)
-            .ConfigureAwait(false);
-
-        if (healthCheckAgent is null)
-            throw new InvalidOperationException("HealthCheckAgent is null");
+            .ConfigureAwait(false) ?? throw new InvalidOperationException("HealthCheckAgent is null");
         healthCheckAgent.Cracked = request.NumberCracked;
         healthCheckAgent.Start = request.Start;
         healthCheckAgent.End = request.End;

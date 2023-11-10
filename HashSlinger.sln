@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HashSlinger.Test", "HashSli
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{67BA4447-6C34-42CB-8B08-DF4F8A07FD16}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HashSlinger.WebUI", "HashSlinger.WebUI\HashSlinger.WebUI.csproj", "{853228EF-BC75-41B5-8887-FBFEA791B999}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{67BA4447-6C34-42CB-8B08-DF4F8A07FD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67BA4447-6C34-42CB-8B08-DF4F8A07FD16}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{67BA4447-6C34-42CB-8B08-DF4F8A07FD16}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{853228EF-BC75-41B5-8887-FBFEA791B999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{853228EF-BC75-41B5-8887-FBFEA791B999}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{853228EF-BC75-41B5-8887-FBFEA791B999}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{853228EF-BC75-41B5-8887-FBFEA791B999}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

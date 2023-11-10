@@ -17,6 +17,6 @@ namespace HashSlinger.Shared.Generated
         public int Id { get; set; }
         public bool IsSecret { get; set; }
         public int? LineCount { get; set; }
-        public int Size { get; set; }
+        public long Size { get; set; }
     }
 }
