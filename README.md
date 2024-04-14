@@ -9,7 +9,7 @@
 [![wakatime](https://wakatime.com/badge/github/unclesp1d3r/HashSlinger.svg)](https://wakatime.com/badge/github/unclesp1d3r/HashSlinger)
 
 > [!CAUTION]
-> This project is no being developed. We are working on a new project called [CipherSwarm](https://github.com/unclesp1d3r/CipherSwarm) which is a complete re-write of HashSlinger with more features and better performance.
+> This project is no longer being developed. We are working on a new project called [CipherSwarm](https://github.com/unclesp1d3r/CipherSwarm) which is a complete re-write of HashSlinger with more features and better performance. If someone would like to continue the development of this project, please contact us.
 
 Hash Slinger is a purpose-built wrapper for Hashcat, designed specifically to facilitate distributed hash cracking in high-speed, secure, and centralized network environments. By leveraging the power of multiple machines, Hash Slinger adeptly manages large quantities of hashes, aiming to optimize your hash cracking operations.
 
